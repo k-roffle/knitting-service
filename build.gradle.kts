@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.4.30"
 	kotlin("plugin.spring") version "1.4.30"
 	kotlin("plugin.jpa") version "1.4.30"
+	kotlin("plugin.allopen") version "1.3.61"
 }
 
 group = "com.kroffle"
@@ -32,6 +33,12 @@ tasks.withType<KotlinCompile> {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "11"
 	}
+}
+
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.Embeddable")
+	annotation("javax.persistence.MappedSuperclass")
 }
 
 tasks.withType<Test> {
