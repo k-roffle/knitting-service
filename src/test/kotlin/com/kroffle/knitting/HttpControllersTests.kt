@@ -46,12 +46,4 @@ class HttpControllersTests(@Autowired val mockMvc: MockMvc) {
                 .andExpect(jsonPath("\$.[0].login").value(juergen.login))
                 .andExpect(jsonPath("\$.[1].login").value(smaldini.login))
     }
-
-    @Test
-    fun `ping 요청시 pong 응답을 받을 수 있어야 함`() {
-        mockMvc.perform(get("/ping/").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk)
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string("pong"))
-    }
 }

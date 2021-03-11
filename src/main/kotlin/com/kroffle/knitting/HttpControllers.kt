@@ -8,13 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping("/ping")
-class PingController() {
-    @GetMapping("/")
-    fun getPing() = "pong"
-}
-
-@RestController
 @RequestMapping("/api/article")
 class ArticleController(private val repository: ArticleRepository) {
 
