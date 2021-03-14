@@ -1,8 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        maven(url = "https://plugins.gradle.org/m2/")
+    }
+    dependencies {
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:9.1.0")
+    }
+}
+
 plugins {
 	id("org.springframework.boot") version "2.4.3"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
+	id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
 	kotlin("jvm") version "1.4.30"
 	kotlin("plugin.spring") version "1.4.30"
 }
