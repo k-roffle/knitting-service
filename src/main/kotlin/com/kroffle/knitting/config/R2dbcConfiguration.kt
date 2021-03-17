@@ -19,6 +19,11 @@ class R2dbcConfiguration: AbstractR2dbcConfiguration() {
     @Autowired
     lateinit var appProperties: AppProperties
 
+    companion object {
+        private const val DESIGN_TYPE = "design_type"
+        private const val PATTERN_TYPE = "pattern_type"
+    }
+
     @Bean
     override fun connectionFactory(): ConnectionFactory = PostgresqlConnectionFactory(
         PostgresqlConnectionConfiguration.builder()
@@ -26,8 +31,8 @@ class R2dbcConfiguration: AbstractR2dbcConfiguration() {
             .username(appProperties.username)
             .password(appProperties.password)
             .database(appProperties.database)
-            .codecRegistrar(EnumCodec.builder().withEnum("design_type", DesignType::class.java).build())
-            .codecRegistrar(EnumCodec.builder().withEnum("pattern_type", PatternType::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(DESIGN_TYPE, DesignType::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, PatternType::class.java).build())
             .build()
     )
 }
