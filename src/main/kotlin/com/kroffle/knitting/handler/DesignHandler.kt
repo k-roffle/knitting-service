@@ -12,10 +12,12 @@ import java.util.stream.Collectors.toList
 @Component
 class DesignHandler(private val repository: DesignRepository) {
     fun getAll(req: ServerRequest): Mono<ServerResponse> =
-        repository.findAll()
+        repository
+            .findAll()
             .collect(toList())
             .flatMap {
-                ok().contentType(MediaType.APPLICATION_JSON)
+                ok()
+                    .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(it)
             }
 }

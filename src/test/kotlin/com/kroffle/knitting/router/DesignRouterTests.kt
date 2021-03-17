@@ -57,13 +57,17 @@ class DesignRouterTests {
     fun `design 리스트가 잘 반환되어야 함`() {
         given(repo.findAll()).willReturn(Flux.just(design))
 
-        val responseBody: List<Design>? = webClient.get().uri("/designs/")
+        val responseBody: List<Design>? = webClient
+            .get()
+            .uri("/designs/")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
-            .expectStatus().isOk
+            .expectStatus()
+            .isOk
             .expectBodyList(Design::class.java)
             .hasSize(1)
-            .returnResult().responseBody
+            .returnResult()
+            .responseBody
 
         val firstResponseBody = responseBody?.get(0)
         assertThat(firstResponseBody?.id).isEqualTo(UUID.fromString("00000000-0000-0000-0000-000000000000"))
