@@ -6,21 +6,21 @@ import com.kroffle.knitting.domain.DesignType
 import com.kroffle.knitting.domain.PatternType
 import com.kroffle.knitting.handler.DesignHandler
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
 import java.time.LocalDateTime
 import java.util.UUID
 
 @WebFluxTest
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 class DesignRouterTests {
     @MockBean
     lateinit var repo: DesignRepository
@@ -31,7 +31,7 @@ class DesignRouterTests {
 
     private lateinit var now: LocalDateTime
 
-    @Before
+    @BeforeEach
     fun setUp() {
         now = LocalDateTime.now()
         design = Design(
