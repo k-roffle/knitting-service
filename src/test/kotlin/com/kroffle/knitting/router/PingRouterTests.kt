@@ -1,20 +1,20 @@
 package com.kroffle.knitting.router
 
 import com.kroffle.knitting.handler.PingHandler
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 
 @WebFluxTest
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 class PingRouterTests {
     lateinit var webClient: WebTestClient
 
-    @Before
+    @BeforeEach
     fun setUp() {
         val routerFunction = PingRouter(PingHandler()).pingRouterFunction()
         webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
