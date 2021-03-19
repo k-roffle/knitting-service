@@ -10,9 +10,10 @@ import org.springframework.web.reactive.function.server.router
 @Configuration
 class DesignRouter(private val handler: DesignHandler) {
     @Bean
-    fun designRouterFunction() = nest(path("/designs"),
-            router {
-                listOf(GET("/", handler::getAll))
-            }
+    fun designRouterFunction() = nest(
+        path("/designs"),
+        router {
+            listOf(GET("/", handler::getAll))
+        }
     )
 }

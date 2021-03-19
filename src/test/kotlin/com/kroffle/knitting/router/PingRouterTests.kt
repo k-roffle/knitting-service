@@ -22,10 +22,11 @@ class PingRouterTests {
 
     @Test
     fun `pong 이 잘 반환되어야 함`() {
-        webClient.get()
-                .uri("/ping/")
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<String>().isEqualTo("pong")
+        webClient
+            .get()
+            .uri("/ping/")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody<String>().isEqualTo("pong")
     }
 }

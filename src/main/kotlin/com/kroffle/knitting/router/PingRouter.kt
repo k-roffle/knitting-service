@@ -10,9 +10,10 @@ import org.springframework.web.reactive.function.server.router
 @Configuration
 class PingRouter(private val handler: PingHandler) {
     @Bean
-    fun pingRouterFunction() = nest(path("/ping"),
-            router {
-                listOf(GET("/", handler::get))
-            }
+    fun pingRouterFunction() = nest(
+        path("/ping"),
+        router {
+            listOf(GET("/", handler::get))
+        }
     )
 }

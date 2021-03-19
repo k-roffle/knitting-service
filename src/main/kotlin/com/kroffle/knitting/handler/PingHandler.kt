@@ -10,6 +10,6 @@ import reactor.core.publisher.Mono
 @Component
 class PingHandler {
     fun get(req: ServerRequest): Mono<ServerResponse> = ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue("pong")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue("pong")
 }

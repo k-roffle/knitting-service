@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @WebFluxTest
 @RunWith(SpringRunner::class)
@@ -33,7 +33,7 @@ class DesignRouterTests {
 
     @Before
     fun setUp() {
-        now =  LocalDateTime.now()
+        now = LocalDateTime.now()
         design = Design(
             id = UUID.fromString("00000000-0000-0000-0000-000000000000"),
             name = "test",
@@ -44,7 +44,7 @@ class DesignRouterTests {
             needle = "5.0mm",
             yarn = null,
             extra = null,
-            price=0,
+            price = 0,
             createdAt = now,
         )
 
@@ -57,13 +57,17 @@ class DesignRouterTests {
     fun `design 리스트가 잘 반환되어야 함`() {
         given(repo.findAll()).willReturn(Flux.just(design))
 
-        val responseBody: List<Design>? = webClient.get().uri("/designs/")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk
-                .expectBodyList(Design::class.java)
-                .hasSize(1)
-                .returnResult().responseBody
+        val responseBody: List<Design>? = webClient
+            .get()
+            .uri("/designs/")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBodyList(Design::class.java)
+            .hasSize(1)
+            .returnResult()
+            .responseBody
 
         val firstResponseBody = responseBody?.get(0)
         assertThat(firstResponseBody?.id).isEqualTo(UUID.fromString("00000000-0000-0000-0000-000000000000"))
