@@ -1,3 +1,11 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
+---
+
 ## 기능 제안 사유
 
 <!-- 왜 이 기능을 제안하게 되었는지 간략하게 적어주세요. -->

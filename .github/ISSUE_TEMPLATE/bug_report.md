@@ -1,3 +1,11 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+---
+
 ## Bug 제안 사유
 
 <!-- 왜 이 Bug를 제안하게 되었는지 간략하게 적어주세요. -->
