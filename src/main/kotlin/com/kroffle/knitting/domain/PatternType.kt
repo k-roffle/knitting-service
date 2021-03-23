@@ -1,7 +1,7 @@
 package com.kroffle.knitting.domain
 
 enum class PatternType(val code: Int) {
-    Letter(1),
+    Text(1),
     Image(2),
-    Video(3)
+    Video(3),
 }

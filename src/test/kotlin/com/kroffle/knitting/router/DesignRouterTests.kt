@@ -34,17 +34,20 @@ class DesignRouterTests {
     @BeforeEach
     fun setUp() {
         now = LocalDateTime.now()
+        val sizeId = UUID.fromString("00000000-0000-0000-0000-000000000000")
         design = Design(
             id = UUID.fromString("00000000-0000-0000-0000-000000000000"),
             name = "test",
-            designType = DesignType.Blanket,
-            patternType = PatternType.Image,
+            designType = DesignType.Sweater,
+            patternType = PatternType.Text,
             stitches = 23.5f,
             rows = 25.0f,
+            sizeId = sizeId,
             needle = "5.0mm",
             yarn = null,
             extra = null,
             price = 0,
+            pattern = "# Step1. 코를 10개 잡습니다.",
             createdAt = now,
         )
 
@@ -56,7 +59,7 @@ class DesignRouterTests {
     @Throws(Exception::class)
     fun `design 리스트가 잘 반환되어야 함`() {
         given(repo.findAll()).willReturn(Flux.just(design))
-
+        val mockId = UUID.fromString("00000000-0000-0000-0000-000000000000")
         val responseBody: List<Design>? = webClient
             .get()
             .uri("/designs/")
@@ -70,15 +73,18 @@ class DesignRouterTests {
             .responseBody
 
         val firstResponseBody = responseBody?.get(0)
-        assertThat(firstResponseBody?.id).isEqualTo(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+        assertThat(firstResponseBody?.id).isEqualTo(mockId)
         assertThat(firstResponseBody?.name).isEqualTo("test")
-        assertThat(firstResponseBody?.designType).isEqualTo(DesignType.Blanket)
-        assertThat(firstResponseBody?.patternType).isEqualTo(PatternType.Image)
+        assertThat(firstResponseBody?.designType).isEqualTo(DesignType.Sweater)
+        assertThat(firstResponseBody?.patternType).isEqualTo(PatternType.Text)
         assertThat(firstResponseBody?.stitches).isEqualTo(23.5f)
+        assertThat(firstResponseBody?.rows).isEqualTo(25.0f)
+        assertThat(firstResponseBody?.sizeId).isEqualTo(mockId)
         assertThat(firstResponseBody?.needle).isEqualTo("5.0mm")
         assertThat(firstResponseBody?.yarn).isEqualTo(null)
         assertThat(firstResponseBody?.extra).isEqualTo(null)
         assertThat(firstResponseBody?.price).isEqualTo(0)
+        assertThat(firstResponseBody?.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
         assertThat(firstResponseBody?.createdAt).isEqualTo(now)
     }
 }
