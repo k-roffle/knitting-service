@@ -13,7 +13,10 @@ class DesignRouter(private val handler: DesignHandler) {
     fun designRouterFunction() = nest(
         path("/designs"),
         router {
-            listOf(GET("/", handler::getAll))
+            listOf(
+                GET("/", handler::getAll),
+                POST("/", handler::createDesign),
+            )
         }
     )
 }
