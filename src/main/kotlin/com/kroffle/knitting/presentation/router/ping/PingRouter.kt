@@ -1,6 +1,6 @@
-package com.kroffle.knitting.router
+package com.kroffle.knitting.presentation.router.ping
 
-import com.kroffle.knitting.handler.PingHandler
+import com.kroffle.knitting.domain.handler.ping.PingHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.RequestPredicates.path

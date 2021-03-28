@@ -1,6 +1,6 @@
-package com.kroffle.knitting.handler
+package com.kroffle.knitting.domain.handler.design
 
-import com.kroffle.knitting.domain.DesignRepository
+import com.kroffle.knitting.data.repository.design.DesignRepository
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest

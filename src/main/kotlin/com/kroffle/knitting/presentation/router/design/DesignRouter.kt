@@ -1,6 +1,6 @@
-package com.kroffle.knitting.router
+package com.kroffle.knitting.presentation.router.design
 
-import com.kroffle.knitting.handler.DesignHandler
+import com.kroffle.knitting.domain.handler.design.DesignHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.RequestPredicates.path

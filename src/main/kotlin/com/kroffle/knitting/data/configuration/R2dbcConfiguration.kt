@@ -1,8 +1,7 @@
-package com.kroffle.knitting.config
+package com.kroffle.knitting.data.configuration
 
-import com.kroffle.knitting.AppProperties
-import com.kroffle.knitting.domain.DesignType
-import com.kroffle.knitting.domain.PatternType
+import com.kroffle.knitting.data.entity.design.DesignType
+import com.kroffle.knitting.data.entity.design.PatternType
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.codec.EnumCodec
@@ -17,7 +16,7 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 @EnableR2dbcRepositories
 class R2dbcConfiguration : AbstractR2dbcConfiguration() {
     @Autowired
-    lateinit var appProperties: AppProperties
+    lateinit var appProperties: DatabaseProperties
 
     @Bean
     override fun connectionFactory(): ConnectionFactory = PostgresqlConnectionFactory(

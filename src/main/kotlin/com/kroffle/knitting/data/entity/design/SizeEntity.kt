@@ -1,11 +1,11 @@
-package com.kroffle.knitting.domain
+package com.kroffle.knitting.data.entity.design
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
 @Table("size")
-class Size(
+class SizeEntity(
     @Id val id: UUID = UUID.randomUUID(),
     val totalLength: Double,
     val sleeveLength: Double,

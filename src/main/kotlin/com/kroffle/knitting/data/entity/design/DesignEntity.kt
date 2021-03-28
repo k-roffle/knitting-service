@@ -1,4 +1,4 @@
-package com.kroffle.knitting.domain
+package com.kroffle.knitting.data.entity.design
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Table("design")
-class Design(
+class DesignEntity(
     @Id val id: UUID = UUID.randomUUID(),
     val name: String,
     val designType: DesignType,
