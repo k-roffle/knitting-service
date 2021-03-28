@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 import java.time.LocalDateTime
 import java.util.UUID
@@ -94,5 +95,17 @@ class DesignRouterTest {
         assertThat(firstResponseBody?.size?.armholeDepth?.value).isEqualTo(5.0)
         assertThat(firstResponseBody?.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
         assertThat(firstResponseBody?.createdAt).isEqualTo(now)
+    }
+
+    @Test
+    fun `design 이 잘 생성되어야 함`() {
+        webClient
+            .post()
+            .uri("/designs/")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<Map<String, String>>()
     }
 }
