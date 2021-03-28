@@ -11,7 +11,7 @@ import org.springframework.test.web.reactive.server.expectBody
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
-class PingRouterTests {
+class PingRouterTest {
     lateinit var webClient: WebTestClient
 
     @BeforeEach

@@ -21,7 +21,7 @@ import java.util.UUID
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
-class DesignRouterTests {
+class DesignRouterTest {
     @MockBean
     lateinit var repo: DesignRepository
 
