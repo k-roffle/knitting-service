@@ -1,10 +1,10 @@
-package com.kroffle.knitting
+package com.kroffle.knitting.data.configuration
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class AppProperties {
+class DatabaseProperties {
     @Value("\${db.host}")
     lateinit var host: String
 

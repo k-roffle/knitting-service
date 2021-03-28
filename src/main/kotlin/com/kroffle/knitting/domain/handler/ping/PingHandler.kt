@@ -1,4 +1,4 @@
-package com.kroffle.knitting.handler
+package com.kroffle.knitting.domain.handler.ping
 
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component

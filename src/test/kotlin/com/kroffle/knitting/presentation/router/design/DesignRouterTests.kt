@@ -1,10 +1,10 @@
-package com.kroffle.knitting.router
+package com.kroffle.knitting.presentation.router.design
 
-import com.kroffle.knitting.domain.Design
-import com.kroffle.knitting.domain.DesignRepository
-import com.kroffle.knitting.domain.DesignType
-import com.kroffle.knitting.domain.PatternType
-import com.kroffle.knitting.handler.DesignHandler
+import com.kroffle.knitting.data.entity.design.DesignEntity
+import com.kroffle.knitting.data.entity.design.DesignType
+import com.kroffle.knitting.data.entity.design.PatternType
+import com.kroffle.knitting.data.repository.design.DesignRepository
+import com.kroffle.knitting.domain.handler.design.DesignHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class DesignRouterTests {
 
     private lateinit var webClient: WebTestClient
 
-    private lateinit var design: Design
+    private lateinit var design: DesignEntity
 
     private lateinit var now: LocalDateTime
 
@@ -35,7 +35,7 @@ class DesignRouterTests {
     fun setUp() {
         now = LocalDateTime.now()
         val sizeId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        design = Design(
+        design = DesignEntity(
             id = UUID.fromString("00000000-0000-0000-0000-000000000000"),
             name = "test",
             designType = DesignType.Sweater,
@@ -60,14 +60,14 @@ class DesignRouterTests {
     fun `design 리스트가 잘 반환되어야 함`() {
         given(repo.findAll()).willReturn(Flux.just(design))
         val mockId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        val responseBody: List<Design>? = webClient
+        val responseBody: List<DesignEntity>? = webClient
             .get()
             .uri("/designs/")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus()
             .isOk
-            .expectBodyList(Design::class.java)
+            .expectBodyList(DesignEntity::class.java)
             .hasSize(1)
             .returnResult()
             .responseBody

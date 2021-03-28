@@ -1,6 +1,6 @@
-package com.kroffle.knitting.router
+package com.kroffle.knitting.presentation.router.ping
 
-import com.kroffle.knitting.handler.PingHandler
+import com.kroffle.knitting.domain.handler.ping.PingHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
