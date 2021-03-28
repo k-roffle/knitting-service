@@ -61,7 +61,6 @@ class DesignRouterTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun `design 리스트가 잘 반환되어야 함`() {
         given(repo.getAll()).willReturn(Flux.just(design))
         val mockId = UUID.fromString("00000000-0000-0000-0000-000000000000")
