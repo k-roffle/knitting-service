@@ -40,8 +40,8 @@ class DesignRouterTests {
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,
-            stitches = 23.5f,
-            rows = 25.0f,
+            stitches = 23.5,
+            rows = 25.0,
             sizeId = sizeId,
             needle = "5.0mm",
             yarn = null,
@@ -77,8 +77,8 @@ class DesignRouterTests {
         assertThat(firstResponseBody?.name).isEqualTo("test")
         assertThat(firstResponseBody?.designType).isEqualTo(DesignType.Sweater)
         assertThat(firstResponseBody?.patternType).isEqualTo(PatternType.Text)
-        assertThat(firstResponseBody?.stitches).isEqualTo(23.5f)
-        assertThat(firstResponseBody?.rows).isEqualTo(25.0f)
+        assertThat(firstResponseBody?.stitches).isEqualTo(23.5)
+        assertThat(firstResponseBody?.rows).isEqualTo(25.0)
         assertThat(firstResponseBody?.sizeId).isEqualTo(mockId)
         assertThat(firstResponseBody?.needle).isEqualTo("5.0mm")
         assertThat(firstResponseBody?.yarn).isEqualTo(null)
