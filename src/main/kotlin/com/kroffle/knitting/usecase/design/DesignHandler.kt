@@ -1,5 +1,6 @@
 package com.kroffle.knitting.usecase.design
 
+// FIXME: 의존성 룰 위반 knitting-service/#22
 import com.kroffle.knitting.infra.design.DesignRepository
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
