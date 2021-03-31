@@ -1,7 +1,7 @@
-package com.kroffle.knitting.data.configuration
+package com.kroffle.knitting.infra.configuration
 
-import com.kroffle.knitting.data.entity.design.DesignType
-import com.kroffle.knitting.data.entity.design.PatternType
+import com.kroffle.knitting.infra.design.DesignType
+import com.kroffle.knitting.infra.design.PatternType
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.codec.EnumCodec

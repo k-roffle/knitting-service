@@ -1,10 +1,10 @@
-package com.kroffle.knitting.presentation.router.design
+package com.kroffle.knitting.controller.design
 
-import com.kroffle.knitting.data.entity.design.DesignEntity
-import com.kroffle.knitting.data.entity.design.DesignType
-import com.kroffle.knitting.data.entity.design.PatternType
-import com.kroffle.knitting.data.repository.design.DesignRepository
-import com.kroffle.knitting.domain.handler.design.DesignHandler
+import com.kroffle.knitting.infra.design.DesignEntity
+import com.kroffle.knitting.infra.design.DesignRepository
+import com.kroffle.knitting.infra.design.DesignType
+import com.kroffle.knitting.infra.design.PatternType
+import com.kroffle.knitting.usecase.design.DesignHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,4 +1,4 @@
-package com.kroffle.knitting.data.entity.design
+package com.kroffle.knitting.infra.design
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table

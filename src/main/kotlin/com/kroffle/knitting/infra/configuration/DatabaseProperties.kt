@@ -1,4 +1,4 @@
-package com.kroffle.knitting.data.configuration
+package com.kroffle.knitting.infra.configuration
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

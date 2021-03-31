@@ -1,4 +1,4 @@
-package com.kroffle.knitting.data.entity.design
+package com.kroffle.knitting.infra.design
 
 enum class PatternType(val code: Int) {
     Text(1),
