@@ -13,19 +13,19 @@ import java.util.UUID
 
 @Table("design")
 class DesignEntity(
-    @Id val id: UUID = UUID.randomUUID(),
-    val name: String,
-    val designType: DesignType,
-    val patternType: PatternType,
-    val stitches: Double,
-    val rows: Double,
-    val sizeId: UUID,
-    val needle: String,
-    val yarn: String?,
-    val extra: String?,
-    val price: Int = 0,
-    val pattern: String,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    @Id private val id: UUID = UUID.randomUUID(),
+    private val name: String,
+    private val designType: DesignType,
+    private val patternType: PatternType,
+    private val stitches: Double,
+    private val rows: Double,
+    private val sizeId: UUID,
+    private val needle: String,
+    private val yarn: String?,
+    private val extra: String?,
+    private val price: Int = 0,
+    private val pattern: String,
+    private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     // FIXME size 주입받기
     fun toDesign(): Design =
