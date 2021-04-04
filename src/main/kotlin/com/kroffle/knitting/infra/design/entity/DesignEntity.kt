@@ -54,3 +54,24 @@ class DesignEntity(
             createdAt = this.createdAt,
         )
 }
+
+fun Design.toDesignEntity() =
+    DesignEntity(
+        id = this.id,
+        name = this.name,
+        designType = this.designType,
+        patternType = this.patternType,
+        stitches = this.stitches,
+        rows = this.rows,
+        totalLength = this.size.totalLength.value,
+        sleeveLength = this.size.sleeveLength.value,
+        shoulderWidth = this.size.shoulderWidth.value,
+        bottomWidth = this.size.bottomWidth.value,
+        armholeDepth = this.size.armholeDepth.value,
+        needle = this.needle,
+        yarn = this.yarn,
+        extra = this.extra,
+        price = this.price.value,
+        pattern = this.pattern,
+        createdAt = this.createdAt,
+    )
