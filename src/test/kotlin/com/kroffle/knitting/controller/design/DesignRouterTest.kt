@@ -1,10 +1,11 @@
 package com.kroffle.knitting.controller.design
 
-import com.kroffle.knitting.infra.design.DesignEntity
-import com.kroffle.knitting.infra.design.DesignRepository
-import com.kroffle.knitting.infra.design.DesignType
-import com.kroffle.knitting.infra.design.PatternType
+import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.domain.design.enum.DesignType
+import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.infra.design.entity.DesignEntity
 import com.kroffle.knitting.usecase.design.DesignHandler
+import com.kroffle.knitting.usecase.design.DesignRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,7 +28,7 @@ class DesignRouterTest {
 
     private lateinit var webClient: WebTestClient
 
-    private lateinit var design: DesignEntity
+    private lateinit var design: Design
 
     private lateinit var now: LocalDateTime
 
@@ -49,7 +50,7 @@ class DesignRouterTest {
             price = 0,
             pattern = "# Step1. 코를 10개 잡습니다.",
             createdAt = now,
-        )
+        ).toDesign()
 
         val routerFunction = DesignRouter(DesignHandler(repo)).designRouterFunction()
         webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
@@ -58,16 +59,16 @@ class DesignRouterTest {
     @Test
     @Throws(Exception::class)
     fun `design 리스트가 잘 반환되어야 함`() {
-        given(repo.findAll()).willReturn(Flux.just(design))
+        given(repo.getAll()).willReturn(Flux.just(design))
         val mockId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        val responseBody: List<DesignEntity>? = webClient
+        val responseBody: List<Design>? = webClient
             .get()
             .uri("/designs/")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus()
             .isOk
-            .expectBodyList(DesignEntity::class.java)
+            .expectBodyList(Design::class.java)
             .hasSize(1)
             .returnResult()
             .responseBody
@@ -79,11 +80,10 @@ class DesignRouterTest {
         assertThat(firstResponseBody?.patternType).isEqualTo(PatternType.Text)
         assertThat(firstResponseBody?.stitches).isEqualTo(23.5)
         assertThat(firstResponseBody?.rows).isEqualTo(25.0)
-        assertThat(firstResponseBody?.sizeId).isEqualTo(mockId)
         assertThat(firstResponseBody?.needle).isEqualTo("5.0mm")
         assertThat(firstResponseBody?.yarn).isEqualTo(null)
         assertThat(firstResponseBody?.extra).isEqualTo(null)
-        assertThat(firstResponseBody?.price).isEqualTo(0)
+        assertThat(firstResponseBody?.price?.value).isEqualTo(0)
         assertThat(firstResponseBody?.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
         assertThat(firstResponseBody?.createdAt).isEqualTo(now)
     }
