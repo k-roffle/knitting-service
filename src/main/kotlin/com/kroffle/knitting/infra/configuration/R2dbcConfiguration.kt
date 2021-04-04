@@ -1,7 +1,9 @@
 package com.kroffle.knitting.infra.configuration
 
-import com.kroffle.knitting.infra.design.DesignType
-import com.kroffle.knitting.infra.design.PatternType
+import com.kroffle.knitting.domain.design.enum.DesignType
+import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.infra.design.DBDesignRepository
+import com.kroffle.knitting.infra.design.R2dbcDesignRepository
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.codec.EnumCodec
@@ -29,6 +31,9 @@ class R2dbcConfiguration : AbstractR2dbcConfiguration() {
             .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, PatternType::class.java).build())
             .build()
     )
+
+    @Bean
+    fun designRepository(dbDesignRepository: DBDesignRepository) = R2dbcDesignRepository(dbDesignRepository)
 
     companion object {
         private const val DESIGN_TYPE = "design_type"
