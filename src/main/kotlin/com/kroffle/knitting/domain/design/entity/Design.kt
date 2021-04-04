@@ -1,0 +1,24 @@
+package com.kroffle.knitting.domain.design.entity
+
+import com.kroffle.knitting.domain.design.enum.DesignType
+import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.domain.design.value.Money
+import com.kroffle.knitting.domain.design.value.Size
+import java.time.LocalDateTime
+import java.util.UUID
+
+class Design(
+    val id: UUID,
+    val name: String,
+    val designType: DesignType,
+    val patternType: PatternType,
+    val stitches: Double,
+    val rows: Double,
+    val size: Size,
+    val needle: String,
+    val yarn: String?,
+    val extra: String?,
+    val price: Money,
+    val pattern: String,
+    val createdAt: LocalDateTime,
+)
