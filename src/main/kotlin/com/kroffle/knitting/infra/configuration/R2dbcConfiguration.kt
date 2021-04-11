@@ -11,8 +11,24 @@ import io.r2dbc.spi.ConnectionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.convert.converter.Converter
+import org.springframework.data.convert.WritingConverter
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
+
+@WritingConverter
+class DesignTypeConverter : Converter<DesignType, DesignType> {
+    override fun convert(source: DesignType): DesignType {
+        return source
+    }
+}
+
+@WritingConverter
+class PatternTypeConverter : Converter<PatternType, PatternType> {
+    override fun convert(source: PatternType): PatternType {
+        return source
+    }
+}
 
 @Configuration
 @EnableR2dbcRepositories
@@ -31,6 +47,10 @@ class R2dbcConfiguration : AbstractR2dbcConfiguration() {
             .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, PatternType::class.java).build())
             .build()
     )
+
+    override fun getCustomConverters(): MutableList<Any> {
+        return mutableListOf(DesignTypeConverter(), PatternTypeConverter())
+    }
 
     @Bean
     fun designRepository(dbDesignRepository: DBDesignRepository) = R2dbcDesignRepository(dbDesignRepository)
