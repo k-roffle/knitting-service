@@ -19,7 +19,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 import java.time.LocalDateTime
-import java.util.UUID
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -35,9 +34,7 @@ class DesignRouterTest {
 
     @BeforeEach
     fun setUp() {
-        now = LocalDateTime.now()
         design = DesignEntity(
-            id = UUID.fromString("00000000-0000-0000-0000-000000000000"),
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,
@@ -53,7 +50,7 @@ class DesignRouterTest {
             extra = null,
             price = 0,
             pattern = "# Step1. 코를 10개 잡습니다.",
-            createdAt = now,
+            createdAt = LocalDateTime.now(),
         ).toDesign()
 
         val routerFunction = DesignRouter(DesignHandler(repo)).designRouterFunction()
@@ -63,7 +60,6 @@ class DesignRouterTest {
     @Test
     fun `design 리스트가 잘 반환되어야 함`() {
         given(repo.getAll()).willReturn(Flux.just(design))
-        val mockId = UUID.fromString("00000000-0000-0000-0000-000000000000")
         val responseBody: List<Design>? = webClient
             .get()
             .uri("/designs/")
@@ -77,7 +73,7 @@ class DesignRouterTest {
             .responseBody
 
         val firstResponseBody = responseBody?.get(0)
-        assertThat(firstResponseBody?.id).isEqualTo(mockId)
+        assertThat(firstResponseBody?.id).isEqualTo(design.id)
         assertThat(firstResponseBody?.name).isEqualTo("test")
         assertThat(firstResponseBody?.designType).isEqualTo(DesignType.Sweater)
         assertThat(firstResponseBody?.patternType).isEqualTo(PatternType.Text)
@@ -93,7 +89,7 @@ class DesignRouterTest {
         assertThat(firstResponseBody?.size?.bottomWidth?.value).isEqualTo(4.0)
         assertThat(firstResponseBody?.size?.armholeDepth?.value).isEqualTo(5.0)
         assertThat(firstResponseBody?.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
-        assertThat(firstResponseBody?.createdAt).isEqualTo(now)
+        assertThat(firstResponseBody?.createdAt).isEqualTo(design.createdAt)
     }
 
     @Test
