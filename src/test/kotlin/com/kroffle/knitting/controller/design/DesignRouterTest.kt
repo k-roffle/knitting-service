@@ -35,7 +35,6 @@ class DesignRouterTest {
     @BeforeEach
     fun setUp() {
         now = LocalDateTime.now()
-        val sizeId = UUID.fromString("00000000-0000-0000-0000-000000000000")
         design = DesignEntity(
             id = UUID.fromString("00000000-0000-0000-0000-000000000000"),
             name = "test",
@@ -43,7 +42,11 @@ class DesignRouterTest {
             patternType = PatternType.Text,
             stitches = 23.5,
             rows = 25.0,
-            sizeId = sizeId,
+            totalLength = 1.0,
+            sleeveLength = 2.0,
+            shoulderWidth = 3.0,
+            bottomWidth = 4.0,
+            armholeDepth = 5.0,
             needle = "5.0mm",
             yarn = null,
             extra = null,
@@ -84,6 +87,11 @@ class DesignRouterTest {
         assertThat(firstResponseBody?.yarn).isEqualTo(null)
         assertThat(firstResponseBody?.extra).isEqualTo(null)
         assertThat(firstResponseBody?.price?.value).isEqualTo(0)
+        assertThat(firstResponseBody?.size?.totalLength?.value).isEqualTo(1.0)
+        assertThat(firstResponseBody?.size?.sleeveLength?.value).isEqualTo(2.0)
+        assertThat(firstResponseBody?.size?.shoulderWidth?.value).isEqualTo(3.0)
+        assertThat(firstResponseBody?.size?.bottomWidth?.value).isEqualTo(4.0)
+        assertThat(firstResponseBody?.size?.armholeDepth?.value).isEqualTo(5.0)
         assertThat(firstResponseBody?.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
         assertThat(firstResponseBody?.createdAt).isEqualTo(now)
     }

@@ -13,21 +13,24 @@ import java.util.UUID
 
 @Table("design")
 class DesignEntity(
-    @Id val id: UUID = UUID.randomUUID(),
-    val name: String,
-    val designType: DesignType,
-    val patternType: PatternType,
-    val stitches: Double,
-    val rows: Double,
-    val sizeId: UUID,
-    val needle: String,
-    val yarn: String?,
-    val extra: String?,
-    val price: Int = 0,
-    val pattern: String,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    @Id private val id: UUID = UUID.randomUUID(),
+    private val name: String,
+    private val designType: DesignType,
+    private val patternType: PatternType,
+    private val stitches: Double,
+    private val rows: Double,
+    private val totalLength: Double,
+    private val sleeveLength: Double,
+    private val shoulderWidth: Double,
+    private val bottomWidth: Double,
+    private val armholeDepth: Double,
+    private val needle: String,
+    private val yarn: String?,
+    private val extra: String?,
+    private val price: Int = 0,
+    private val pattern: String,
+    private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
-    // FIXME size 주입받기
     fun toDesign(): Design =
         Design(
             id = this.id,
@@ -36,7 +39,13 @@ class DesignEntity(
             patternType = this.patternType,
             stitches = this.stitches,
             rows = this.rows,
-            size = Size(Length(1.0), Length(2.0), Length(3.0), Length(4.0), Length(5.0)),
+            size = Size(
+                totalLength = Length(this.totalLength),
+                sleeveLength = Length(this.sleeveLength),
+                shoulderWidth = Length(this.shoulderWidth),
+                bottomWidth = Length(this.bottomWidth),
+                armholeDepth = Length(this.armholeDepth),
+            ),
             needle = this.needle,
             yarn = this.yarn,
             extra = this.extra,
