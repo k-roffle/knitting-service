@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.design
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
@@ -11,13 +12,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.any
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
 @WebFluxTest
@@ -30,7 +33,8 @@ class DesignRouterTest {
 
     private lateinit var design: Design
 
-    private lateinit var now: LocalDateTime
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
     @BeforeEach
     fun setUp() {
@@ -94,13 +98,35 @@ class DesignRouterTest {
 
     @Test
     fun `design 이 잘 생성되어야 함`() {
-        webClient
+        val body = objectMapper.writeValueAsString(design)
+        given(repo.createDesign(any())).willReturn(Mono.just(design))
+        val response = webClient
             .post()
             .uri("/designs/")
             .accept(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<Map<String, String>>()
+            .expectBody(Design::class.java)
+            .returnResult()
+            .responseBody
+        assertThat(response?.id).isEqualTo(design.id)
+        assertThat(response?.name).isEqualTo("test")
+        assertThat(response?.designType).isEqualTo(DesignType.Sweater)
+        assertThat(response?.patternType).isEqualTo(PatternType.Text)
+        assertThat(response?.stitches).isEqualTo(23.5)
+        assertThat(response?.rows).isEqualTo(25.0)
+        assertThat(response?.needle).isEqualTo("5.0mm")
+        assertThat(response?.yarn).isEqualTo(null)
+        assertThat(response?.extra).isEqualTo(null)
+        assertThat(response?.price?.value).isEqualTo(0)
+        assertThat(response?.size?.totalLength?.value).isEqualTo(1.0)
+        assertThat(response?.size?.sleeveLength?.value).isEqualTo(2.0)
+        assertThat(response?.size?.shoulderWidth?.value).isEqualTo(3.0)
+        assertThat(response?.size?.bottomWidth?.value).isEqualTo(4.0)
+        assertThat(response?.size?.armholeDepth?.value).isEqualTo(5.0)
+        assertThat(response?.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
+        assertThat(response?.createdAt).isEqualTo(design.createdAt)
     }
 }
