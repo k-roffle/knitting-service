@@ -7,6 +7,7 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
+import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 import java.util.UUID
@@ -30,7 +31,16 @@ class DesignEntity(
     private val price: Int = 0,
     private val pattern: String,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
-) {
+    @Transient private val isNew: Boolean = true,
+) : Persistable<UUID> {
+    override fun isNew(): Boolean {
+        return isNew
+    }
+
+    override fun getId(): UUID {
+        return this.id
+    }
+
     fun toDesign(): Design =
         Design(
             id = this.id,
