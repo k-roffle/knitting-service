@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.UUID
 import java.util.stream.Collectors.toList
 
 @Component
@@ -23,11 +22,17 @@ class DesignHandler(private val repository: DesignRepository) {
                     .bodyValue(it)
             }
 
-    fun createDesign(req: ServerRequest): Mono<ServerResponse> = ok()
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(mapOf("id" to UUID.randomUUID()))
+    fun createDesign(req: ServerRequest): Mono<ServerResponse> =
+        repository
+            .createDesign(req.bodyToMono(Design::class.java))
+            .flatMap {
+                ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(it)
+            }
 
     interface DesignRepository {
         fun getAll(): Flux<Design>
+        fun createDesign(design: Mono<Design>): Mono<Design>
     }
 }
