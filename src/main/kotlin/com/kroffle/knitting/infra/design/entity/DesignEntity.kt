@@ -7,6 +7,7 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
