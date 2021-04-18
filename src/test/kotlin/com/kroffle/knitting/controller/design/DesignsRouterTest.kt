@@ -90,7 +90,7 @@ class DesignsRouterTest {
         assertThat(firstResponseBody.size.shoulderWidth.value).isEqualTo(3.0)
         assertThat(firstResponseBody.size.bottomWidth.value).isEqualTo(4.0)
         assertThat(firstResponseBody.size.armholeDepth.value).isEqualTo(5.0)
-        assertThat(firstResponseBody.pattern).isEqualTo("# Step1. 코를 10개 잡습니다.")
+        assertThat(firstResponseBody.pattern.value).isEqualTo("# Step1. 코를 10개 잡습니다.")
         assertThat(firstResponseBody.createdAt).isEqualTo(design.createdAt)
     }
 }
