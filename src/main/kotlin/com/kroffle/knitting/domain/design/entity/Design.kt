@@ -3,6 +3,7 @@ package com.kroffle.knitting.domain.design.entity
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Money
+import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import java.time.LocalDateTime
 import java.util.UUID
@@ -19,6 +20,6 @@ class Design(
     val yarn: String?,
     val extra: String?,
     val price: Money,
-    val pattern: String,
+    val pattern: Pattern,
     val createdAt: LocalDateTime,
 )

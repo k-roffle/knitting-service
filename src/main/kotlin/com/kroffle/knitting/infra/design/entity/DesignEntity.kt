@@ -5,6 +5,7 @@ import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Money
+import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
@@ -61,7 +62,7 @@ class DesignEntity(
             yarn = this.yarn,
             extra = this.extra,
             price = Money(this.price),
-            pattern = this.pattern,
+            pattern = Pattern(this.pattern),
             createdAt = this.createdAt,
         )
 }
@@ -83,6 +84,6 @@ fun Design.toDesignEntity() =
         yarn = this.yarn,
         extra = this.extra,
         price = this.price.value,
-        pattern = this.pattern,
+        pattern = this.pattern.value,
         createdAt = this.createdAt,
     )
