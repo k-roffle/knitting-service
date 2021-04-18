@@ -8,9 +8,9 @@ import org.springframework.web.reactive.function.server.RouterFunctions.nest
 import org.springframework.web.reactive.function.server.router
 
 @Configuration
-class DesignRouter(private val handler: DesignHandler) {
+class DesignsRouter(private val handler: DesignHandler) {
     @Bean
-    fun designRouterFunction() = nest(
+    fun designsRouterFunction() = nest(
         path("/designs"),
         router {
             listOf(

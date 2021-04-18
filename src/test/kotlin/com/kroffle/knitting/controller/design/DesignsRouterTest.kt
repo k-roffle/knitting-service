@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
-class DesignRouterTest {
+class DesignsRouterTest {
     @MockBean
     lateinit var repo: DesignRepository
 
@@ -57,7 +57,7 @@ class DesignRouterTest {
             createdAt = LocalDateTime.now(),
         ).toDesign()
 
-        val routerFunction = DesignRouter(DesignHandler(repo)).designRouterFunction()
+        val routerFunction = DesignsRouter(DesignHandler(repo)).designsRouterFunction()
         webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
     }
 
