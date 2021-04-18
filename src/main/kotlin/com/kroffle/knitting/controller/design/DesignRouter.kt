@@ -8,13 +8,13 @@ import org.springframework.web.reactive.function.server.RouterFunctions.nest
 import org.springframework.web.reactive.function.server.router
 
 @Configuration
-class DesignsRouter(private val handler: DesignHandler) {
+class DesignRouter(private val handler: DesignHandler) {
     @Bean
-    fun designsRouterFunction() = nest(
-        path("/designs"),
+    fun designRouterFunction() = nest(
+        path("/design"),
         router {
             listOf(
-                GET("/", handler::getAll),
+                POST("/", handler::createDesign),
             )
         }
     )
