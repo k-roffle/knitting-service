@@ -3,6 +3,7 @@ package com.kroffle.knitting.infra.design.entity
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
@@ -49,8 +50,7 @@ class DesignEntity(
             name = this.name,
             designType = this.designType,
             patternType = this.patternType,
-            stitches = this.stitches,
-            rows = this.rows,
+            gauge = Gauge(this.stitches, this.rows),
             size = Size(
                 totalLength = Length(this.totalLength),
                 sleeveLength = Length(this.sleeveLength),
@@ -73,8 +73,8 @@ fun Design.toDesignEntity() =
         name = this.name,
         designType = this.designType,
         patternType = this.patternType,
-        stitches = this.stitches,
-        rows = this.rows,
+        stitches = this.gauge.stitches,
+        rows = this.gauge.rows,
         totalLength = this.size.totalLength.value,
         sleeveLength = this.size.sleeveLength.value,
         shoulderWidth = this.size.shoulderWidth.value,
