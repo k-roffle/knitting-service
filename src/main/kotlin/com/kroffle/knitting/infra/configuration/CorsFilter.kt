@@ -1,5 +1,6 @@
 package com.kroffle.knitting.infra.configuration
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
@@ -9,15 +10,19 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Component
 class CorsFilter {
+    @Autowired
+    lateinit var webProperties: WebApplicationProperties
+
     @Bean
     fun corsWebFilter(): CorsWebFilter {
-        val corsConfig = CorsConfiguration()
-        corsConfig.addAllowedOrigin("http://localhost:1909")
-        corsConfig.maxAge = 8000
-        corsConfig.addAllowedMethod(HttpMethod.GET)
-        corsConfig.addAllowedMethod(HttpMethod.POST)
-        corsConfig.addAllowedMethod(HttpMethod.OPTIONS)
-        corsConfig.addAllowedHeader("Content-Type")
+        val corsConfig = CorsConfiguration().apply {
+            webProperties.origins.forEach { addAllowedOrigin(it) }
+            maxAge = 8000
+            addAllowedMethod(HttpMethod.GET)
+            addAllowedMethod(HttpMethod.POST)
+            addAllowedMethod(HttpMethod.OPTIONS)
+            addAllowedHeader("Content-Type")
+        }
 
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", corsConfig)
