@@ -18,7 +18,7 @@ class PatternCalculatorTest {
     }
 
     @Test
-    fun `게이지 round 계산이 잘 되어야 함`() {
+    fun `반올림 게이지 계산이 잘 되어야 함`() {
         val target = Pattern(
             """
             {
@@ -107,6 +107,21 @@ class PatternCalculatorTest {
                      ],
                      "entityRanges":[],
                      "data":{}
+                  },
+                  {
+                     "key":"9214a",
+                     "text":"메리야스 뜨기로 27단을 계속해서 떠줍니다.",
+                     "type":"unstyled",
+                     "depth":0,
+                     "inlineStyleRanges":[
+                        {
+                           "offset":9,
+                           "length":3,
+                           "style":"ROW_CALCULATE_ROUND"
+                        }
+                     ],
+                     "entityRanges":[],
+                     "data":{}
                   }
                ],
                "entityMap":{}
@@ -116,8 +131,8 @@ class PatternCalculatorTest {
         val result: Pattern = calculator
             .calculateGauge(
                 target,
-                Gauge(15.0, 23.0),
-                Gauge(18.0, 24.0),
+                Gauge(15.0, 13.0),
+                Gauge(18.0, 25.0),
             )
         val mapper = ObjectMapper().registerKotlinModule()
         assertThat(mapper.readTree(result.value)).isEqualTo(
@@ -205,6 +220,21 @@ class PatternCalculatorTest {
                                "offset":36,
                                "length":4,
                                "style":"STITCH_CALCULATE_ROUND"
+                            }
+                         ],
+                         "entityRanges":[],
+                         "data":{}
+                      },
+                      {
+                         "key":"9214a",
+                         "text":"메리야스 뜨기로 52단을 계속해서 떠줍니다.",
+                         "type":"unstyled",
+                         "depth":0,
+                         "inlineStyleRanges":[
+                            {
+                               "offset":9,
+                               "length":3,
+                               "style":"ROW_CALCULATE_ROUND"
                             }
                          ],
                          "entityRanges":[],
