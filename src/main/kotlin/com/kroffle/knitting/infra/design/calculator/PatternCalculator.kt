@@ -9,8 +9,8 @@ import com.kroffle.knitting.infra.design.calculator.data.toDraftPattern
 class PatternCalculator {
     private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
 
-    fun calculateGauge(target: Pattern, origin: Gauge, my: Gauge): Pattern {
+    fun calculateGauge(target: Pattern, origin: Gauge, input: Gauge): Pattern {
         val draftPattern = target.toDraftPattern(mapper)
-        return draftPattern.calculateBlocks(origin, my).toPattern(mapper)
+        return draftPattern.calculateBlocks(origin, input).toPattern(mapper)
     }
 }

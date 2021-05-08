@@ -6,8 +6,8 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 
 data class DraftPattern(val blocks: List<DraftBlock>, val entityMap: JsonNode) {
-    fun calculateBlocks(origin: Gauge, my: Gauge): DraftPattern {
-        return DraftPattern(blocks.map { it.calculateGauge(origin, my) }, entityMap)
+    fun calculateBlocks(origin: Gauge, input: Gauge): DraftPattern {
+        return DraftPattern(blocks.map { it.calculateGauge(origin, input) }, entityMap)
     }
 
     fun toPattern(mapper: ObjectMapper): Pattern =
