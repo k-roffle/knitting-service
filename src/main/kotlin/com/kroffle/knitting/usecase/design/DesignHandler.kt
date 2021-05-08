@@ -29,7 +29,10 @@ class DesignHandler(private val repository: DesignRepository) {
             }
 
     fun createDesign(req: ServerRequest): Mono<ServerResponse> {
-        val design: Mono<Design> = req.bodyToMono(Design::class.java).doOnNext { validate(it) }
+        val design: Mono<Design> = req
+            .bodyToMono(Design::class.java)
+            .switchIfEmpty(Mono.error(ServerWebInputException("Body is required")))
+            .doOnNext { validate(it) }
         return design
             .flatMap { repository.createDesign(it) }
             .flatMap {
