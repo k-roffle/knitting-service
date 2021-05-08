@@ -14,9 +14,8 @@ class R2dbcDesignRepository(private val dbDesignRepository: DBDesignRepository) 
                 it.toDesign()
             }
 
-    override fun createDesign(design: Mono<Design>): Mono<Design> {
-        return design
-            .flatMap { dbDesignRepository.save(it.toDesignEntity()) }
+    override fun createDesign(design: Design): Mono<Design> =
+        dbDesignRepository
+            .save(design.toDesignEntity())
             .map { it.toDesign() }
-    }
 }
