@@ -15,6 +15,9 @@ data class DraftBlock(
     val entityRanges: JsonNode,
     val data: JsonNode,
 ) {
+    private fun extractTargetValue(range: DraftInlineStyleRange): Int? =
+        text.substring(range.getStartIndex(), range.getEndIndex()).toIntOrNull()
+
     private fun calculate(target: Int, origin: Gauge, my: Gauge, calculateType: CalculateType): Int {
         val calculatedRawGauge = when (calculateType.gaugeType) {
             GaugeType.Row -> target * my.rows / origin.rows
@@ -26,16 +29,18 @@ data class DraftBlock(
             Method.RoundDown -> floor(calculatedRawGauge)
         }.toInt()
     }
+
+    private fun replaceWithCalculatedValue(row: String, range: DraftInlineStyleRange, calculatedValue: Int) =
+        row.replaceRange(range.getStartIndex(), range.getEndIndex(), calculatedValue.toString())
+
     fun calculateGauge(origin: Gauge, my: Gauge): DraftBlock {
-        var result = text
+        var targetRow = text
         for (range in inlineStyleRanges) {
-            val startIdx = range.offset
-            val endIdx = range.offset + range.length - 1
-            val target = result.substring(startIdx, endIdx).toIntOrNull() ?: continue
+            val targetValue = extractTargetValue(range) ?: continue
             val calculateType = range.getCalculateType() ?: continue
-            val calculatedGauge = calculate(target, origin, my, calculateType)
-            result = result.replaceRange(startIdx, endIdx, calculatedGauge.toString())
+            val calculatedValue = calculate(targetValue, origin, my, calculateType)
+            targetRow = replaceWithCalculatedValue(targetRow, range, calculatedValue)
         }
-        return DraftBlock(key, result, type, depth, inlineStyleRanges, entityRanges, data)
+        return DraftBlock(key, targetRow, type, depth, inlineStyleRanges, entityRanges, data)
     }
 }

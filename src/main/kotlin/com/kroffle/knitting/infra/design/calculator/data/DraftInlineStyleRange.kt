@@ -9,4 +9,10 @@ data class DraftInlineStyleRange(
 ) {
     @JsonIgnore
     fun getCalculateType(): CalculateType? = CalculateType.findByKey(style)
+
+    @JsonIgnore
+    fun getStartIndex(): Int = offset
+
+    @JsonIgnore
+    fun getEndIndex(): Int = offset + length - 1
 }
