@@ -9,15 +9,13 @@ import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
-import org.springframework.data.annotation.Transient
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Table("design")
 class DesignEntity(
-    @Id private val id: UUID = UUID.randomUUID(),
+    @Id private var id: UUID?,
     private val name: String,
     private val designType: DesignType,
     private val patternType: PatternType,
@@ -34,16 +32,7 @@ class DesignEntity(
     private val price: Int = 0,
     private val pattern: String,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
-    @Transient private val isNew: Boolean = true,
-) : Persistable<UUID> {
-    override fun isNew(): Boolean {
-        return isNew
-    }
-
-    override fun getId(): UUID {
-        return this.id
-    }
-
+) {
     fun toDesign(): Design =
         Design(
             id = this.id,
@@ -85,5 +74,5 @@ fun Design.toDesignEntity() =
         extra = this.extra,
         price = this.price.value,
         pattern = this.pattern.value,
-        createdAt = this.createdAt,
+        createdAt = this.createdAt ?: LocalDateTime.now(),
     )

@@ -20,7 +20,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
-import java.time.LocalDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -38,6 +37,7 @@ class DesignRouterTest {
     @BeforeEach
     fun setUp() {
         design = DesignEntity(
+            id = null,
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,
@@ -53,7 +53,6 @@ class DesignRouterTest {
             extra = null,
             price = 0,
             pattern = "# Step1. 코를 10개 잡습니다.",
-            createdAt = LocalDateTime.now(),
         ).toDesign()
 
         val routerFunction = DesignRouter(DesignHandler(repo)).designRouterFunction()
@@ -68,6 +67,7 @@ class DesignRouterTest {
             .post()
             .uri("/design/")
             .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
             .exchange()
             .expectStatus()

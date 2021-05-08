@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 class Design(
-    val id: UUID,
+    val id: UUID? = null,
     val name: String,
     val designType: DesignType,
     val patternType: PatternType,
@@ -21,5 +21,5 @@ class Design(
     val extra: String?,
     val price: Money,
     val pattern: Pattern,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime?,
 )
