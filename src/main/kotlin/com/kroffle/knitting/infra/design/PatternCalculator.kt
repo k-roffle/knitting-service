@@ -57,7 +57,7 @@ class PatternCalculator {
     }
 
     fun calculateGauge(target: DomainPattern, origin: Gauge, my: Gauge): DomainPattern {
-        val target = deserializePattern(target)
-        return serializePattern(target.calculateBlocks(origin, my))
+        val deserializedTarget = deserializePattern(target)
+        return serializePattern(deserializedTarget.calculateBlocks(origin, my))
     }
 }
