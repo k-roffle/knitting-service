@@ -29,6 +29,11 @@ enum class CalculateType(
         GaugeType.Row,
         Method.RoundDown,
         listOf("ROW_CALCULATE_ROUND_DOWN", "ROW_REPEAT_CALCULATE_ROUND_DOWN"),
+    ),
+    RowRoundUp(
+        GaugeType.Row,
+        Method.RoundUp,
+        listOf("ROW_CALCULATE_ROUND_UP", "ROW_REPEAT_CALCULATE_ROUND_UP"),
     );
 
     companion object {
