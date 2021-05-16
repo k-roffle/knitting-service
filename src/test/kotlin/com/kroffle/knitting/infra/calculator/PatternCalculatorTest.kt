@@ -1,10 +1,10 @@
-package com.kroffle.knitting.infra
+package com.kroffle.knitting.infra.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
-import com.kroffle.knitting.infra.design.PatternCalculator
+import com.kroffle.knitting.infra.design.calculator.PatternCalculator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ class PatternCalculatorTest {
     }
 
     @Test
-    fun `반올림 게이지 계산이 잘 되어야 함`() {
+    fun `게이지 계산이 잘 되어야 함`() {
         val target = Pattern(
             """
             {
@@ -47,7 +47,7 @@ class PatternCalculatorTest {
                          {
                            "offset":8,
                            "length":3,
-                           "style":"STITCH_CALCULATE_ROUND"
+                           "style":"STITCH_CALCULATE_ROUND_UP"
                         }
                      ],
                      "entityRanges":[],
@@ -62,7 +62,7 @@ class PatternCalculatorTest {
                          {
                            "offset":16,
                            "length":3,
-                           "style":"STITCH_CALCULATE_ROUND"
+                           "style":"STITCH_REPEAT_CALCULATE_ROUND"
                         },
                         {
                            "offset":25,
@@ -97,7 +97,7 @@ class PatternCalculatorTest {
                         {
                            "offset":27,
                            "length":3,
-                           "style":"STITCH_CALCULATE_ROUND"
+                           "style":"STITCH_REPEAT_CALCULATE_ROUND"
                         },
                         {
                            "offset":36,
@@ -117,7 +117,7 @@ class PatternCalculatorTest {
                         {
                            "offset":9,
                            "length":3,
-                           "style":"ROW_CALCULATE_ROUND"
+                           "style":"ROW_CALCULATE_ROUND_DOWN"
                         }
                      ],
                      "entityRanges":[],
@@ -157,14 +157,14 @@ class PatternCalculatorTest {
                       },
                       {
                          "key":"5uumj",
-                         "text":"Row1. 안 73코",
+                         "text":"Row1. 안 74코",
                          "type":"unstyled",
                          "depth":0,
                          "inlineStyleRanges":[
                              {
                                "offset":8,
                                "length":3,
-                               "style":"STITCH_CALCULATE_ROUND"
+                               "style":"STITCH_CALCULATE_ROUND_UP"
                             }
                          ],
                          "entityRanges":[],
@@ -179,7 +179,7 @@ class PatternCalculatorTest {
                              {
                                "offset":16,
                                "length":3,
-                               "style":"STITCH_CALCULATE_ROUND"
+                               "style":"STITCH_REPEAT_CALCULATE_ROUND"
                             },
                             {
                                "offset":25,
@@ -214,7 +214,7 @@ class PatternCalculatorTest {
                             {
                                "offset":27,
                                "length":3,
-                               "style":"STITCH_CALCULATE_ROUND"
+                               "style":"STITCH_REPEAT_CALCULATE_ROUND"
                             },
                             {
                                "offset":36,
@@ -227,14 +227,14 @@ class PatternCalculatorTest {
                       },
                       {
                          "key":"9214a",
-                         "text":"메리야스 뜨기로 52단을 계속해서 떠줍니다.",
+                         "text":"메리야스 뜨기로 51단을 계속해서 떠줍니다.",
                          "type":"unstyled",
                          "depth":0,
                          "inlineStyleRanges":[
                             {
                                "offset":9,
                                "length":3,
-                               "style":"ROW_CALCULATE_ROUND"
+                               "style":"ROW_CALCULATE_ROUND_DOWN"
                             }
                          ],
                          "entityRanges":[],
