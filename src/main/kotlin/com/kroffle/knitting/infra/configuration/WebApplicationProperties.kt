@@ -7,4 +7,7 @@ import org.springframework.stereotype.Component
 class WebApplicationProperties {
     @Value("\${web.origins}")
     lateinit var origins: List<String>
+
+    @Value("\${web.google.client_id}")
+    lateinit var googleClientId: String
 }
