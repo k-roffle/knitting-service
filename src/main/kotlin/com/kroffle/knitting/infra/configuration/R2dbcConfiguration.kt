@@ -4,6 +4,7 @@ import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.design.DBDesignRepository
 import com.kroffle.knitting.infra.design.R2dbcDesignRepository
+import com.kroffle.knitting.infra.properties.DatabaseProperties
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.codec.EnumCodec
