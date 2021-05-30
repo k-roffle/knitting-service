@@ -1,5 +1,6 @@
-package com.kroffle.knitting.infra.configuration
+package com.kroffle.knitting.infra.web
 
+import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod

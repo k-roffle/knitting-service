@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.configuration
+package com.kroffle.knitting.infra.properties
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -7,4 +7,7 @@ import org.springframework.stereotype.Component
 class WebApplicationProperties {
     @Value("\${web.origins}")
     lateinit var origins: List<String>
+
+    @Value("\${web.google.client_id}")
+    lateinit var googleClientId: String
 }
