@@ -6,8 +6,12 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.ServerResponse.temporaryRedirect
+import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 import java.net.URI
+import org.springframework.web.reactive.function.client.WebClient
+
+
 
 @Component
 class GoogleLogInHandler(private val oAuthHelper: GoogleOAuthHelper) {
@@ -17,13 +21,20 @@ class GoogleLogInHandler(private val oAuthHelper: GoogleOAuthHelper) {
     }
 
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
-        // TODO implement
-        return ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue("todo")
+        val googleToken = req.queryParam("code").map {
+            oAuthHelper.getGoogleAccessToken(it)
+        }.orElse(
+            Mono.just("failed~")
+        )
+        return googleToken.flatMap {
+            ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(it)
+        }
     }
 
     interface GoogleOAuthHelper {
         fun getAuthorizationUri(): String
+        fun getGoogleAccessToken(code: String): Mono<String>
     }
 }
