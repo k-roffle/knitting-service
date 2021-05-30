@@ -1,4 +1,4 @@
-package com.kroffle.knitting.usecase.design
+package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.domain.design.entity.Design
 import org.springframework.validation.Errors

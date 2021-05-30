@@ -1,6 +1,7 @@
-package com.kroffle.knitting.usecase.design
+package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.usecase.design.DesignService
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -9,17 +10,16 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ServerWebInputException
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList
 
 @Component
-class DesignHandler(private val repository: DesignRepository) {
+class DesignHandler(private val service: DesignService) {
 
     private val validator = DesignValidator()
 
     fun getAll(req: ServerRequest): Mono<ServerResponse> =
-        repository
+        service
             .getAll()
             .collect(toList())
             .flatMap {
@@ -34,17 +34,12 @@ class DesignHandler(private val repository: DesignRepository) {
             .switchIfEmpty(Mono.error(ServerWebInputException("Body is required")))
             .doOnNext { validate(it) }
         return design
-            .flatMap { repository.createDesign(it) }
+            .flatMap { service.create(it) }
             .flatMap {
                 ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(it)
             }
-    }
-
-    interface DesignRepository {
-        fun getAll(): Flux<Design>
-        fun createDesign(design: Design): Mono<Design>
     }
 
     private fun validate(design: Design) {

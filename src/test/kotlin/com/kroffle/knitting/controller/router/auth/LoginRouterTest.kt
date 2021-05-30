@@ -1,9 +1,9 @@
-package com.kroffle.knitting.controller.auth
+package com.kroffle.knitting.controller.router.auth
 
+import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
 import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
-import com.kroffle.knitting.usecase.auth.GoogleLogInHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

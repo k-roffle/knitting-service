@@ -1,6 +1,6 @@
-package com.kroffle.knitting.controller.auth
+package com.kroffle.knitting.controller.router.auth
 
-import com.kroffle.knitting.usecase.auth.GoogleLogInHandler
+import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.RequestPredicates

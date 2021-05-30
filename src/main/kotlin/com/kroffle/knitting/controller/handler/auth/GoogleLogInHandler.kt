@@ -1,4 +1,4 @@
-package com.kroffle.knitting.usecase.auth
+package com.kroffle.knitting.controller.handler.auth
 
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
