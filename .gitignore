@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Sensitive files ###
+secret_env.sh
