@@ -23,11 +23,14 @@ class AppConfig {
     lateinit var authProperties: AuthProperties
 
     @Bean
+    fun tokenHelper() = TokenHelper(authProperties.jwtSecretKey)
+
+    @Bean
     fun designService(repository: DesignService.DesignRepository) = DesignService(repository)
 
     @Bean
     fun authService() = AuthService(
         GoogleOauthHelperImpl(selfProperties, webProperties.googleClientId),
-        TokenHelper(authProperties.jwtSecretKey)
+        tokenHelper()
     )
 }

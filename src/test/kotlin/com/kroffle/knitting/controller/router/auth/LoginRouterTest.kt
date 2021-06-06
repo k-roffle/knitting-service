@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -76,12 +75,8 @@ class LoginRouterTest {
             .returnResult()
             .responseBody!!
         val regex = Regex("([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})")
-        assert(regex.matchEntire(tokenHelper.decodeToken(result)["id"]!!.asString()) != null)
-        val today = LocalDateTime.now()
-        val expiration = LocalDateTime.ofInstant(
-            tokenHelper.decodeToken(result)["exp"]!!.asDate().toInstant(),
-            ZoneId.systemDefault()
-        )
-        assert(expiration > today)
+        assert(regex.matchEntire(tokenHelper.getAuthorizedUserId(result).toString()) != null)
+        val expiration = tokenHelper.getAuthorizationExp(result)!!
+        assert(expiration > LocalDateTime.now())
     }
 }
