@@ -20,7 +20,7 @@ import com.kroffle.knitting.controller.router.ping.PingRouter.Companion.PUBLIC_P
 @Component
 class AuthorizationFilter : WebFilter {
     @Autowired
-    lateinit var tokenHelper: TokenHelper
+    lateinit var tokenDecoder: TokenDecoder
 
     private fun resolveToken(headers: HttpHeaders): String? {
         val authorizationHeaders = headers[HttpHeaders.AUTHORIZATION]
@@ -35,7 +35,7 @@ class AuthorizationFilter : WebFilter {
         val token = resolveToken(headers)
             ?: return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "Header is Empty"))
         return try {
-            Mono.just(tokenHelper.getAuthorizedUserId(token))
+            Mono.just(tokenDecoder.getAuthorizedUserId(token))
         } catch (e: UnauthorizedException) {
             Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, e.message))
         }
@@ -59,7 +59,7 @@ class AuthorizationFilter : WebFilter {
         )
     }
 
-    interface TokenHelper {
+    interface TokenDecoder {
         fun getAuthorizedUserId(token: String): UUID
     }
 

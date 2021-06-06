@@ -1,7 +1,8 @@
 package com.kroffle.knitting.controller.router.auth
 
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
-import com.kroffle.knitting.infra.jwt.TokenHelper
+import com.kroffle.knitting.infra.jwt.TokenDecoder
+import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.usecase.auth.AuthService
@@ -16,11 +17,13 @@ import org.springframework.test.web.reactive.server.expectBody
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
 class LoginRouterTest {
-    lateinit var webClient: WebTestClient
+    private lateinit var webClient: WebTestClient
 
-    lateinit var selfProperties: SelfProperties
+    private lateinit var selfProperties: SelfProperties
 
-    lateinit var tokenHelper: TokenHelper
+    private lateinit var tokenPublisher: TokenPublisher
+
+    private lateinit var tokenDecoder: TokenDecoder
 
     @BeforeEach
     fun setUp() {
@@ -28,7 +31,7 @@ class LoginRouterTest {
         selfProperties.host = "localhost:2028"
         selfProperties.env = "test"
 
-        tokenHelper = TokenHelper("I'M SECRET KEY!")
+        tokenPublisher = TokenPublisher("I'M SECRET KEY!")
 
         val routerFunction = LogInRouter(
             GoogleLogInHandler(
@@ -37,7 +40,7 @@ class LoginRouterTest {
                         selfProperties,
                         "GOOGLE_CLIENT_ID"
                     ),
-                    tokenHelper,
+                    tokenPublisher,
                 )
             )
         ).logInRouterFunction()
@@ -74,6 +77,6 @@ class LoginRouterTest {
             .returnResult()
             .responseBody!!
         val regex = Regex("([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})")
-        assert(regex.matchEntire(tokenHelper.getAuthorizedUserId(result).toString()) != null)
+        assert(regex.matchEntire(tokenDecoder.getAuthorizedUserId(result).toString()) != null)
     }
 }
