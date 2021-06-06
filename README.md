@@ -6,6 +6,14 @@
 ./scripts/install.sh
 ```
 
+## Environment
+
+- Project Owner 에게 secret_env.sh 파일을 요청하여 받습니다.
+  - 전달받은 파일은 프로젝트 루트에 두고 관리합니다.
+- 실행 전 secret_env.sh를 실행하여 환경변수를 설정해줍니다.
+- IDE를 이용하여 실행하는 경우 해당 파일의 환경설정을 IDE에 별도로 설정해줍니다.
+  - IntelliJ 기준 아래 방법으로 설정할 수 있습니다.
+    - [Run] -> [Edit Configurations] -> [Environment variables]
 
 ## Format
 
