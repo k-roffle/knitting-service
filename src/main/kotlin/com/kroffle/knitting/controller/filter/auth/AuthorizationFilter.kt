@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.filter.auth
 
+import com.kroffle.knitting.controller.exception.auth.UnauthorizedException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -33,10 +34,11 @@ class AuthorizationFilter : WebFilter {
     private fun getAuthorization(headers: HttpHeaders): Mono<UUID> {
         val token = resolveToken(headers)
             ?: return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "Header is Empty"))
-        if (tokenHelper.validateToken(token)) {
-            return Mono.just(tokenHelper.getAuthorizedUserId(token)!!)
+        return try {
+            Mono.just(tokenHelper.getAuthorizedUserId(token))
+        } catch (e: UnauthorizedException) {
+            Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, e.message))
         }
-        throw Error("invalid token")
     }
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
@@ -46,7 +48,6 @@ class AuthorizationFilter : WebFilter {
         }
         return getAuthorization(headers = exchange.request.headers).doOnError {
             error ->
-            exchange.response.statusCode = HttpStatus.UNAUTHORIZED
             val message = error.message
             if (message != null) {
                 val byteMessages = message.toByteArray()
@@ -59,8 +60,7 @@ class AuthorizationFilter : WebFilter {
     }
 
     interface TokenHelper {
-        fun getAuthorizedUserId(token: String): UUID?
-        fun validateToken(token: String): Boolean
+        fun getAuthorizedUserId(token: String): UUID
     }
 
     companion object {

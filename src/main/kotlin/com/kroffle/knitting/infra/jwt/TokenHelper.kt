@@ -2,12 +2,16 @@ package com.kroffle.knitting.infra.jwt
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.exceptions.JWTVerificationException
+import com.auth0.jwt.exceptions.TokenExpiredException
 import com.auth0.jwt.interfaces.Claim
-import com.kroffle.knitting.pure.extensions.toDate
+import com.kroffle.knitting.controller.exception.auth.ExpiredTokenException
+import com.kroffle.knitting.controller.exception.auth.InvalidBodyTokenException
+import com.kroffle.knitting.controller.exception.auth.UnauthorizedTokenException
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
+import com.kroffle.knitting.pure.extensions.toDate
 import com.kroffle.knitting.usecase.auth.AuthService
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.UUID
 
 class TokenHelper(private val jwtSecretKey: String) : AuthService.TokenHelper, AuthorizationFilter.TokenHelper {
@@ -22,29 +26,25 @@ class TokenHelper(private val jwtSecretKey: String) : AuthService.TokenHelper, A
             .sign(Algorithm.HMAC256(jwtSecretKey))
     }
 
+    @Throws(ExpiredTokenException::class, UnauthorizedTokenException::class)
     private fun decodeToken(token: String): Map<String, Claim> {
-        val jwt = JWT.require(Algorithm.HMAC256(jwtSecretKey))
-            .build()
-            .verify(token)
-        return jwt.claims
+        try {
+            val jwt = JWT.require(Algorithm.HMAC256(jwtSecretKey))
+                .build()
+                .verify(token)
+            return jwt.claims
+        } catch (e: TokenExpiredException) {
+            throw ExpiredTokenException()
+        } catch (e: JWTVerificationException) {
+            throw UnauthorizedTokenException()
+        }
     }
 
-    override fun getAuthorizedUserId(token: String): UUID? {
+    @Throws(InvalidBodyTokenException::class)
+    override fun getAuthorizedUserId(token: String): UUID {
         val claims = this.decodeToken(token)
-        val id = claims["id"] ?: return null
+        val id = claims["id"] ?: throw InvalidBodyTokenException()
         return UUID.fromString(id.asString())
-    }
-
-    override fun validateToken(token: String): Boolean {
-        val userId = getAuthorizedUserId(token)
-        val exp = getAuthorizationExp(token)
-        return userId != null && exp != null
-    }
-
-    fun getAuthorizationExp(token: String): LocalDateTime? {
-        val claims = this.decodeToken(token)
-        val exp = claims["exp"] ?: return null
-        return LocalDateTime.ofInstant(exp.asDate().toInstant(), ZoneId.systemDefault())
     }
 
     companion object {
