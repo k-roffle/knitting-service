@@ -11,12 +11,22 @@ import org.springframework.web.reactive.function.server.router
 class LogInRouter(private val handler: GoogleLogInHandler) {
     @Bean
     fun logInRouterFunction() = RouterFunctions.nest(
-        RequestPredicates.path("/auth"),
+        RequestPredicates.path(ROOT_PATH),
         router {
             listOf(
-                POST("/google/code", handler::requestCode),
-                GET("/google/authorized", handler::authorized),
+                POST(REQUEST_CODE_PATH, handler::requestCode),
+                GET(AUTHORIZED_PATH, handler::authorized),
             )
         }
     )
+
+    companion object {
+        private const val ROOT_PATH = "/auth"
+        private const val REQUEST_CODE_PATH = "/google/code"
+        private const val AUTHORIZED_PATH = "/google/authorized"
+        val PUBLIC_PATHS = listOf(
+            "${ROOT_PATH}$REQUEST_CODE_PATH",
+            "${ROOT_PATH}$AUTHORIZED_PATH",
+        )
+    }
 }
