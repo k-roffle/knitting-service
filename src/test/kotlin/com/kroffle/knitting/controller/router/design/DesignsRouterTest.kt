@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
@@ -26,8 +27,6 @@ import java.util.UUID
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
 class DesignsRouterTest {
-    @MockBean
-    lateinit var repo: DesignRepository
 
     private lateinit var webClient: WebTestClient
 
@@ -35,6 +34,12 @@ class DesignsRouterTest {
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
+
+    @MockBean
+    lateinit var repo: DesignRepository
+
+    @MockBean
+    lateinit var tokenDecoder: AuthorizationFilter.TokenDecoder
 
     @BeforeEach
     fun setUp() {

@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.router.auth
 
+import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
@@ -23,15 +25,16 @@ class LoginRouterTest {
 
     private lateinit var tokenPublisher: TokenPublisher
 
-    private lateinit var tokenDecoder: TokenDecoder
+    @MockBean
+    private lateinit var tokenDecoder: AuthorizationFilter.TokenDecoder
+
+    private val secretKey = "I'M SECRET KEY!"
 
     @BeforeEach
     fun setUp() {
         selfProperties = SelfProperties()
         selfProperties.host = "localhost:2028"
         selfProperties.env = "test"
-
-        tokenPublisher = TokenPublisher("I'M SECRET KEY!")
 
         val routerFunction = LogInRouter(
             GoogleLogInHandler(
@@ -40,7 +43,7 @@ class LoginRouterTest {
                         selfProperties,
                         "GOOGLE_CLIENT_ID"
                     ),
-                    tokenPublisher,
+                    TokenPublisher(secretKey),
                 )
             )
         ).logInRouterFunction()
@@ -77,6 +80,6 @@ class LoginRouterTest {
             .returnResult()
             .responseBody!!
         val regex = Regex("([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})")
-        assert(regex.matchEntire(tokenDecoder.getAuthorizedUserId(result).toString()) != null)
+        assert(regex.matchEntire(TokenDecoder(secretKey).getAuthorizedUserId(result).toString()) != null)
     }
 }

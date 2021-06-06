@@ -1,7 +1,6 @@
 package com.kroffle.knitting.controller.filter.auth
 
 import com.kroffle.knitting.controller.exception.auth.UnauthorizedException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -18,10 +17,7 @@ import com.kroffle.knitting.controller.router.design.DesignsRouter.Companion.PUB
 import com.kroffle.knitting.controller.router.ping.PingRouter.Companion.PUBLIC_PATHS as PingRouterPublicPaths
 
 @Component
-class AuthorizationFilter : WebFilter {
-    @Autowired
-    lateinit var tokenDecoder: TokenDecoder
-
+class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
     private fun resolveToken(headers: HttpHeaders): String? {
         val authorizationHeaders = headers[HttpHeaders.AUTHORIZATION]
         if (authorizationHeaders.isNullOrEmpty()) return null
