@@ -1,3 +1,3 @@
 package com.kroffle.knitting.usecase.design
 
-interface DesignRepository : DesignHandler.DesignRepository
+interface DesignRepository : DesignService.DesignRepository

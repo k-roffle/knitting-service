@@ -1,12 +1,13 @@
-package com.kroffle.knitting.controller.design
+package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.design.entity.DesignEntity
-import com.kroffle.knitting.usecase.design.DesignHandler
 import com.kroffle.knitting.usecase.design.DesignRepository
+import com.kroffle.knitting.usecase.design.DesignService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -55,7 +56,7 @@ class DesignRouterTest {
             pattern = "# Step1. 코를 10개 잡습니다.",
         ).toDesign()
 
-        val routerFunction = DesignRouter(DesignHandler(repo)).designRouterFunction()
+        val routerFunction = DesignRouter(DesignHandler(DesignService(repo))).designRouterFunction()
         webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
     }
 

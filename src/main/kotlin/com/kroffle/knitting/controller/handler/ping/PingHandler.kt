@@ -1,4 +1,4 @@
-package com.kroffle.knitting.usecase.ping
+package com.kroffle.knitting.controller.handler.ping
 
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
