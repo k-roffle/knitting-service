@@ -50,6 +50,8 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
                 val buffer = exchange.response.bufferFactory().wrap(byteMessages)
                 exchange.response.writeWith(Flux.just(buffer))
             }
+        }.doOnSuccess {
+            exchange.attributes["userId"] = it
         }.then(
             chain.filter(exchange)
         )
