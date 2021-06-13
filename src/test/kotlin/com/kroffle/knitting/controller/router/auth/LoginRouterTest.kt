@@ -83,10 +83,10 @@ class LoginRouterTest {
             .uri("/auth/google/authorized")
             .exchange()
             .expectStatus().isOk
-            .expectBody<String>()
+            .expectBody<Map<String, String>>()
             .returnResult()
             .responseBody!!
-        tokenDecoder.getAuthorizedUserId(result)
+        tokenDecoder.getAuthorizedUserId(result["token"]!!)
     }
 
     @Test
@@ -99,9 +99,9 @@ class LoginRouterTest {
             .header("Authorization", "Bearer $token")
             .exchange()
             .expectStatus().isOk
-            .expectBody<String>()
+            .expectBody<Map<String, String>>()
             .returnResult()
             .responseBody!!
-        assert(TokenDecoder(secretKey).getAuthorizedUserId(result) == userId)
+        assert(TokenDecoder(secretKey).getAuthorizedUserId(result["token"]!!) == userId)
     }
 }

@@ -21,7 +21,7 @@ class GoogleLogInHandler(private val authService: AuthService) {
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(authService.authorize())
+            .bodyValue(mapOf("token" to authService.authorize()))
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
@@ -31,6 +31,6 @@ class GoogleLogInHandler(private val authService: AuthService) {
         }
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(authService.refreshToken(userId.get() as UUID))
+            .bodyValue(mapOf("token" to authService.refreshToken(userId.get() as UUID)))
     }
 }
