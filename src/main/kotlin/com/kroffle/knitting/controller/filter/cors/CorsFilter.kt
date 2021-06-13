@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.web
+package com.kroffle.knitting.controller.filter.cors
 
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import org.springframework.beans.factory.annotation.Autowired

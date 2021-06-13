@@ -11,9 +11,17 @@ import org.springframework.web.reactive.function.server.router
 class PingRouter(private val handler: PingHandler) {
     @Bean
     fun pingRouterFunction() = nest(
-        path("/ping"),
+        path(ROOT_PATH),
         router {
-            listOf(GET("/", handler::get))
+            listOf(GET(GET_PATH, handler::get))
         }
     )
+
+    companion object {
+        private const val ROOT_PATH = "/ping"
+        private const val GET_PATH = "/"
+        val PUBLIC_PATHS = listOf(
+            "${ROOT_PATH}$GET_PATH",
+        )
+    }
 }

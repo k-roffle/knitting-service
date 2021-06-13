@@ -11,11 +11,19 @@ import org.springframework.web.reactive.function.server.router
 class DesignsRouter(private val handler: DesignHandler) {
     @Bean
     fun designsRouterFunction() = nest(
-        path("/designs"),
+        path(ROOT_PATH),
         router {
             listOf(
-                GET("/", handler::getAll),
+                GET(GET_ALL_PATH, handler::getAll),
             )
         }
     )
+
+    companion object {
+        private const val ROOT_PATH = "/designs"
+        private const val GET_ALL_PATH = "/"
+        val PUBLIC_PATHS = listOf(
+            "${ROOT_PATH}$GET_ALL_PATH",
+        )
+    }
 }
