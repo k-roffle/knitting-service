@@ -18,9 +18,8 @@ class GoogleLogInHandler(private val oAuthHelper: GoogleOAuthHelper) {
 
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
         // TODO implement
-        return ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue("todo")
+        return temporaryRedirect(URI.create("http://localhost:1909/auth/?code=todo"))
+            .build()
     }
 
     interface GoogleOAuthHelper {
