@@ -2,6 +2,8 @@ package com.kroffle.knitting.controller.router.auth
 
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
+import com.kroffle.knitting.controller.handler.auth.model.AuthorizedResponse
+import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
@@ -83,10 +85,10 @@ class LoginRouterTest {
             .uri("/auth/google/authorized")
             .exchange()
             .expectStatus().isOk
-            .expectBody<Map<String, String>>()
+            .expectBody<AuthorizedResponse>()
             .returnResult()
             .responseBody!!
-        tokenDecoder.getAuthorizedUserId(result["token"]!!)
+        tokenDecoder.getAuthorizedUserId(result.token)
     }
 
     @Test
@@ -99,9 +101,9 @@ class LoginRouterTest {
             .header("Authorization", "Bearer $token")
             .exchange()
             .expectStatus().isOk
-            .expectBody<Map<String, String>>()
+            .expectBody<RefreshTokenResponse>()
             .returnResult()
             .responseBody!!
-        assert(TokenDecoder(secretKey).getAuthorizedUserId(result["token"]!!) == userId)
+        assert(TokenDecoder(secretKey).getAuthorizedUserId(result.token) == userId)
     }
 }

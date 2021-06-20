@@ -1,5 +1,7 @@
 package com.kroffle.knitting.controller.handler.auth
 
+import com.kroffle.knitting.controller.handler.auth.model.AuthorizedResponse
+import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
 import com.kroffle.knitting.usecase.auth.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -21,7 +23,7 @@ class GoogleLogInHandler(private val authService: AuthService) {
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(mapOf("token" to authService.authorize()))
+            .bodyValue(AuthorizedResponse(authService.authorize()))
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
@@ -31,6 +33,6 @@ class GoogleLogInHandler(private val authService: AuthService) {
         }
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(mapOf("token" to authService.refreshToken(userId.get() as UUID)))
+            .bodyValue(RefreshTokenResponse(authService.refreshToken(userId.get() as UUID)))
     }
 }
