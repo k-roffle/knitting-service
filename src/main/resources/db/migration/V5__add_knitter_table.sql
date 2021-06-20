@@ -1,4 +1,4 @@
-CREATE TABLE "user" (
+CREATE TABLE knitter (
     id UUID NOT NULL,
     email VARCHAR NOT NULL,
     name VARCHAR,
