@@ -2,6 +2,8 @@ package com.kroffle.knitting.controller.router.auth
 
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
+import com.kroffle.knitting.controller.handler.auth.model.AuthorizedResponse
+import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
@@ -15,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import java.util.UUID
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -26,7 +29,7 @@ class LoginRouterTest {
     private lateinit var tokenPublisher: TokenPublisher
 
     @MockBean
-    private lateinit var tokenDecoder: AuthorizationFilter.TokenDecoder
+    private lateinit var tokenDecoder: TokenDecoder
 
     private val secretKey = "I'M SECRET KEY!"
 
@@ -36,6 +39,9 @@ class LoginRouterTest {
         selfProperties.host = "localhost:2028"
         selfProperties.env = "test"
 
+        tokenPublisher = TokenPublisher(secretKey)
+        tokenDecoder = TokenDecoder(secretKey)
+
         val routerFunction = LogInRouter(
             GoogleLogInHandler(
                 AuthService(
@@ -43,11 +49,14 @@ class LoginRouterTest {
                         selfProperties,
                         "GOOGLE_CLIENT_ID"
                     ),
-                    TokenPublisher(secretKey),
+                    tokenPublisher,
                 )
             )
         ).logInRouterFunction()
-        webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
+        webClient = WebTestClient
+            .bindToRouterFunction(routerFunction)
+            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
+            .build()
     }
 
     @Test
@@ -76,10 +85,25 @@ class LoginRouterTest {
             .uri("/auth/google/authorized")
             .exchange()
             .expectStatus().isOk
-            .expectBody<String>()
+            .expectBody<AuthorizedResponse>()
             .returnResult()
             .responseBody!!
-        val regex = Regex("([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})")
-        assert(regex.matchEntire(TokenDecoder(secretKey).getAuthorizedUserId(result).toString()) != null)
+        tokenDecoder.getAuthorizedUserId(result.token)
+    }
+
+    @Test
+    fun `리프레시 요청시 동일한 유저 id로 토큰이 갱신 되어야 함`() {
+        val userId = UUID.randomUUID()
+        val token = tokenPublisher.publish(userId)
+        val result = webClient
+            .post()
+            .uri("/auth/refresh")
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody<RefreshTokenResponse>()
+            .returnResult()
+            .responseBody!!
+        assert(TokenDecoder(secretKey).getAuthorizedUserId(result.token) == userId)
     }
 }

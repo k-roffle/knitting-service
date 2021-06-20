@@ -11,6 +11,10 @@ class AuthService(private val oAuthHelper: GoogleOAuthHelper, private val tokenP
         return tokenPublisher.publish(UUID.randomUUID())
     }
 
+    fun refreshToken(userId: UUID): String {
+        return tokenPublisher.publish(userId)
+    }
+
     interface GoogleOAuthHelper {
         fun getAuthorizationUri(): URI
     }
