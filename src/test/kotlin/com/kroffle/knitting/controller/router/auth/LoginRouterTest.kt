@@ -6,17 +6,21 @@ import com.kroffle.knitting.controller.handler.auth.model.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
+import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.usecase.auth.AuthService
+import com.kroffle.knitting.usecase.auth.KnitterRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import reactor.core.publisher.Mono
 import java.util.UUID
 
 @WebFluxTest
@@ -30,6 +34,9 @@ class LoginRouterTest {
 
     @MockBean
     private lateinit var tokenDecoder: TokenDecoder
+
+    @MockBean
+    lateinit var repo: KnitterRepository
 
     private val secretKey = "I'M SECRET KEY!"
 
@@ -50,7 +57,8 @@ class LoginRouterTest {
                         "GOOGLE_CLIENT_ID"
                     ),
                     tokenPublisher,
-                )
+                    repo,
+                ),
             )
         ).logInRouterFunction()
         webClient = WebTestClient
@@ -80,6 +88,17 @@ class LoginRouterTest {
 
     @Test
     fun `구글 인증 후 access token 을 발급 받을 수 있어야 함`() {
+        given(repo.findByEmail("devuri404@gmail.com")).willReturn(
+            Mono.just(
+                KnitterEntity(
+                    id = UUID.randomUUID(),
+                    email = "devuri404@gmail.com",
+                    name = null,
+                    imageUrl = null,
+                ).toKnitter(),
+            )
+        )
+
         val result = webClient
             .get()
             .uri("/auth/google/authorized")

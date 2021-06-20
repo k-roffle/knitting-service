@@ -2,6 +2,8 @@ package com.kroffle.knitting.infra.configuration
 
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
+import com.kroffle.knitting.infra.knitter.DBKnitterRepository
+import com.kroffle.knitting.infra.knitter.R2dbcKnitterRepository
 import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
 import com.kroffle.knitting.infra.properties.AuthProperties
 import com.kroffle.knitting.infra.properties.SelfProperties
@@ -33,8 +35,12 @@ class AppConfig {
     fun designService(repository: DesignService.DesignRepository) = DesignService(repository)
 
     @Bean
-    fun authService() = AuthService(
+    fun userRepository(dbKnitterRepository: DBKnitterRepository) = R2dbcKnitterRepository(dbKnitterRepository)
+
+    @Bean
+    fun authService(repository: AuthService.KnitterRepository) = AuthService(
         GoogleOauthHelperImpl(selfProperties, webProperties.googleClientId),
-        tokenPublisher()
+        tokenPublisher(),
+        repository,
     )
 }
