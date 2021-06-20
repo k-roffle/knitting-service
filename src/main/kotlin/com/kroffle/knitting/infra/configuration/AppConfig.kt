@@ -1,5 +1,7 @@
 package com.kroffle.knitting.infra.configuration
 
+import com.kroffle.knitting.infra.design.DBDesignRepository
+import com.kroffle.knitting.infra.design.R2dbcDesignRepository
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.knitter.DBKnitterRepository
@@ -30,6 +32,9 @@ class AppConfig {
 
     @Bean
     fun tokenPublisher() = TokenPublisher(authProperties.jwtSecretKey)
+
+    @Bean
+    fun designRepository(dbDesignRepository: DBDesignRepository) = R2dbcDesignRepository(dbDesignRepository)
 
     @Bean
     fun designService(repository: DesignService.DesignRepository) = DesignService(repository)
