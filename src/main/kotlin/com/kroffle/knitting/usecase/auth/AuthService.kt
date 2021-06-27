@@ -26,7 +26,7 @@ class AuthService(
         return tokenPublisher.publish(userId)
     }
 
-    interface GoogleOAuthHelper {
+    interface OAuthHelper {
         fun getAuthorizationUri(): URI
         fun getProfile(code: String): Mono<Profile>
     }

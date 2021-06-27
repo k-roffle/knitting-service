@@ -16,7 +16,7 @@ class GoogleOAuthHelperImpl(
     private val selfProperties: SelfProperties,
     private val googleClientId: String,
     private val googleSecretKey: String,
-) : AuthService.GoogleOAuthHelper {
+) : AuthService.OAuthHelper {
 
     private fun getCallbackUri(): String {
         val scheme = when (selfProperties.env) {
