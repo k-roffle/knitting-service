@@ -7,7 +7,7 @@ import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
-import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
+import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
@@ -52,7 +52,7 @@ class LoginRouterTest {
         val routerFunction = LogInRouter(
             GoogleLogInHandler(
                 AuthService(
-                    GoogleOauthHelperImpl(
+                    GoogleOAuthHelperImpl(
                         selfProperties,
                         "GOOGLE_CLIENT_ID",
                         "GOOGLE_SECRET_KEY",

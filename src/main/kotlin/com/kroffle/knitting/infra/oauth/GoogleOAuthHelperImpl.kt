@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
 import java.net.URI
 
-class GoogleOauthHelperImpl(
+class GoogleOAuthHelperImpl(
     private val selfProperties: SelfProperties,
     private val googleClientId: String,
     private val googleSecretKey: String,
