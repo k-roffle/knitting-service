@@ -44,7 +44,11 @@ class AppConfig {
 
     @Bean
     fun authService(repository: AuthService.KnitterRepository) = AuthService(
-        GoogleOauthHelperImpl(selfProperties, webProperties.googleClientId),
+        GoogleOauthHelperImpl(
+            selfProperties,
+            webProperties.googleClientId,
+            webProperties.googleClientSecret,
+        ),
         tokenPublisher(),
         repository,
     )

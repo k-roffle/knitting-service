@@ -54,7 +54,8 @@ class LoginRouterTest {
                 AuthService(
                     GoogleOauthHelperImpl(
                         selfProperties,
-                        "GOOGLE_CLIENT_ID"
+                        "GOOGLE_CLIENT_ID",
+                        "GOOGLE_SECRET_KEY",
                     ),
                     tokenPublisher,
                     repo,

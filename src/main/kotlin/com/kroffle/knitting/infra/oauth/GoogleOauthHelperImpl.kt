@@ -8,6 +8,7 @@ import java.net.URI
 class GoogleOauthHelperImpl(
     private val selfProperties: SelfProperties,
     private val googleClientId: String,
+    private val googleSecretKey: String,
 ) : AuthService.GoogleOAuthHelper {
 
     private fun getCallbackUri(): String {
