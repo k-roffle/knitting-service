@@ -21,7 +21,11 @@ class GoogleLogInHandler(private val authService: AuthService) {
     }
 
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
-        return authService.authorize().flatMap {
+        val code = req.queryParam("code")
+        if (code.isEmpty) {
+            return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "code is required"))
+        }
+        return authService.authorize(code.get()).flatMap {
             ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(AuthorizedResponse(it))

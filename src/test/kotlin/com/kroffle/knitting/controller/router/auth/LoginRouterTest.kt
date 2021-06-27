@@ -101,7 +101,13 @@ class LoginRouterTest {
 
         val result = webClient
             .get()
-            .uri("/auth/google/authorized")
+            .uri {
+                uriBuilder ->
+                uriBuilder
+                    .path("/auth/google/authorized")
+                    .queryParam("code", "MOCK_CODE")
+                    .build()
+            }
             .exchange()
             .expectStatus().isOk
             .expectBody<AuthorizedResponse>()

@@ -12,7 +12,7 @@ class AuthService(
 ) {
     fun getAuthorizationUri(): URI = oAuthHelper.getAuthorizationUri()
 
-    fun authorize(): Mono<String> {
+    fun authorize(code: String): Mono<String> {
         // FIXME #45 구글로부터 이메일 정보를 받아오도록 변경해야 합니다.
         // 이미 존재하는 유저인 경우 프로필 정보를 업데이트해야 합니다.
         // 첫 로그인하는 유저인 경우 유저 정보를 생성해야 합니다.
