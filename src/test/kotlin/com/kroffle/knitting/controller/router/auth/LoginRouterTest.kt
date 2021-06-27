@@ -176,6 +176,67 @@ class LoginRouterTest {
     }
 
     @Test
+    fun `새로 가입하는 유저의 경우 계정을 생성한 후 access token 을 발급 받을 수 있어야 함`() {
+        setWebClientWithMockOAuthHelper()
+        val newUserId = UUID.randomUUID()
+        val newUserCreatedAt = LocalDateTime.now()
+
+        given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
+            Mono.just(
+                Profile(
+                    email = "new@email.com",
+                    name = "Jessica Mars",
+                    profileImageUrl = "https://image.com"
+                )
+            )
+        )
+
+        given(repo.findByEmail("new@email.com")).willReturn(Mono.empty())
+
+        given(repo.create(any()))
+            .willReturn(
+                Mono.just(
+                    Knitter(
+                        id = newUserId,
+                        email = "email@email.com",
+                        name = "Jessica Mars",
+                        profileImageUrl = "https://image.com",
+                        createdAt = newUserCreatedAt,
+                    ),
+                )
+            )
+
+        val result = webClient
+            .get()
+            .uri {
+                uriBuilder ->
+                uriBuilder
+                    .path("/auth/google/authorized")
+                    .queryParam("code", "MOCK_CODE")
+                    .build()
+            }
+            .exchange()
+            .expectStatus().isOk
+            .expectBody<AuthorizedResponse>()
+            .returnResult()
+            .responseBody!!
+
+        assert(tokenDecoder.getAuthorizedUserId(result.token) == newUserId)
+
+        verify(repo).create(
+            argThat {
+                param ->
+                assert(param.id == null)
+                assert(param.email == "new@email.com")
+                assert(param.name == "Jessica Mars")
+                assert(param.profileImageUrl == "https://image.com")
+                assert(param.createdAt == null)
+                true
+            }
+        )
+    }
+
+    @Test
     fun `리프레시 요청시 동일한 유저 id로 토큰이 갱신 되어야 함`() {
         val userId = UUID.randomUUID()
         val token = tokenPublisher.publish(userId)

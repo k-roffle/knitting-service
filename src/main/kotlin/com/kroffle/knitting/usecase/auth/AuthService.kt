@@ -3,6 +3,7 @@ package com.kroffle.knitting.usecase.auth
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.usecase.auth.dto.Profile
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.switchIfEmpty
 import java.net.URI
 import java.util.UUID
 
@@ -29,7 +30,19 @@ class AuthService(
                             createdAt = knitter.createdAt,
                         )
                     )
-                }.flatMap {
+                }
+                .switchIfEmpty {
+                    knitterRepository.create(
+                        Knitter(
+                            id = null,
+                            email = profile.email,
+                            name = profile.name,
+                            profileImageUrl = profile.profileImageUrl,
+                            createdAt = null,
+                        )
+                    )
+                }
+                .flatMap {
                     Mono.just(tokenPublisher.publish(it.id!!))
                 }
         }
