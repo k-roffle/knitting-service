@@ -30,7 +30,7 @@ class GoogleOauthHelperImpl(
                 .scheme("https")
                 .host("accounts.google.com")
                 .path("/o/oauth2/v2/auth")
-                .queryParam("scope", "profile")
+                .queryParam("scope", "profile+https://www.googleapis.com/auth/userinfo.email")
                 .queryParam("access_type", "offline")
                 .queryParam("include_granted_scopes", "true")
                 .queryParam("response_type", "code")

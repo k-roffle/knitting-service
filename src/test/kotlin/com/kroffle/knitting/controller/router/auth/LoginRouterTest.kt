@@ -71,7 +71,7 @@ class LoginRouterTest {
     @Test
     fun `로그인 요청 시 구글 인증 페이지로 리다이렉트 되어야 함`() {
         val expectedLocation = "https://accounts.google.com/o/oauth2/v2/auth" +
-            "?scope=profile" +
+            "?scope=profile+https://www.googleapis.com/auth/userinfo.email" +
             "&access_type=offline" +
             "&include_granted_scopes=true" +
             "&response_type=code" +
