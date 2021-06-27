@@ -11,7 +11,7 @@ class KnitterEntity(
     @Id private var id: UUID?,
     private val email: String,
     private val name: String?,
-    private val imageUrl: String?,
+    private val profileImageUrl: String?,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     fun toKnitter(): Knitter =
@@ -19,7 +19,7 @@ class KnitterEntity(
             id = this.id,
             email = this.email,
             name = this.name,
-            imageUrl = this.imageUrl,
+            profileImageUrl = this.profileImageUrl,
             createdAt = this.createdAt,
         )
 }
@@ -29,6 +29,6 @@ fun Knitter.toKnitterEntity() =
         id = this.id,
         email = this.email,
         name = this.name,
-        imageUrl = this.imageUrl,
+        profileImageUrl = this.profileImageUrl,
         createdAt = this.createdAt ?: LocalDateTime.now(),
     )

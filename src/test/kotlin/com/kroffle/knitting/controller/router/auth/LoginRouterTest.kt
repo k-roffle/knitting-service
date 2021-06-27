@@ -94,7 +94,7 @@ class LoginRouterTest {
                     id = UUID.randomUUID(),
                     email = "devuri404@gmail.com",
                     name = null,
-                    imageUrl = null,
+                    profileImageUrl = null,
                 ).toKnitter(),
             )
         )

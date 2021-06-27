@@ -7,6 +7,6 @@ class Knitter(
     val id: UUID? = null,
     val email: String,
     val name: String?,
-    val imageUrl: String?,
+    val profileImageUrl: String?,
     val createdAt: LocalDateTime?,
 )
