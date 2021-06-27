@@ -2,8 +2,6 @@ package com.kroffle.knitting.infra.configuration
 
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
-import com.kroffle.knitting.infra.design.DBDesignRepository
-import com.kroffle.knitting.infra.design.R2dbcDesignRepository
 import com.kroffle.knitting.infra.properties.DatabaseProperties
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
@@ -52,9 +50,6 @@ class R2dbcConfiguration : AbstractR2dbcConfiguration() {
     override fun getCustomConverters(): MutableList<Any> {
         return mutableListOf(DesignTypeConverter(), PatternTypeConverter())
     }
-
-    @Bean
-    fun designRepository(dbDesignRepository: DBDesignRepository) = R2dbcDesignRepository(dbDesignRepository)
 
     companion object {
         private const val DESIGN_TYPE = "design_type"

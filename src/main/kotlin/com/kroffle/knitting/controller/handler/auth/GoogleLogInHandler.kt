@@ -21,9 +21,11 @@ class GoogleLogInHandler(private val authService: AuthService) {
     }
 
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
-        return ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(AuthorizedResponse(authService.authorize()))
+        return authService.authorize().flatMap {
+            ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(AuthorizedResponse(it))
+        }
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
