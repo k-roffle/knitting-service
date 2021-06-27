@@ -1,6 +1,7 @@
 package com.kroffle.knitting.usecase.auth
 
 import com.kroffle.knitting.domain.knitter.entity.Knitter
+import com.kroffle.knitting.usecase.auth.dto.Profile
 import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.UUID
@@ -27,6 +28,7 @@ class AuthService(
 
     interface GoogleOAuthHelper {
         fun getAuthorizationUri(): URI
+        fun getProfile(code: String): Mono<Profile>
     }
 
     interface TokenPublisher {
