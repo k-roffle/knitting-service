@@ -9,7 +9,8 @@ import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
-import com.kroffle.knitting.infra.properties.SelfProperties
+import com.kroffle.knitting.infra.oauth.dto.ClientInfo
+import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
 import com.kroffle.knitting.usecase.auth.dto.Profile
@@ -34,8 +35,6 @@ import java.util.UUID
 class LoginRouterTest {
     private lateinit var webClient: WebTestClient
 
-    private lateinit var selfProperties: SelfProperties
-
     private lateinit var tokenPublisher: TokenPublisher
 
     @MockBean
@@ -51,9 +50,6 @@ class LoginRouterTest {
 
     @BeforeEach
     fun setUp() {
-        selfProperties = SelfProperties()
-        selfProperties.host = "localhost:2028"
-        selfProperties.env = "test"
 
         tokenPublisher = TokenPublisher(secretKey)
         tokenDecoder = TokenDecoder(secretKey)
@@ -62,9 +58,14 @@ class LoginRouterTest {
             GoogleLogInHandler(
                 AuthService(
                     GoogleOAuthHelperImpl(
-                        selfProperties,
-                        "GOOGLE_CLIENT_ID",
-                        "GOOGLE_SECRET_KEY",
+                        ClientInfo(
+                            "http",
+                            "localhost:2028"
+                        ),
+                        GoogleOAuthConfig(
+                            "GOOGLE_CLIENT_ID",
+                            "GOOGLE_SECRET_KEY",
+                        ),
                     ),
                     tokenPublisher,
                     repo,
@@ -96,7 +97,7 @@ class LoginRouterTest {
             "&access_type=offline" +
             "&include_granted_scopes=true" +
             "&response_type=code" +
-            "&redirect_uri=https://localhost:2028/auth/google/authorized" +
+            "&redirect_uri=http://localhost:2028/login/redirected" +
             "&client_id=GOOGLE_CLIENT_ID"
 
         webClient
