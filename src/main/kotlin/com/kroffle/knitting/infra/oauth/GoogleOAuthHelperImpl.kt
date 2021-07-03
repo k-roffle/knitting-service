@@ -1,9 +1,9 @@
 package com.kroffle.knitting.infra.oauth
 
-import com.kroffle.knitting.infra.oauth.dto.AccessTokenResponse
 import com.kroffle.knitting.infra.oauth.dto.ClientInfo
+import com.kroffle.knitting.infra.oauth.dto.GoogleAccessTokenResponse
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
-import com.kroffle.knitting.infra.oauth.dto.ProfileResponse
+import com.kroffle.knitting.infra.oauth.dto.GoogleProfileResponse
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.dto.Profile
 import org.springframework.http.MediaType
@@ -43,7 +43,7 @@ class GoogleOAuthHelperImpl(
                 )
             )
             .retrieve()
-            .bodyToMono<AccessTokenResponse>()
+            .bodyToMono<GoogleAccessTokenResponse>()
             .flatMap {
                 Mono.just(it.accessToken)
             }
@@ -78,7 +78,7 @@ class GoogleOAuthHelperImpl(
                         .build()
                 }
                 .retrieve()
-                .bodyToMono(ProfileResponse::class.java)
+                .bodyToMono(GoogleProfileResponse::class.java)
                 .flatMap {
                     Mono.just(
                         Profile(

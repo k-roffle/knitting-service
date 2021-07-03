@@ -4,4 +4,3 @@ data class GoogleOAuthConfig(
     val clientId: String,
     val secretKey: String,
 )
-
