@@ -100,7 +100,7 @@ class LoginRouterTest {
             "&client_id=GOOGLE_CLIENT_ID"
 
         webClient
-            .post()
+            .get()
             .uri("/auth/google/code")
             .exchange()
             .expectStatus().isTemporaryRedirect
