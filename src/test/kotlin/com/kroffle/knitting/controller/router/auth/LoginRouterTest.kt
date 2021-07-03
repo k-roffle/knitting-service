@@ -123,14 +123,14 @@ class LoginRouterTest {
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
             Mono.just(
                 Profile(
-                    email = "mock@email.com",
+                    email = targetKnitter.email,
                     name = "John Doe",
                     profileImageUrl = null
                 )
             )
         )
 
-        given(repo.findByEmail("mock@email.com")).willReturn(
+        given(repo.findByEmail(targetKnitter.email)).willReturn(
             Mono.just(targetKnitter)
         )
 
@@ -181,31 +181,28 @@ class LoginRouterTest {
         setWebClientWithMockOAuthHelper()
         val newUserId = UUID.randomUUID()
         val newUserCreatedAt = LocalDateTime.now()
+        val mockUser = Knitter(
+            id = newUserId,
+            email = "new@email.com",
+            name = "Jessica Mars",
+            profileImageUrl = "https://image.com",
+            createdAt = newUserCreatedAt,
+        )
 
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
             Mono.just(
                 Profile(
-                    email = "new@email.com",
-                    name = "Jessica Mars",
-                    profileImageUrl = "https://image.com"
+                    email = mockUser.email,
+                    name = mockUser.name!!,
+                    profileImageUrl = mockUser.profileImageUrl,
                 )
             )
         )
 
-        given(repo.findByEmail("new@email.com")).willReturn(Mono.empty())
+        given(repo.findByEmail(mockUser.email)).willReturn(Mono.empty())
 
         given(repo.create(any()))
-            .willReturn(
-                Mono.just(
-                    Knitter(
-                        id = newUserId,
-                        email = "email@email.com",
-                        name = "Jessica Mars",
-                        profileImageUrl = "https://image.com",
-                        createdAt = newUserCreatedAt,
-                    ),
-                )
-            )
+            .willReturn(Mono.just(mockUser))
 
         val result = webClient
             .get()
