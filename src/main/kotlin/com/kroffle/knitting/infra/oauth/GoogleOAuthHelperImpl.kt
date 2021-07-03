@@ -55,7 +55,7 @@ class GoogleOAuthHelperImpl(
                 .scheme("https")
                 .host("accounts.google.com")
                 .path("/o/oauth2/v2/auth")
-                .queryParam("scope", "profile+https://www.googleapis.com/auth/userinfo.email")
+                .queryParam("scope", SCOPES.joinToString("+"))
                 .queryParam("access_type", "offline")
                 .queryParam("include_granted_scopes", "true")
                 .queryParam("response_type", "code")
@@ -89,5 +89,11 @@ class GoogleOAuthHelperImpl(
                     )
                 }
         }
+    }
+    companion object {
+        private val SCOPES = listOf(
+            "profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+        )
     }
 }
