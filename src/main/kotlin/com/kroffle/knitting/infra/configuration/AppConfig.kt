@@ -10,6 +10,7 @@ import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
 import com.kroffle.knitting.infra.oauth.dto.ClientInfo
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.infra.properties.AuthProperties
+import com.kroffle.knitting.infra.properties.ClientProperties
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
@@ -28,6 +29,9 @@ class AppConfig {
 
     @Autowired
     lateinit var authProperties: AuthProperties
+
+    @Autowired
+    lateinit var clientProperties: ClientProperties
 
     @Bean
     fun tokenDecoder() = TokenDecoder(authProperties.jwtSecretKey)
@@ -52,7 +56,7 @@ class AppConfig {
                     "local" -> "http"
                     else -> "https"
                 },
-                selfProperties.host,
+                clientProperties.host,
             ),
             GoogleOAuthConfig(
                 webProperties.googleClientId,
