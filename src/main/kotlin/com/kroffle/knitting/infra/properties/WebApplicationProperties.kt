@@ -10,4 +10,7 @@ class WebApplicationProperties {
 
     @Value("\${web.google.client_id}")
     lateinit var googleClientId: String
+
+    @Value("\${web.google.client_secret}")
+    lateinit var googleClientSecret: String
 }

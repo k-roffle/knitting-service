@@ -7,10 +7,11 @@ import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
-import com.kroffle.knitting.infra.oauth.GoogleOauthHelperImpl
+import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
+import com.kroffle.knitting.usecase.auth.dto.Profile
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -33,6 +34,9 @@ class LoginRouterTest {
     private lateinit var tokenPublisher: TokenPublisher
 
     @MockBean
+    private lateinit var mockOAuthHelper: AuthService.OAuthHelper
+
+    @MockBean
     private lateinit var tokenDecoder: TokenDecoder
 
     @MockBean
@@ -52,9 +56,10 @@ class LoginRouterTest {
         val routerFunction = LogInRouter(
             GoogleLogInHandler(
                 AuthService(
-                    GoogleOauthHelperImpl(
+                    GoogleOAuthHelperImpl(
                         selfProperties,
-                        "GOOGLE_CLIENT_ID"
+                        "GOOGLE_CLIENT_ID",
+                        "GOOGLE_SECRET_KEY",
                     ),
                     tokenPublisher,
                     repo,
@@ -67,10 +72,22 @@ class LoginRouterTest {
             .build()
     }
 
+    private fun setWebClientWithMockOAuthHelper() {
+        val routerFunction = LogInRouter(
+            GoogleLogInHandler(
+                AuthService(mockOAuthHelper, tokenPublisher, repo),
+            )
+        ).logInRouterFunction()
+        webClient = WebTestClient
+            .bindToRouterFunction(routerFunction)
+            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
+            .build()
+    }
+
     @Test
     fun `로그인 요청 시 구글 인증 페이지로 리다이렉트 되어야 함`() {
         val expectedLocation = "https://accounts.google.com/o/oauth2/v2/auth" +
-            "?scope=profile" +
+            "?scope=profile+https://www.googleapis.com/auth/userinfo.email" +
             "&access_type=offline" +
             "&include_granted_scopes=true" +
             "&response_type=code" +
@@ -88,20 +105,38 @@ class LoginRouterTest {
 
     @Test
     fun `구글 인증 후 access token 을 발급 받을 수 있어야 함`() {
-        given(repo.findByEmail("devuri404@gmail.com")).willReturn(
+        setWebClientWithMockOAuthHelper()
+
+        given(repo.findByEmail("mock@email.com")).willReturn(
             Mono.just(
                 KnitterEntity(
                     id = UUID.randomUUID(),
-                    email = "devuri404@gmail.com",
+                    email = "mock@email.com",
                     name = null,
                     profileImageUrl = null,
                 ).toKnitter(),
             )
         )
 
+        given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
+            Mono.just(
+                Profile(
+                    email = "mock@email.com",
+                    name = "John Doe",
+                    profileImageUrl = null
+                )
+            )
+        )
+
         val result = webClient
             .get()
-            .uri("/auth/google/authorized")
+            .uri {
+                uriBuilder ->
+                uriBuilder
+                    .path("/auth/google/authorized")
+                    .queryParam("code", "MOCK_CODE")
+                    .build()
+            }
             .exchange()
             .expectStatus().isOk
             .expectBody<AuthorizedResponse>()
