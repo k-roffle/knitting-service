@@ -11,6 +11,7 @@ import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
 import com.kroffle.knitting.infra.oauth.dto.ClientInfo
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
+import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
 import com.kroffle.knitting.usecase.auth.dto.Profile
@@ -45,6 +46,9 @@ class LoginRouterTest {
 
     @MockBean
     lateinit var repo: KnitterRepository
+
+    @MockBean
+    private lateinit var webProperties: WebApplicationProperties
 
     private val secretKey = "I'M SECRET KEY!"
 

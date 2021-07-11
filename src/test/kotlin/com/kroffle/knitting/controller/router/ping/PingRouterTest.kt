@@ -2,6 +2,7 @@ package com.kroffle.knitting.controller.router.ping
 
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.ping.PingHandler
+import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,6 +19,9 @@ class PingRouterTest {
 
     @MockBean
     lateinit var tokenDecoder: AuthorizationFilter.TokenDecoder
+
+    @MockBean
+    private lateinit var webProperties: WebApplicationProperties
 
     @BeforeEach
     fun setUp() {
