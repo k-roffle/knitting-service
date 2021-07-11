@@ -1,8 +1,9 @@
 package com.kroffle.knitting.infra.oauth
 
-import com.kroffle.knitting.infra.oauth.dto.AccessTokenResponse
-import com.kroffle.knitting.infra.oauth.dto.ProfileResponse
-import com.kroffle.knitting.infra.properties.SelfProperties
+import com.kroffle.knitting.infra.oauth.dto.ClientInfo
+import com.kroffle.knitting.infra.oauth.dto.GoogleAccessTokenResponse
+import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
+import com.kroffle.knitting.infra.oauth.dto.GoogleProfileResponse
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.dto.Profile
 import org.springframework.http.MediaType
@@ -13,20 +14,15 @@ import reactor.core.publisher.Mono
 import java.net.URI
 
 class GoogleOAuthHelperImpl(
-    private val selfProperties: SelfProperties,
-    private val googleClientId: String,
-    private val googleSecretKey: String,
+    private val clientInfo: ClientInfo,
+    private val googleOAuthConfig: GoogleOAuthConfig,
 ) : AuthService.OAuthHelper {
 
     private fun getCallbackUri(): String {
-        val scheme = when (selfProperties.env) {
-            "local" -> "http"
-            else -> "https"
-        }
         return UriComponentsBuilder.newInstance()
-            .scheme(scheme)
-            .host(selfProperties.host)
-            .path("/auth/google/authorized")
+            .scheme(clientInfo.scheme)
+            .host(clientInfo.host)
+            .path(clientInfo.redirectPath)
             .build()
             .toUriString()
     }
@@ -40,14 +36,14 @@ class GoogleOAuthHelperImpl(
             .bodyValue(
                 mapOf(
                     "code" to code,
-                    "client_id" to googleClientId,
-                    "client_secret" to googleSecretKey,
+                    "client_id" to googleOAuthConfig.clientId,
+                    "client_secret" to googleOAuthConfig.secretKey,
                     "redirect_uri" to getCallbackUri(),
                     "grant_type" to "authorization_code",
                 )
             )
             .retrieve()
-            .bodyToMono<AccessTokenResponse>()
+            .bodyToMono<GoogleAccessTokenResponse>()
             .flatMap {
                 Mono.just(it.accessToken)
             }
@@ -59,12 +55,12 @@ class GoogleOAuthHelperImpl(
                 .scheme("https")
                 .host("accounts.google.com")
                 .path("/o/oauth2/v2/auth")
-                .queryParam("scope", "profile+https://www.googleapis.com/auth/userinfo.email")
+                .queryParam("scope", SCOPES.joinToString("+"))
                 .queryParam("access_type", "offline")
                 .queryParam("include_granted_scopes", "true")
                 .queryParam("response_type", "code")
                 .queryParam("redirect_uri", getCallbackUri())
-                .queryParam("client_id", googleClientId)
+                .queryParam("client_id", googleOAuthConfig.clientId)
                 .build()
                 .toUriString()
         )
@@ -82,7 +78,7 @@ class GoogleOAuthHelperImpl(
                         .build()
                 }
                 .retrieve()
-                .bodyToMono(ProfileResponse::class.java)
+                .bodyToMono(GoogleProfileResponse::class.java)
                 .flatMap {
                     Mono.just(
                         Profile(
@@ -93,5 +89,11 @@ class GoogleOAuthHelperImpl(
                     )
                 }
         }
+    }
+    companion object {
+        private val SCOPES = listOf(
+            "profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+        )
     }
 }

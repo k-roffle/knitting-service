@@ -9,7 +9,9 @@ import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
-import com.kroffle.knitting.infra.properties.SelfProperties
+import com.kroffle.knitting.infra.oauth.dto.ClientInfo
+import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
+import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
 import com.kroffle.knitting.usecase.auth.dto.Profile
@@ -34,8 +36,6 @@ import java.util.UUID
 class LoginRouterTest {
     private lateinit var webClient: WebTestClient
 
-    private lateinit var selfProperties: SelfProperties
-
     private lateinit var tokenPublisher: TokenPublisher
 
     @MockBean
@@ -47,13 +47,13 @@ class LoginRouterTest {
     @MockBean
     lateinit var repo: KnitterRepository
 
+    @MockBean
+    private lateinit var webProperties: WebApplicationProperties
+
     private val secretKey = "I'M SECRET KEY!"
 
     @BeforeEach
     fun setUp() {
-        selfProperties = SelfProperties()
-        selfProperties.host = "localhost:2028"
-        selfProperties.env = "test"
 
         tokenPublisher = TokenPublisher(secretKey)
         tokenDecoder = TokenDecoder(secretKey)
@@ -62,9 +62,14 @@ class LoginRouterTest {
             GoogleLogInHandler(
                 AuthService(
                     GoogleOAuthHelperImpl(
-                        selfProperties,
-                        "GOOGLE_CLIENT_ID",
-                        "GOOGLE_SECRET_KEY",
+                        ClientInfo(
+                            "http",
+                            "localhost:2028"
+                        ),
+                        GoogleOAuthConfig(
+                            "GOOGLE_CLIENT_ID",
+                            "GOOGLE_SECRET_KEY",
+                        ),
                     ),
                     tokenPublisher,
                     repo,
@@ -96,11 +101,11 @@ class LoginRouterTest {
             "&access_type=offline" +
             "&include_granted_scopes=true" +
             "&response_type=code" +
-            "&redirect_uri=https://localhost:2028/auth/google/authorized" +
+            "&redirect_uri=http://localhost:2028/login/redirected" +
             "&client_id=GOOGLE_CLIENT_ID"
 
         webClient
-            .post()
+            .get()
             .uri("/auth/google/code")
             .exchange()
             .expectStatus().isTemporaryRedirect
@@ -122,14 +127,14 @@ class LoginRouterTest {
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
             Mono.just(
                 Profile(
-                    email = "mock@email.com",
+                    email = targetKnitter.email,
                     name = "John Doe",
                     profileImageUrl = null
                 )
             )
         )
 
-        given(repo.findByEmail("mock@email.com")).willReturn(
+        given(repo.findByEmail(targetKnitter.email)).willReturn(
             Mono.just(targetKnitter)
         )
 
@@ -180,31 +185,28 @@ class LoginRouterTest {
         setWebClientWithMockOAuthHelper()
         val newUserId = UUID.randomUUID()
         val newUserCreatedAt = LocalDateTime.now()
+        val mockUser = Knitter(
+            id = newUserId,
+            email = "new@email.com",
+            name = "Jessica Mars",
+            profileImageUrl = "https://image.com",
+            createdAt = newUserCreatedAt,
+        )
 
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
             Mono.just(
                 Profile(
-                    email = "new@email.com",
-                    name = "Jessica Mars",
-                    profileImageUrl = "https://image.com"
+                    email = mockUser.email,
+                    name = mockUser.name!!,
+                    profileImageUrl = mockUser.profileImageUrl,
                 )
             )
         )
 
-        given(repo.findByEmail("new@email.com")).willReturn(Mono.empty())
+        given(repo.findByEmail(mockUser.email)).willReturn(Mono.empty())
 
         given(repo.create(any()))
-            .willReturn(
-                Mono.just(
-                    Knitter(
-                        id = newUserId,
-                        email = "email@email.com",
-                        name = "Jessica Mars",
-                        profileImageUrl = "https://image.com",
-                        createdAt = newUserCreatedAt,
-                    ),
-                )
-            )
+            .willReturn(Mono.just(mockUser))
 
         val result = webClient
             .get()

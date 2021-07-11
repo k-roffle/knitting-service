@@ -7,6 +7,7 @@ import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.design.entity.DesignEntity
 import com.kroffle.knitting.infra.jwt.TokenDecoder
+import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
 import org.assertj.core.api.Assertions.assertThat
@@ -38,6 +39,9 @@ class DesignRouterTest {
 
     @MockBean
     lateinit var tokenDecoder: TokenDecoder
+
+    @MockBean
+    private lateinit var webProperties: WebApplicationProperties
 
     @BeforeEach
     fun setUp() {

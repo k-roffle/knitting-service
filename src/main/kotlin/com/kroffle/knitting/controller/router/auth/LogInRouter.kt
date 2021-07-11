@@ -14,7 +14,7 @@ class LogInRouter(private val handler: GoogleLogInHandler) {
         RequestPredicates.path(ROOT_PATH),
         router {
             listOf(
-                POST(REQUEST_CODE_PATH, handler::requestCode),
+                GET(REQUEST_CODE_PATH, handler::requestCode),
                 GET(AUTHORIZED_PATH, handler::authorized),
                 POST(REFRESH_TOKEN_PATH, handler::refreshToken),
             )

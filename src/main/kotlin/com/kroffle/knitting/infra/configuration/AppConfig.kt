@@ -7,7 +7,10 @@ import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.knitter.DBKnitterRepository
 import com.kroffle.knitting.infra.knitter.R2dbcKnitterRepository
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
+import com.kroffle.knitting.infra.oauth.dto.ClientInfo
+import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.infra.properties.AuthProperties
+import com.kroffle.knitting.infra.properties.ClientProperties
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
@@ -27,6 +30,9 @@ class AppConfig {
     @Autowired
     lateinit var authProperties: AuthProperties
 
+    @Autowired
+    lateinit var clientProperties: ClientProperties
+
     @Bean
     fun tokenDecoder() = TokenDecoder(authProperties.jwtSecretKey)
 
@@ -45,9 +51,17 @@ class AppConfig {
     @Bean
     fun authService(repository: AuthService.KnitterRepository) = AuthService(
         GoogleOAuthHelperImpl(
-            selfProperties,
-            webProperties.googleClientId,
-            webProperties.googleClientSecret,
+            ClientInfo(
+                when (selfProperties.env) {
+                    "local" -> "http"
+                    else -> "https"
+                },
+                clientProperties.host,
+            ),
+            GoogleOAuthConfig(
+                webProperties.googleClientId,
+                webProperties.googleClientSecret,
+            ),
         ),
         tokenPublisher(),
         repository,
