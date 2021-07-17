@@ -78,3 +78,19 @@ jobs:
             docker stop knitting-service
             docker run -d -p 80:8080 --rm --name knitting-service dragonyool/knitting-service:latest
             docker logout
+
+      - name: notify slack
+        uses: 8398a7/action-slack@v3
+        with:
+            status: custom
+            fields: repo,message,commit
+            custom_payload: |
+                {
+                  attachments: [{
+                    color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                    text: '${{ job.status }}' ===  'success' ? `*[${process.env.AS_REPO}]*\n${process.env.AS_MESSAGE}(${process.env.AS_COMMIT})이 배포되었습니다 :rocket:` : `*[${process.env.AS_REPO}]*\n${process.env.AS_MESSAGE}(${process.env.AS_COMMIT}) 배포가 실패했습니다. :sob:`
+                  }]
+                }
+        env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
