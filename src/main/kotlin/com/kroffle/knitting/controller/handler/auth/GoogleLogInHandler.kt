@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.ServerResponse.temporaryRedirect
 import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
-import java.util.UUID
 
 @Component
 class GoogleLogInHandler(private val authService: AuthService) {
@@ -39,6 +38,6 @@ class GoogleLogInHandler(private val authService: AuthService) {
         }
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(RefreshTokenResponse(authService.refreshToken(userId.get() as UUID)))
+            .bodyValue(RefreshTokenResponse(authService.refreshToken(userId.get() as Long)))
     }
 }

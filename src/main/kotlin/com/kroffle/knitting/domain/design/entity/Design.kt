@@ -7,10 +7,9 @@ import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import java.time.LocalDateTime
-import java.util.UUID
 
 class Design(
-    val id: UUID? = null,
+    val id: Long? = null,
     val name: String,
     val designType: DesignType,
     val patternType: PatternType,

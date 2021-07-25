@@ -5,10 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.kroffle.knitting.pure.extensions.toDate
 import com.kroffle.knitting.usecase.auth.AuthService
 import java.time.LocalDateTime
-import java.util.UUID
 
 class TokenPublisher(private val jwtSecretKey: String) : AuthService.TokenPublisher {
-    override fun publish(id: UUID): String {
+    override fun publish(id: Long): String {
         val now = LocalDateTime.now()
         val expiredAt = now.plusSeconds(EXPIRATION_TIME)
 

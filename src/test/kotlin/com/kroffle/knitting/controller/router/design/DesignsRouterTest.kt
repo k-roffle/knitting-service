@@ -25,7 +25,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
 import java.time.LocalDateTime
-import java.util.UUID
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -50,7 +49,7 @@ class DesignsRouterTest {
     @BeforeEach
     fun setUp() {
         design = DesignEntity(
-            id = UUID.randomUUID(),
+            id = 1,
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,

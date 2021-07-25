@@ -4,11 +4,10 @@ import com.kroffle.knitting.domain.knitter.entity.Knitter
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
-import java.util.UUID
 
 @Table("knitter")
 class KnitterEntity(
-    @Id private var id: UUID?,
+    @Id private var id: Long?,
     private val email: String,
     private val name: String?,
     private val profileImageUrl: String?,

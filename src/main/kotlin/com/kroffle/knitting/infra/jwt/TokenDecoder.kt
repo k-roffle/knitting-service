@@ -9,7 +9,6 @@ import com.kroffle.knitting.controller.exception.auth.ExpiredTokenException
 import com.kroffle.knitting.controller.exception.auth.InvalidBodyTokenException
 import com.kroffle.knitting.controller.exception.auth.UnauthorizedTokenException
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
-import java.util.UUID
 
 class TokenDecoder(private val jwtSecretKey: String) : AuthorizationFilter.TokenDecoder {
     @Throws(ExpiredTokenException::class, UnauthorizedTokenException::class)
@@ -27,9 +26,9 @@ class TokenDecoder(private val jwtSecretKey: String) : AuthorizationFilter.Token
     }
 
     @Throws(InvalidBodyTokenException::class)
-    override fun getAuthorizedUserId(token: String): UUID {
+    override fun getAuthorizedUserId(token: String): Long {
         val claims = this.decodeToken(token)
         val id = claims["id"] ?: throw InvalidBodyTokenException()
-        return UUID.fromString(id.asString())
+        return id.asString().toLong()
     }
 }

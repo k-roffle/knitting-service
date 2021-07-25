@@ -5,7 +5,6 @@ import com.kroffle.knitting.usecase.auth.dto.Profile
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.net.URI
-import java.util.UUID
 
 class AuthService(
     private val oAuthHelper: OAuthHelper,
@@ -48,7 +47,7 @@ class AuthService(
         }
     }
 
-    fun refreshToken(userId: UUID): String {
+    fun refreshToken(userId: Long): String {
         return tokenPublisher.publish(userId)
     }
 
@@ -58,7 +57,7 @@ class AuthService(
     }
 
     interface TokenPublisher {
-        fun publish(id: UUID): String
+        fun publish(id: Long): String
     }
 
     interface KnitterRepository {
