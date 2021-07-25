@@ -3,6 +3,8 @@ package com.kroffle.knitting.controller.router.design
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
+import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
@@ -104,5 +106,34 @@ class DesignsRouterTest {
         assertThat(firstResponseBody.size.armholeDepth.value).isEqualTo(5.0)
         assertThat(firstResponseBody.pattern.value).isEqualTo("# Step1. 코를 10개 잡습니다.")
         assertThat(firstResponseBody.createdAt).isEqualTo(design.createdAt)
+    }
+
+    @Test
+    fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
+        val responseBody: MyDesignsResponse = webClient
+            .get()
+            .uri("/designs/my")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(MyDesignsResponse::class.java)
+            .returnResult()
+            .responseBody!!
+
+        assertThat(responseBody.designs).isEqualTo(
+            listOf(
+                MyDesign(
+                    name = "캔디리더 효정 니트",
+                    yarn = "패션아란 400g 1볼",
+                    tags = listOf("니트", "서술형도안"),
+                ),
+                MyDesign(
+                    name = "유샤샤 니트",
+                    yarn = "캐시미어 300g 1볼",
+                    tags = listOf("니트", "서술형도안"),
+                ),
+            )
+        )
     }
 }

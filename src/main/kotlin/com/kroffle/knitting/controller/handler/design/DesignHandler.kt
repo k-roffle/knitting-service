@@ -1,5 +1,7 @@
 package com.kroffle.knitting.controller.handler.design
 
+import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.usecase.design.DesignService
 import org.springframework.http.MediaType
@@ -40,6 +42,27 @@ class DesignHandler(private val service: DesignService) {
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(it)
             }
+    }
+
+    fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
+        return ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(
+                MyDesignsResponse(
+                    designs = listOf(
+                        MyDesign(
+                            name = "캔디리더 효정 니트",
+                            yarn = "패션아란 400g 1볼",
+                            tags = listOf("니트", "서술형도안"),
+                        ),
+                        MyDesign(
+                            name = "유샤샤 니트",
+                            yarn = "캐시미어 300g 1볼",
+                            tags = listOf("니트", "서술형도안"),
+                        ),
+                    )
+                )
+            )
     }
 
     private fun validate(design: Design) {
