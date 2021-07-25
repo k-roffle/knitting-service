@@ -13,22 +13,11 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
-import java.util.stream.Collectors.toList
 
 @Component
 class DesignHandler(private val service: DesignService) {
 
     private val validator = DesignValidator()
-
-    fun getAll(req: ServerRequest): Mono<ServerResponse> =
-        service
-            .getAll()
-            .collect(toList())
-            .flatMap {
-                ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(it)
-            }
 
     fun createDesign(req: ServerRequest): Mono<ServerResponse> {
         val design: Mono<Design> = req
