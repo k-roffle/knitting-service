@@ -2,6 +2,8 @@ package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.design.DesignHandler
+import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
+import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
@@ -58,7 +60,7 @@ class DesignRouterTest {
             bottomWidth = 4.0,
             armholeDepth = 5.0,
             needle = "5.0mm",
-            yarn = null,
+            yarn = "캐시미어 400g",
             extra = null,
             price = 0,
             pattern = "# Step1. 코를 10개 잡습니다.",
@@ -70,7 +72,27 @@ class DesignRouterTest {
 
     @Test
     fun `design 이 잘 생성되어야 함`() {
-        val body = objectMapper.writeValueAsString(design)
+        val body = objectMapper.writeValueAsString(
+            NewDesignRequest(
+                name = "test",
+                designType = DesignType.Sweater,
+                patternType = PatternType.Text,
+                stitches = 23.5,
+                rows = 25.0,
+                size = NewDesignSize(
+                    totalLength = 1.0,
+                    sleeveLength = 2.0,
+                    shoulderWidth = 3.0,
+                    bottomWidth = 4.0,
+                    armholeDepth = 5.0,
+                ),
+                needle = "5.0mm",
+                yarn = "캐시미어 400g",
+                extra = null,
+                price = 0,
+                pattern = "# Step1. 코를 10개 잡습니다.",
+            )
+        )
         given(repo.createDesign(any())).willReturn(Mono.just(design))
         val response = webClient
             .post()
@@ -91,7 +113,7 @@ class DesignRouterTest {
         assertThat(response.gauge.stitches).isEqualTo(23.5)
         assertThat(response.gauge.rows).isEqualTo(25.0)
         assertThat(response.needle).isEqualTo("5.0mm")
-        assertThat(response.yarn).isEqualTo(null)
+        assertThat(response.yarn).isEqualTo("캐시미어 400g")
         assertThat(response.extra).isEqualTo(null)
         assertThat(response.price.value).isEqualTo(0)
         assertThat(response.size.totalLength.value).isEqualTo(1.0)
