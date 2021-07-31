@@ -10,6 +10,7 @@ import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.usecase.design.DesignService
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -17,6 +18,7 @@ import org.springframework.validation.Errors
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 
@@ -30,11 +32,15 @@ class DesignHandler(private val service: DesignService) {
             .bodyToMono(NewDesignRequest::class.java)
             .switchIfEmpty(Mono.error(ServerWebInputException("Body is required")))
             .doOnNext { validate(it) }
-
+        val userId = req.attribute("userId")
+        if (userId.isEmpty) {
+            return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "userId is required"))
+        }
         return design
             .flatMap {
                 service.create(
                     Design(
+                        knitterId = userId.get() as Long,
                         name = it.name,
                         designType = it.designType,
                         patternType = it.patternType,

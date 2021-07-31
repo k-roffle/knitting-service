@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 
 class Design(
     val id: Long? = null,
+    val knitterId: Long,
     val name: String,
     val designType: DesignType,
     val patternType: PatternType,

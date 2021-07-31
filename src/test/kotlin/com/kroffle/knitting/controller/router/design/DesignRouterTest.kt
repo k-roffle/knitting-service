@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
@@ -9,6 +10,7 @@ import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.design.entity.DesignEntity
 import com.kroffle.knitting.infra.jwt.TokenDecoder
+import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
@@ -33,6 +35,8 @@ class DesignRouterTest {
 
     private lateinit var design: Design
 
+    private lateinit var tokenPublisher: TokenPublisher
+
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
@@ -45,10 +49,16 @@ class DesignRouterTest {
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
+    private val secretKey = "I'M SECRET KEY!"
+
     @BeforeEach
     fun setUp() {
+        tokenPublisher = TokenPublisher(secretKey)
+        tokenDecoder = TokenDecoder(secretKey)
+
         design = DesignEntity(
             id = null,
+            knitterId = 1,
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,
@@ -67,11 +77,17 @@ class DesignRouterTest {
         ).toDesign()
 
         val routerFunction = DesignRouter(DesignHandler(DesignService(repo))).designRouterFunction()
-        webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
+        webClient = WebTestClient
+            .bindToRouterFunction(routerFunction)
+            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
+            .build()
     }
 
     @Test
     fun `design 이 잘 생성되어야 함`() {
+        val userId: Long = 1
+        val token = tokenPublisher.publish(userId)
+
         val body = objectMapper.writeValueAsString(
             NewDesignRequest(
                 name = "test",
@@ -97,6 +113,7 @@ class DesignRouterTest {
         val response = webClient
             .post()
             .uri("/design/")
+            .header("Authorization", "Bearer $token")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -107,6 +124,7 @@ class DesignRouterTest {
             .returnResult()
             .responseBody!!
         assertThat(response.id).isEqualTo(design.id)
+        assertThat(response.knitterId).isEqualTo(1)
         assertThat(response.name).isEqualTo("test")
         assertThat(response.designType).isEqualTo(DesignType.Sweater)
         assertThat(response.patternType).isEqualTo(PatternType.Text)
