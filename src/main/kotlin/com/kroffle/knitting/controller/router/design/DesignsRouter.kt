@@ -15,6 +15,7 @@ class DesignsRouter(private val handler: DesignHandler) {
         router {
             listOf(
                 GET(GET_MY_DESIGNS_PATH, handler::getMyDesigns),
+                GET(GET_MY_SALES_SUMMARY_PATH, handler::getMySalesSummary),
             )
         }
     )
@@ -22,6 +23,7 @@ class DesignsRouter(private val handler: DesignHandler) {
     companion object {
         private const val ROOT_PATH = "/designs"
         private const val GET_MY_DESIGNS_PATH = "/my"
+        private const val GET_MY_SALES_SUMMARY_PATH = "/sales-summary/my"
         val PUBLIC_PATHS: List<String> = listOf()
     }
 }

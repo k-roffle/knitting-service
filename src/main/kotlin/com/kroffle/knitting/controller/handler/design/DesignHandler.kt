@@ -3,6 +3,7 @@ package com.kroffle.knitting.controller.handler.design
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
+import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
@@ -109,6 +110,17 @@ class DesignHandler(private val service: DesignService) {
                         MyDesignsResponse(designs = it)
                     )
             }
+    }
+
+    fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
+        return ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(
+                SalesSummaryResponse(
+                    numberOfDesignsOnSales = 1,
+                    numberOfDesignsSold = 2,
+                )
+            )
     }
 
     private fun validate(design: NewDesignRequest) {
