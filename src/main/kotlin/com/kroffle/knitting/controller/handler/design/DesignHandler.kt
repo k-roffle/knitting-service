@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
+import java.util.stream.Collectors.toList
 
 @Component
 class DesignHandler(private val service: DesignService) {
@@ -84,24 +85,28 @@ class DesignHandler(private val service: DesignService) {
     }
 
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
-        return ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(
-                MyDesignsResponse(
-                    designs = listOf(
-                        MyDesign(
-                            name = "캔디리더 효정 니트",
-                            yarn = "패션아란 400g 1볼",
-                            tags = listOf("니트", "서술형도안"),
-                        ),
-                        MyDesign(
-                            name = "유샤샤 니트",
-                            yarn = "캐시미어 300g 1볼",
-                            tags = listOf("니트", "서술형도안"),
-                        ),
-                    )
+        val userId = req.attribute("userId")
+        if (userId.isEmpty) {
+            return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "userId is required"))
+        }
+        return service
+            .getMyDesign(userId.get() as Long)
+            .map {
+                design ->
+                MyDesign(
+                    name = design.name,
+                    yarn = design.yarn,
+                    tags = listOf(design.designType.tag, design.patternType.tag)
                 )
-            )
+            }
+            .collect(toList())
+            .flatMap {
+                ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(
+                        MyDesignsResponse(designs = it)
+                    )
+            }
     }
 
     private fun validate(design: NewDesignRequest) {
