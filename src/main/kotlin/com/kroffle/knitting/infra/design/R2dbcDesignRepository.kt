@@ -3,6 +3,7 @@ package com.kroffle.knitting.infra.design
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.infra.design.entity.toDesignEntity
 import com.kroffle.knitting.usecase.design.DesignRepository
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 class R2dbcDesignRepository(private val dbDesignRepository: DBDesignRepository) : DesignRepository {
@@ -10,4 +11,10 @@ class R2dbcDesignRepository(private val dbDesignRepository: DBDesignRepository) 
         dbDesignRepository
             .save(design.toDesignEntity())
             .map { it.toDesign() }
+
+    override fun getDesignsByKnitterId(knitterId: Long): Flux<Design> {
+        return dbDesignRepository
+            .findAllByKnitterId(knitterId)
+            .map { it.toDesign() }
+    }
 }
