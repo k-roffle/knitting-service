@@ -94,6 +94,7 @@ class DesignHandler(private val service: DesignService) {
             .map {
                 design ->
                 MyDesign(
+                    id = design.id!!,
                     name = design.name,
                     yarn = design.yarn,
                     thumbnailImageUrl = null,

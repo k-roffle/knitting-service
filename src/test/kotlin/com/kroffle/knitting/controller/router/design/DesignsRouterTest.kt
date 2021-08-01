@@ -67,7 +67,7 @@ class DesignsRouterTest {
             .willReturn(
                 Flux.just(
                     DesignEntity(
-                        id = null,
+                        id = 1,
                         knitterId = 1,
                         name = "캔디리더 효정 니트",
                         designType = DesignType.Sweater,
@@ -103,6 +103,7 @@ class DesignsRouterTest {
         assertThat(responseBody.designs).isEqualTo(
             listOf(
                 MyDesign(
+                    id = 1,
                     name = "캔디리더 효정 니트",
                     yarn = "패션아란 400g 1볼",
                     thumbnailImageUrl = null,
