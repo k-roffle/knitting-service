@@ -4,7 +4,7 @@ import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
-import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.design.entity.DesignEntity
@@ -31,9 +31,9 @@ class DesignsRouterTest {
 
     private lateinit var webClient: WebTestClient
 
-    private lateinit var design: Design
-
     private lateinit var tokenPublisher: TokenPublisher
+
+    private lateinit var token: String
 
     @MockBean
     lateinit var repo: DesignRepository
@@ -46,10 +46,14 @@ class DesignsRouterTest {
 
     private val secretKey = "I'M SECRET KEY!"
 
+    private val userId: Long = 1
+
     @BeforeEach
     fun setUp() {
         tokenPublisher = TokenPublisher(secretKey)
         tokenDecoder = TokenDecoder(secretKey)
+
+        token = tokenPublisher.publish(userId)
 
         val routerFunction = DesignsRouter(DesignHandler(DesignService(repo))).designsRouterFunction()
         webClient = WebTestClient
@@ -60,9 +64,6 @@ class DesignsRouterTest {
 
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
-        val userId: Long = 1
-        val token = tokenPublisher.publish(userId)
-
         given(repo.getDesignsByKnitterId(1))
             .willReturn(
                 Flux.just(
@@ -110,6 +111,28 @@ class DesignsRouterTest {
                     tags = listOf("니트", "서술형도안"),
                 ),
             )
+        )
+    }
+
+    @Test
+    fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
+        val responseBody: SalesSummaryResponse = webClient
+            .get()
+            .uri("/designs/sales-summary/my")
+            .header("Authorization", "Bearer $token")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(SalesSummaryResponse::class.java)
+            .returnResult()
+            .responseBody!!
+
+        assertThat(responseBody).isEqualTo(
+            SalesSummaryResponse(
+                numberOfDesignsOnSales = 1,
+                numberOfDesignsSold = 2,
+            ),
         )
     }
 }
