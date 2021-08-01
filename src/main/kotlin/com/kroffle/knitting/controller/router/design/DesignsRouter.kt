@@ -14,16 +14,14 @@ class DesignsRouter(private val handler: DesignHandler) {
         path(ROOT_PATH),
         router {
             listOf(
-                GET(GET_ALL_PATH, handler::getAll),
+                GET(GET_MY_DESIGNS_PATH, handler::getMyDesigns),
             )
         }
     )
 
     companion object {
         private const val ROOT_PATH = "/designs"
-        private const val GET_ALL_PATH = "/"
-        val PUBLIC_PATHS = listOf(
-            "${ROOT_PATH}$GET_ALL_PATH",
-        )
+        private const val GET_MY_DESIGNS_PATH = "/my"
+        val PUBLIC_PATHS: List<String> = listOf()
     }
 }

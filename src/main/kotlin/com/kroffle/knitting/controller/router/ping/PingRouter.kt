@@ -21,7 +21,7 @@ class PingRouter(private val handler: PingHandler) {
         private const val ROOT_PATH = "/ping"
         private const val GET_PATH = "/"
         val PUBLIC_PATHS = listOf(
-            "${ROOT_PATH}$GET_PATH",
+            "$ROOT_PATH$GET_PATH",
         )
     }
 }

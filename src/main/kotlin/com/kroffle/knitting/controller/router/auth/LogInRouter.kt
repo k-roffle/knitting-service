@@ -27,8 +27,8 @@ class LogInRouter(private val handler: GoogleLogInHandler) {
         private const val AUTHORIZED_PATH = "/google/authorized"
         private const val REFRESH_TOKEN_PATH = "/refresh"
         val PUBLIC_PATHS = listOf(
-            "${ROOT_PATH}$REQUEST_CODE_PATH",
-            "${ROOT_PATH}$AUTHORIZED_PATH",
+            "$ROOT_PATH$REQUEST_CODE_PATH",
+            "$ROOT_PATH$AUTHORIZED_PATH",
         )
     }
 }

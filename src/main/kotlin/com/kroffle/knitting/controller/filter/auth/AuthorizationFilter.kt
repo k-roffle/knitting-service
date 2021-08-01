@@ -10,7 +10,6 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.UUID
 import com.kroffle.knitting.controller.router.auth.LogInRouter.Companion.PUBLIC_PATHS as LogInRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignRouter.Companion.PUBLIC_PATHS as DesignRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignsRouter.Companion.PUBLIC_PATHS as DesignsRouterPublicPaths
@@ -27,7 +26,7 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
         } else null
     }
 
-    private fun getAuthorization(headers: HttpHeaders): Mono<UUID> {
+    private fun getAuthorization(headers: HttpHeaders): Mono<Long> {
         val token = resolveToken(headers)
             ?: return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "Header is Empty"))
         return try {
@@ -58,7 +57,7 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
     }
 
     interface TokenDecoder {
-        fun getAuthorizedUserId(token: String): UUID
+        fun getAuthorizedUserId(token: String): Long
     }
 
     companion object {

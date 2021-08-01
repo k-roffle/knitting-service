@@ -11,11 +11,11 @@ import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
-import java.util.UUID
 
 @Table("design")
 class DesignEntity(
-    @Id private var id: UUID?,
+    @Id private var id: Long?,
+    private val knitterId: Long,
     private val name: String,
     private val designType: DesignType,
     private val patternType: PatternType,
@@ -36,6 +36,7 @@ class DesignEntity(
     fun toDesign(): Design =
         Design(
             id = this.id,
+            knitterId = this.knitterId,
             name = this.name,
             designType = this.designType,
             patternType = this.patternType,
@@ -59,6 +60,7 @@ class DesignEntity(
 fun Design.toDesignEntity() =
     DesignEntity(
         id = this.id,
+        knitterId = this.knitterId,
         name = this.name,
         designType = this.designType,
         patternType = this.patternType,

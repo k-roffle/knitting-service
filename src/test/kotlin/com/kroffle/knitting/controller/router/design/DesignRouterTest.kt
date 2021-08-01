@@ -1,12 +1,16 @@
 package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
+import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
+import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.design.entity.DesignEntity
 import com.kroffle.knitting.infra.jwt.TokenDecoder
+import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
@@ -31,6 +35,8 @@ class DesignRouterTest {
 
     private lateinit var design: Design
 
+    private lateinit var tokenPublisher: TokenPublisher
+
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
@@ -43,10 +49,16 @@ class DesignRouterTest {
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
+    private val secretKey = "I'M SECRET KEY!"
+
     @BeforeEach
     fun setUp() {
+        tokenPublisher = TokenPublisher(secretKey)
+        tokenDecoder = TokenDecoder(secretKey)
+
         design = DesignEntity(
             id = null,
+            knitterId = 1,
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,
@@ -58,23 +70,50 @@ class DesignRouterTest {
             bottomWidth = 4.0,
             armholeDepth = 5.0,
             needle = "5.0mm",
-            yarn = null,
+            yarn = "캐시미어 400g",
             extra = null,
             price = 0,
             pattern = "# Step1. 코를 10개 잡습니다.",
         ).toDesign()
 
         val routerFunction = DesignRouter(DesignHandler(DesignService(repo))).designRouterFunction()
-        webClient = WebTestClient.bindToRouterFunction(routerFunction).build()
+        webClient = WebTestClient
+            .bindToRouterFunction(routerFunction)
+            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
+            .build()
     }
 
     @Test
     fun `design 이 잘 생성되어야 함`() {
-        val body = objectMapper.writeValueAsString(design)
+        val userId: Long = 1
+        val token = tokenPublisher.publish(userId)
+
+        val body = objectMapper.writeValueAsString(
+            NewDesignRequest(
+                name = "test",
+                designType = DesignType.Sweater,
+                patternType = PatternType.Text,
+                stitches = 23.5,
+                rows = 25.0,
+                size = NewDesignSize(
+                    totalLength = 1.0,
+                    sleeveLength = 2.0,
+                    shoulderWidth = 3.0,
+                    bottomWidth = 4.0,
+                    armholeDepth = 5.0,
+                ),
+                needle = "5.0mm",
+                yarn = "캐시미어 400g",
+                extra = null,
+                price = 0,
+                pattern = "# Step1. 코를 10개 잡습니다.",
+            )
+        )
         given(repo.createDesign(any())).willReturn(Mono.just(design))
         val response = webClient
             .post()
             .uri("/design/")
+            .header("Authorization", "Bearer $token")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -85,13 +124,14 @@ class DesignRouterTest {
             .returnResult()
             .responseBody!!
         assertThat(response.id).isEqualTo(design.id)
+        assertThat(response.knitterId).isEqualTo(1)
         assertThat(response.name).isEqualTo("test")
         assertThat(response.designType).isEqualTo(DesignType.Sweater)
         assertThat(response.patternType).isEqualTo(PatternType.Text)
         assertThat(response.gauge.stitches).isEqualTo(23.5)
         assertThat(response.gauge.rows).isEqualTo(25.0)
         assertThat(response.needle).isEqualTo("5.0mm")
-        assertThat(response.yarn).isEqualTo(null)
+        assertThat(response.yarn).isEqualTo("캐시미어 400g")
         assertThat(response.extra).isEqualTo(null)
         assertThat(response.price.value).isEqualTo(0)
         assertThat(response.size.totalLength.value).isEqualTo(1.0)

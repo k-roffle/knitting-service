@@ -38,3 +38,6 @@ out/
 
 ### Sensitive files ###
 secret_env.sh
+
+### local files ###
+src/main/resources/application-local.properties

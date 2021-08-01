@@ -29,7 +29,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
-import java.util.UUID
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -117,7 +116,7 @@ class LoginRouterTest {
     fun `이미 가입한 유저인 경우 프로필 정보를 업데이트 한 후 access token 을 발급 받을 수 있어야 함`() {
         setWebClientWithMockOAuthHelper()
         val targetKnitter = KnitterEntity(
-            id = UUID.randomUUID(),
+            id = 1,
             email = "mock@email.com",
             name = null,
             profileImageUrl = null,
@@ -183,7 +182,7 @@ class LoginRouterTest {
     @Test
     fun `새로 가입하는 유저의 경우 계정을 생성한 후 access token 을 발급 받을 수 있어야 함`() {
         setWebClientWithMockOAuthHelper()
-        val newUserId = UUID.randomUUID()
+        val newUserId: Long = 1
         val newUserCreatedAt = LocalDateTime.now()
         val mockUser = Knitter(
             id = newUserId,
@@ -240,7 +239,7 @@ class LoginRouterTest {
 
     @Test
     fun `리프레시 요청시 동일한 유저 id로 토큰이 갱신 되어야 함`() {
-        val userId = UUID.randomUUID()
+        val userId: Long = 1
         val token = tokenPublisher.publish(userId)
         val result = webClient
             .post()
