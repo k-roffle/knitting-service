@@ -1,7 +1,7 @@
 package com.kroffle.knitting.controller.handler.auth
 
-import com.kroffle.knitting.controller.handler.auth.model.AuthorizedResponse
-import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
+import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
+import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
 import com.kroffle.knitting.usecase.auth.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
