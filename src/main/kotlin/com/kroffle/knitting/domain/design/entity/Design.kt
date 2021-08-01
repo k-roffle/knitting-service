@@ -17,7 +17,7 @@ class Design(
     val gauge: Gauge,
     val size: Size,
     val needle: String,
-    val yarn: String?,
+    val yarn: String,
     val extra: String?,
     val price: Money,
     val pattern: Pattern,
