@@ -13,7 +13,7 @@ CREATE TABLE knitter (
 
 CREATE TABLE design (
     id BIGSERIAL NOT NULL,
-    knitterId BIGSERIAL NOT NULL REFERENCES knitter(id),
+    knitter_id BIGSERIAL NOT NULL REFERENCES knitter(id),
     name VARCHAR NOT NULL,
     design_type design_type NOT NULL,
     pattern_type pattern_type NOT NULL,
