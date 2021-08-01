@@ -2,8 +2,8 @@ package com.kroffle.knitting.controller.router.auth
 
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
-import com.kroffle.knitting.controller.handler.auth.model.AuthorizedResponse
-import com.kroffle.knitting.controller.handler.auth.model.RefreshTokenResponse
+import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
+import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher

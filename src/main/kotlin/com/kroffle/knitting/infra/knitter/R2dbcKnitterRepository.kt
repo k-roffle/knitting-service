@@ -17,4 +17,8 @@ class R2dbcKnitterRepository(private val dbDesignRepository: DBKnitterRepository
     override fun findByEmail(email: String): Mono<Knitter> = dbDesignRepository
         .findFirstByEmail(email)
         .map { it.toKnitter() }
+
+    override fun findById(id: Long): Mono<Knitter> = dbDesignRepository
+        .findById(id)
+        .map { it.toKnitter() }
 }
