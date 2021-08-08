@@ -18,18 +18,6 @@ class AuthService(
             profile ->
             knitterRepository
                 .findByEmail(profile.email)
-                .flatMap {
-                    knitter ->
-                    knitterRepository.update(
-                        Knitter(
-                            id = knitter.id,
-                            email = knitter.email,
-                            name = profile.name,
-                            profileImageUrl = profile.profileImageUrl,
-                            createdAt = knitter.createdAt,
-                        )
-                    )
-                }
                 .switchIfEmpty {
                     knitterRepository.create(
                         Knitter(
@@ -65,7 +53,6 @@ class AuthService(
 
     interface KnitterRepository {
         fun create(user: Knitter): Mono<Knitter>
-        fun update(user: Knitter): Mono<Knitter>
         fun findByEmail(email: String): Mono<Knitter>
         fun findById(id: Long): Mono<Knitter>
     }
