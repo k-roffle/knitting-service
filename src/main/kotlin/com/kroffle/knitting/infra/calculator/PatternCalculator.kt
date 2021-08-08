@@ -1,10 +1,10 @@
-package com.kroffle.knitting.infra.design.calculator
+package com.kroffle.knitting.infra.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
-import com.kroffle.knitting.infra.design.calculator.data.toDraftPattern
+import com.kroffle.knitting.infra.calculator.data.toDraftPattern
 
 class PatternCalculator {
     private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()

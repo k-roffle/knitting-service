@@ -5,10 +5,10 @@ import com.kroffle.knitting.controller.handler.auth.ProfileHandler
 import com.kroffle.knitting.controller.handler.auth.dto.MyProfileResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
-import com.kroffle.knitting.infra.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
 import com.kroffle.knitting.infra.oauth.dto.ClientInfo
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
+import com.kroffle.knitting.infra.persistence.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
