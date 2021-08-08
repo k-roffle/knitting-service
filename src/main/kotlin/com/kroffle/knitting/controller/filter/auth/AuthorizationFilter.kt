@@ -1,6 +1,6 @@
 package com.kroffle.knitting.controller.filter.auth
 
-import com.kroffle.knitting.controller.exception.auth.UnauthorizedException
+import com.kroffle.knitting.controller.filter.auth.exception.TokenDecodeException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -32,7 +32,7 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
             ?: return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "Header is Empty"))
         return try {
             Mono.just(tokenDecoder.getAuthorizedUserId(token))
-        } catch (e: UnauthorizedException) {
+        } catch (e: TokenDecodeException) {
             Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, e.message))
         }
     }
