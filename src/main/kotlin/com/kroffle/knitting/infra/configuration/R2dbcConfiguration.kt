@@ -2,6 +2,8 @@ package com.kroffle.knitting.infra.configuration
 
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.infra.configuration.r2dbc.converter.DesignTypeConverter
+import com.kroffle.knitting.infra.configuration.r2dbc.converter.PatternTypeConverter
 import com.kroffle.knitting.infra.properties.DatabaseProperties
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
@@ -10,24 +12,8 @@ import io.r2dbc.spi.ConnectionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.convert.converter.Converter
-import org.springframework.data.convert.WritingConverter
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
-
-@WritingConverter
-class DesignTypeConverter : Converter<DesignType, DesignType> {
-    override fun convert(source: DesignType): DesignType {
-        return source
-    }
-}
-
-@WritingConverter
-class PatternTypeConverter : Converter<PatternType, PatternType> {
-    override fun convert(source: PatternType): PatternType {
-        return source
-    }
-}
 
 @Configuration
 @EnableR2dbcRepositories
