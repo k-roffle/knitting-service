@@ -1,7 +1,7 @@
-package com.kroffle.knitting.infra.knitter
+package com.kroffle.knitting.infra.persistence.knitter
 
 import com.kroffle.knitting.domain.knitter.entity.Knitter
-import com.kroffle.knitting.infra.knitter.entity.toKnitterEntity
+import com.kroffle.knitting.infra.persistence.knitter.entity.toKnitterEntity
 import com.kroffle.knitting.usecase.auth.AuthService
 import reactor.core.publisher.Mono
 

@@ -1,14 +1,14 @@
 package com.kroffle.knitting.infra.configuration
 
-import com.kroffle.knitting.infra.design.DBDesignRepository
-import com.kroffle.knitting.infra.design.R2dbcDesignRepository
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
-import com.kroffle.knitting.infra.knitter.DBKnitterRepository
-import com.kroffle.knitting.infra.knitter.R2dbcKnitterRepository
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
 import com.kroffle.knitting.infra.oauth.dto.ClientInfo
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
+import com.kroffle.knitting.infra.persistence.design.DBDesignRepository
+import com.kroffle.knitting.infra.persistence.design.R2dbcDesignRepository
+import com.kroffle.knitting.infra.persistence.knitter.DBKnitterRepository
+import com.kroffle.knitting.infra.persistence.knitter.R2dbcKnitterRepository
 import com.kroffle.knitting.infra.properties.AuthProperties
 import com.kroffle.knitting.infra.properties.ClientProperties
 import com.kroffle.knitting.infra.properties.SelfProperties

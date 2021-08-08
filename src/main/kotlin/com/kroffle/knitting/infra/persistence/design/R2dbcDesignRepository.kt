@@ -1,7 +1,7 @@
-package com.kroffle.knitting.infra.design
+package com.kroffle.knitting.infra.persistence.design
 
 import com.kroffle.knitting.domain.design.entity.Design
-import com.kroffle.knitting.infra.design.entity.toDesignEntity
+import com.kroffle.knitting.infra.persistence.design.entity.toDesignEntity
 import com.kroffle.knitting.usecase.design.DesignRepository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

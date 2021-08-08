@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.design.entity
+package com.kroffle.knitting.infra.persistence.design.entity
 
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType

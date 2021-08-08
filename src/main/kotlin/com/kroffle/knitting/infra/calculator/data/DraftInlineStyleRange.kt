@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.design.calculator.data
+package com.kroffle.knitting.infra.calculator.data
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 
