@@ -10,10 +10,6 @@ class R2dbcKnitterRepository(private val dbDesignRepository: DBKnitterRepository
         .save(user.toKnitterEntity())
         .map { it.toKnitter() }
 
-    override fun update(user: Knitter): Mono<Knitter> = dbDesignRepository
-        .save(user.toKnitterEntity())
-        .map { it.toKnitter() }
-
     override fun findByEmail(email: String): Mono<Knitter> = dbDesignRepository
         .findFirstByEmail(email)
         .map { it.toKnitter() }

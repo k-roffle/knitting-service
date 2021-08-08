@@ -113,7 +113,7 @@ class LoginRouterTest {
     }
 
     @Test
-    fun `이미 가입한 유저인 경우 프로필 정보를 업데이트 한 후 access token 을 발급 받을 수 있어야 함`() {
+    fun `이미 가입한 유저인 경우 access token 을 발급 받을 수 있어야 함`() {
         setWebClientWithMockOAuthHelper()
         val targetKnitter = KnitterEntity(
             id = 1,
@@ -137,19 +137,6 @@ class LoginRouterTest {
             Mono.just(targetKnitter)
         )
 
-        given(repo.update(any()))
-            .willReturn(
-                Mono.just(
-                    Knitter(
-                        id = targetKnitter.id,
-                        email = "mock@email.com",
-                        name = "John Doe",
-                        profileImageUrl = null,
-                        createdAt = targetKnitter.createdAt,
-                    ),
-                )
-            )
-
         val result = webClient
             .get()
             .uri {
@@ -165,18 +152,6 @@ class LoginRouterTest {
             .returnResult()
             .responseBody!!
         assert(tokenDecoder.getAuthorizedUserId(result.token) == targetKnitter.id)
-
-        verify(repo).update(
-            argThat {
-                param ->
-                assert(param.id == targetKnitter.id)
-                assert(param.email == targetKnitter.email)
-                assert(param.name == "John Doe")
-                assert(param.profileImageUrl == null)
-                assert(param.createdAt == targetKnitter.createdAt)
-                true
-            }
-        )
     }
 
     @Test
