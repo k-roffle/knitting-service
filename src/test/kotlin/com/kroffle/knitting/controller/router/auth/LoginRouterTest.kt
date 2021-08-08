@@ -14,7 +14,7 @@ import com.kroffle.knitting.infra.persistence.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.KnitterRepository
-import com.kroffle.knitting.usecase.auth.dto.Profile
+import com.kroffle.knitting.usecase.auth.dto.OAuthProfile
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -125,7 +125,7 @@ class LoginRouterTest {
 
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
             Mono.just(
-                Profile(
+                OAuthProfile(
                     email = targetKnitter.email,
                     name = "John Doe",
                     profileImageUrl = null
@@ -169,7 +169,7 @@ class LoginRouterTest {
 
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
             Mono.just(
-                Profile(
+                OAuthProfile(
                     email = mockUser.email,
                     name = mockUser.name!!,
                     profileImageUrl = mockUser.profileImageUrl,

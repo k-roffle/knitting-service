@@ -1,7 +1,7 @@
 package com.kroffle.knitting.usecase.auth
 
 import com.kroffle.knitting.domain.knitter.entity.Knitter
-import com.kroffle.knitting.usecase.auth.dto.Profile
+import com.kroffle.knitting.usecase.auth.dto.OAuthProfile
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.net.URI
@@ -14,25 +14,27 @@ class AuthService(
     fun getAuthorizationUri(): URI = oAuthHelper.getAuthorizationUri()
 
     fun authorize(code: String): Mono<String> {
-        return oAuthHelper.getProfile(code).flatMap {
-            profile ->
-            knitterRepository
-                .findByEmail(profile.email)
-                .switchIfEmpty {
-                    knitterRepository.create(
-                        Knitter(
-                            id = null,
-                            email = profile.email,
-                            name = profile.name,
-                            profileImageUrl = profile.profileImageUrl,
-                            createdAt = null,
+        return oAuthHelper
+            .getProfile(code)
+            .flatMap {
+                profile ->
+                knitterRepository
+                    .findByEmail(profile.email)
+                    .switchIfEmpty {
+                        knitterRepository.create(
+                            Knitter(
+                                id = null,
+                                email = profile.email,
+                                name = profile.name,
+                                profileImageUrl = profile.profileImageUrl,
+                                createdAt = null,
+                            )
                         )
-                    )
-                }
-                .flatMap {
-                    Mono.just(tokenPublisher.publish(it.id!!))
-                }
-        }
+                    }
+                    .flatMap {
+                        Mono.just(tokenPublisher.publish(it.id!!))
+                    }
+            }
     }
 
     fun refreshToken(userId: Long): String {
@@ -44,7 +46,7 @@ class AuthService(
 
     interface OAuthHelper {
         fun getAuthorizationUri(): URI
-        fun getProfile(code: String): Mono<Profile>
+        fun getProfile(code: String): Mono<OAuthProfile>
     }
 
     interface TokenPublisher {

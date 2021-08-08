@@ -5,7 +5,7 @@ import com.kroffle.knitting.infra.oauth.dto.GoogleAccessTokenResponse
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.infra.oauth.dto.GoogleProfileResponse
 import com.kroffle.knitting.usecase.auth.AuthService
-import com.kroffle.knitting.usecase.auth.dto.Profile
+import com.kroffle.knitting.usecase.auth.dto.OAuthProfile
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -65,7 +65,7 @@ class GoogleOAuthHelperImpl(
                 .toUriString()
         )
 
-    override fun getProfile(code: String): Mono<Profile> {
+    override fun getProfile(code: String): Mono<OAuthProfile> {
         val webClient = WebClient.create("https://www.googleapis.com")
         return getAccessToken(code).flatMap {
             webClient
@@ -81,7 +81,7 @@ class GoogleOAuthHelperImpl(
                 .bodyToMono(GoogleProfileResponse::class.java)
                 .flatMap {
                     Mono.just(
-                        Profile(
+                        OAuthProfile(
                             email = it.email,
                             name = it.name,
                             profileImageUrl = it.picture,
