@@ -27,7 +27,7 @@ class DesignEntity(
     private val bottomWidth: Double,
     private val armholeDepth: Double,
     private val needle: String,
-    private val yarn: String?,
+    private val yarn: String,
     private val extra: String?,
     private val price: Int = 0,
     private val pattern: String,
