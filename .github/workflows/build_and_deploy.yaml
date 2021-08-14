@@ -61,7 +61,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   deploy:
-    if: ${{ github.ref == 'main' }}
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     needs: build
     runs-on: ubuntu-latest
     steps:
