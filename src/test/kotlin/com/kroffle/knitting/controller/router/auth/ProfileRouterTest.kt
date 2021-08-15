@@ -95,7 +95,7 @@ class ProfileRouterTest {
 
         val result = webClient
             .get()
-            .uri("/profile/")
+            .uri("/profile")
             .header("Authorization", "Bearer $token")
             .exchange()
             .expectStatus().isOk

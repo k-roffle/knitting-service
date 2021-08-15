@@ -14,14 +14,13 @@ class ProfileRouter(private val handler: ProfileHandler) {
         RequestPredicates.path(ROOT_PATH),
         router {
             listOf(
-                GET(GET_MY_PROFILE_PATH, handler::getMyProfile),
+                GET(handler::getMyProfile),
             )
         }
     )
 
     companion object {
         private const val ROOT_PATH = "/profile"
-        private const val GET_MY_PROFILE_PATH = "/"
         val PUBLIC_PATHS: List<String> = listOf()
     }
 }
