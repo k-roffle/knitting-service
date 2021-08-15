@@ -1,6 +1,6 @@
-CREATE TYPE design_type AS ENUM ('Top', 'Blanket', 'Socks');
+CREATE TYPE design_type AS ENUM ('Sweater');
 
-CREATE TYPE pattern_type AS ENUM ('Letter', 'Image', 'Video');
+CREATE TYPE pattern_type AS ENUM ('Text', 'Image', 'Video');
 
 CREATE TABLE knitter (
     id BIGSERIAL NOT NULL,
