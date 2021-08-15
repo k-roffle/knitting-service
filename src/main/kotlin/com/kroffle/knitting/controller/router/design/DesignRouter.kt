@@ -14,14 +14,13 @@ class DesignRouter(private val handler: DesignHandler) {
         path(ROOT_PATH),
         router {
             listOf(
-                POST(CREATE_DESIGN_PATH, handler::createDesign),
+                POST(handler::createDesign),
             )
         }
     )
 
     companion object {
         private const val ROOT_PATH = "/design"
-        private const val CREATE_DESIGN_PATH = "/"
         val PUBLIC_PATHS = listOf<String>()
     }
 }
