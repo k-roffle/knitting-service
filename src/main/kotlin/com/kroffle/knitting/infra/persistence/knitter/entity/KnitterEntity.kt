@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.knitter.entity
+package com.kroffle.knitting.infra.persistence.knitter.entity
 
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import org.springframework.data.annotation.Id

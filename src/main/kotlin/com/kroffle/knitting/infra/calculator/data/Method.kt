@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.design.calculator.data
+package com.kroffle.knitting.infra.calculator.data
 
 enum class Method {
     Round,

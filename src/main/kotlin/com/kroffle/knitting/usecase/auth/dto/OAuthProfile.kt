@@ -1,6 +1,6 @@
 package com.kroffle.knitting.usecase.auth.dto
 
-data class Profile(
+data class OAuthProfile(
     val email: String,
     val name: String,
     val profileImageUrl: String?,
