@@ -3,6 +3,7 @@ package com.kroffle.knitting.controller.handler.auth
 import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
 import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.usecase.auth.AuthService
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -31,12 +32,9 @@ class GoogleLogInHandler(private val authService: AuthService) {
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
+        val knitterId = AuthHelper.getAuthenticatedId(req)
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(RefreshTokenResponse(authService.refreshToken(userId.get() as Long)))
+            .bodyValue(RefreshTokenResponse(authService.refreshToken(knitterId)))
     }
 }

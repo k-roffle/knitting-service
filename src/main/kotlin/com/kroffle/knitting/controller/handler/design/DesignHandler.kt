@@ -6,6 +6,7 @@ import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.controller.handler.exception.BadRequest
 import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
@@ -38,15 +39,12 @@ class DesignHandler(private val service: DesignService) {
             .bodyToMono(NewDesignRequest::class.java)
             .switchIfEmpty(Mono.error(BadRequest("Body is required")))
             .doOnNext { validate(it) }
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
+        val knitterId = AuthHelper.getAuthenticatedId(req)
         return design
             .flatMap {
                 service.create(
                     Design(
-                        knitterId = userId.get() as Long,
+                        knitterId = knitterId,
                         name = it.name,
                         designType = it.designType,
                         patternType = it.patternType,
@@ -92,14 +90,11 @@ class DesignHandler(private val service: DesignService) {
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
         // TODO 5: last_cursor 내려주기
         val paging = PaginationHelper.getPagingFromRequest(req)
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
+        val knitterId = AuthHelper.getAuthenticatedId(req)
         return service
             .getMyDesign(
                 MyDesignFilter(
-                    userId.get() as Long,
+                    knitterId,
                     paging,
                     Sort("id", SortDirection.DESC),
                 )

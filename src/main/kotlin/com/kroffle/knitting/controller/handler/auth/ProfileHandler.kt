@@ -2,6 +2,7 @@ package com.kroffle.knitting.controller.handler.auth
 
 import com.kroffle.knitting.controller.handler.auth.dto.MyProfileResponse
 import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.usecase.auth.AuthService
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -13,12 +14,9 @@ import reactor.core.publisher.Mono
 @Component
 class ProfileHandler(private val authService: AuthService) {
     fun getMyProfile(req: ServerRequest): Mono<ServerResponse> {
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
+        val knitterId = AuthHelper.getAuthenticatedId(req)
         return authService
-            .getKnitter(userId.get() as Long)
+            .getKnitter(knitterId)
             .flatMap {
                 knitter ->
                 ok()
