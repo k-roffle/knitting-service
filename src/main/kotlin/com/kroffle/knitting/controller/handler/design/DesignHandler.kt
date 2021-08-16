@@ -6,6 +6,7 @@ import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.controller.handler.exception.BadRequest
 import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
@@ -13,6 +14,9 @@ import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.usecase.design.DesignService
+import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -86,12 +90,20 @@ class DesignHandler(private val service: DesignService) {
     }
 
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
+        // TODO 5: last_cursor 내려주기
+        val paging = PaginationHelper.getPagingFromRequest(req)
         val userId = req.attribute("userId")
         if (userId.isEmpty) {
             throw Unauthorized("userId is required")
         }
         return service
-            .getMyDesign(userId.get() as Long)
+            .getMyDesign(
+                MyDesignFilter(
+                    userId.get() as Long,
+                    paging,
+                    Sort("id", SortDirection.DESC),
+                )
+            )
             .map {
                 design ->
                 MyDesign(

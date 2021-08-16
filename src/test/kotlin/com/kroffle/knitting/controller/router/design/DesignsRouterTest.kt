@@ -13,6 +13,9 @@ import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
+import com.kroffle.knitting.usecase.helper.pagination.type.Paging
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -64,7 +67,13 @@ class DesignsRouterTest {
 
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
-        given(repo.getDesignsByKnitterId(1))
+        given(
+            repo.getDesignsByKnitterId(
+                1,
+                Paging(0, 10),
+                Sort("id", SortDirection.DESC)
+            )
+        )
             .willReturn(
                 Flux.just(
                     DesignEntity(
