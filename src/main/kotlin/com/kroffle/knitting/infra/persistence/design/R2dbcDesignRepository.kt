@@ -1,6 +1,7 @@
 package com.kroffle.knitting.infra.persistence.design
 
 import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toDesignEntity
 import com.kroffle.knitting.infra.persistence.helper.pagination.PaginationHelper
 import com.kroffle.knitting.usecase.design.DesignRepository
@@ -17,16 +18,26 @@ class R2dbcDesignRepository(private val dbDesignRepository: DBDesignRepository) 
             .map { it.toDesign() }
 
     override fun getDesignsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Design> {
-        return when (sort.direction) {
+        val pageRequest = PaginationHelper.makePageRequest(paging, sort)
+
+        val designs: Flux<DesignEntity> = when (sort.direction) {
             SortDirection.DESC ->
-                dbDesignRepository
-                    .findAllByKnitterIdAndIdBefore(
-                        knitterId = knitterId,
-                        id = paging.after,
-                        pageable = PaginationHelper.makePageRequest(paging, sort)
-                    )
-                    .map { it.toDesign() }
+                if (paging.after != null) {
+                    dbDesignRepository
+                        .findAllByKnitterIdAndIdBefore(
+                            knitterId = knitterId,
+                            id = paging.after,
+                            pageable = pageRequest,
+                        )
+                } else {
+                    dbDesignRepository
+                        .findAllByKnitterId(
+                            knitterId = knitterId,
+                            pageable = pageRequest,
+                        )
+                }
             else -> throw NotImplementedError()
         }
+        return designs.map { it.toDesign() }
     }
 }

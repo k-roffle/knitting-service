@@ -12,8 +12,8 @@ class PaginationHelper {
             else value.get()
         }
 
-        private fun getAfter(request: ServerRequest): Long {
-            return getValue(request, "after")?.toLong() ?: 0
+        private fun getAfter(request: ServerRequest): Long? {
+            return getValue(request, "after")?.toLong()
         }
 
         private fun getCount(request: ServerRequest): Int {
