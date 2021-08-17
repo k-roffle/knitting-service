@@ -11,7 +11,6 @@ import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
-import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.usecase.design.DesignService
@@ -19,24 +18,17 @@ import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.springframework.stereotype.Component
-import org.springframework.validation.BeanPropertyBindingResult
-import org.springframework.validation.Errors
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList
 
 @Component
 class DesignHandler(private val service: DesignService) {
-
-    private val validator = DesignValidator()
-
     fun createDesign(req: ServerRequest): Mono<ServerResponse> {
         val design: Mono<NewDesignRequest> = req
             .bodyToMono(NewDesignRequest::class.java)
             .switchIfEmpty(Mono.error(BadRequest("Body is required")))
-            .doOnNext { validate(it) }
         val knitterId = AuthHelper.getAuthenticatedId(req)
         return design
             .flatMap {
@@ -72,8 +64,10 @@ class DesignHandler(private val service: DesignService) {
                         needle = it.needle,
                         yarn = it.yarn,
                         extra = it.extra,
-                        price = Money(it.price),
                         pattern = Pattern(it.pattern),
+                        description = it.description,
+                        targetLevel = it.targetLevel,
+                        coverImageUrl = it.coverImageUrl,
                         createdAt = null,
                     )
                 )
@@ -120,13 +114,5 @@ class DesignHandler(private val service: DesignService) {
                     numberOfDesignsSold = 2,
                 )
             )
-    }
-
-    private fun validate(design: NewDesignRequest) {
-        val errors: Errors = BeanPropertyBindingResult(design, "design")
-        validator.validate(design, errors)
-        if (errors.hasErrors()) {
-            throw ServerWebInputException(errors.toString())
-        }
     }
 }

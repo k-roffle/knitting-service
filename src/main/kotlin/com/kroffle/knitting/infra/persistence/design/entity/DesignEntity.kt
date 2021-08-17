@@ -2,10 +2,10 @@ package com.kroffle.knitting.infra.persistence.design.entity
 
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
+import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
-import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
@@ -29,8 +29,10 @@ class DesignEntity(
     private val needle: String,
     private val yarn: String,
     private val extra: String?,
-    private val price: Int = 0,
     private val pattern: String,
+    private val description: String,
+    private val targetLevel: String,
+    private val coverImageUrl: String,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     fun toDesign(): Design =
@@ -51,8 +53,10 @@ class DesignEntity(
             needle = this.needle,
             yarn = this.yarn,
             extra = this.extra,
-            price = Money(this.price),
             pattern = Pattern(this.pattern),
+            description = this.description,
+            targetLevel = LevelType.getFromKey(this.targetLevel),
+            coverImageUrl = this.coverImageUrl,
             createdAt = this.createdAt,
         )
 }
@@ -74,7 +78,9 @@ fun Design.toDesignEntity() =
         needle = this.needle,
         yarn = this.yarn,
         extra = this.extra,
-        price = this.price.value,
         pattern = this.pattern.value,
+        description = this.description,
+        targetLevel = this.targetLevel.key,
+        coverImageUrl = this.coverImageUrl,
         createdAt = this.createdAt ?: LocalDateTime.now(),
     )
