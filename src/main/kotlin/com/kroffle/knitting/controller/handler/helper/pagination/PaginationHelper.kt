@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.handler.helper.pagination
 
+import com.kroffle.knitting.controller.handler.exception.BadRequest
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import org.springframework.web.reactive.function.server.ServerRequest
 
@@ -22,7 +23,11 @@ class PaginationHelper {
         }
 
         fun getPagingFromRequest(req: ServerRequest): Paging {
-            return Paging(after = getAfter(req), count = getCount(req))
+            try {
+                return Paging(after = getAfter(req), count = getCount(req))
+            } catch (e: IllegalArgumentException) {
+                throw BadRequest(e.message ?: "Invalid paging parameter")
+            }
         }
     }
 }

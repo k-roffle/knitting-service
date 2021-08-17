@@ -1,6 +1,14 @@
 package com.kroffle.knitting.usecase.helper.pagination.type
 
-data class Paging(
-    val after: Long,
+import java.lang.IllegalArgumentException
+
+class Paging(
+    val after: Long?,
     val count: Int,
-)
+) {
+    init {
+        require(this.count in 1..30) {
+            throw IllegalArgumentException("Count must be between 1 and 30")
+        }
+    }
+}
