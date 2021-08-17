@@ -7,8 +7,8 @@ class MyDesign(
     val id: Long,
     val name: String,
     val yarn: String,
-    @JsonProperty("thumbnail_image_url")
-    val thumbnailImageUrl: String?,
+    @JsonProperty("cover_image_url")
+    val coverImageUrl: String,
     val tags: List<String>,
 ) : ListItemData {
     override fun getCursor(): String = id.toString()

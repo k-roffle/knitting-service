@@ -117,7 +117,7 @@ class DesignsRouterTest {
                     id = 1,
                     name = "캔디리더 효정 니트",
                     yarn = "패션아란 400g 1볼",
-                    thumbnailImageUrl = null,
+                    coverImageUrl = "http://test.kroffle.com/image.jpg",
                     tags = listOf("니트", "서술형도안"),
                 ),
             )

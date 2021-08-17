@@ -7,6 +7,6 @@ fun MyDesign.like(other: MyDesign): Boolean {
     return id == other.id &&
         name == other.name &&
         yarn == other.yarn &&
-        thumbnailImageUrl == other.thumbnailImageUrl &&
+        coverImageUrl == other.coverImageUrl &&
         tags == other.tags
 }

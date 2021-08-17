@@ -96,7 +96,7 @@ class DesignHandler(private val service: DesignService) {
                     id = design.id!!,
                     name = design.name,
                     yarn = design.yarn,
-                    thumbnailImageUrl = null,
+                    coverImageUrl = design.coverImageUrl,
                     tags = listOf(design.designType.tag, design.patternType.tag)
                 )
             }
