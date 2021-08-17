@@ -2,7 +2,6 @@ package com.kroffle.knitting.controller.handler.helper.response
 
 import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.controller.handler.helper.response.type.ListItemData
-import com.kroffle.knitting.controller.handler.helper.response.type.ListMetaData
 import com.kroffle.knitting.controller.handler.helper.response.type.MetaData
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectData
 import org.springframework.http.MediaType
@@ -18,13 +17,14 @@ class ResponseHelper {
             )
 
         private fun makeKnittingResponse(data: List<ListItemData>):
-            APIResponse<List<ListItemData>> =
-                APIResponse(
-                    data = data,
-                    meta = ListMetaData(
-                        lastCursor = data.last().getCursor(),
-                    )
-                )
+            APIResponse<List<ListItemData>> {
+                val metaData = if (data.isEmpty()) {
+                    MetaData()
+                } else {
+                    MetaData(lastCursor = data.last().getCursor())
+                }
+                return APIResponse(data, metaData)
+            }
 
         fun makeJsonResponse(data: ObjectData): Mono<ServerResponse> {
             return ServerResponse.ok()
