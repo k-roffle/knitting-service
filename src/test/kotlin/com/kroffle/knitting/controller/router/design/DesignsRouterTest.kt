@@ -14,14 +14,15 @@ import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
-import com.kroffle.knitting.usecase.helper.pagination.type.Paging
-import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.verify
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -69,13 +70,7 @@ class DesignsRouterTest {
 
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
-        given(
-            repo.getDesignsByKnitterId(
-                1,
-                Paging(0, 10),
-                Sort("id", SortDirection.DESC)
-            )
-        )
+        given(repo.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(
                 Flux.just(
                     DesignEntity(
@@ -123,6 +118,21 @@ class DesignsRouterTest {
                     tags = listOf("니트", "서술형도안"),
                 ),
             )
+        )
+        verify(repo).getDesignsByKnitterId(
+            argThat { param -> param == 1.toLong() },
+            argThat {
+                param ->
+                assert(param.after == null)
+                assert(param.count == 10)
+                true
+            },
+            argThat {
+                param ->
+                assert(param.column == "id")
+                assert(param.direction == SortDirection.DESC)
+                true
+            },
         )
     }
 
