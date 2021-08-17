@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
+import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
+import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
@@ -26,6 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
 
 @WebFluxTest
@@ -57,7 +60,7 @@ class DesignRouterTest {
         tokenDecoder = TokenDecoder(secretKey)
 
         design = DesignEntity(
-            id = null,
+            id = 1,
             knitterId = 1,
             name = "test",
             designType = DesignType.Sweater,
@@ -110,7 +113,7 @@ class DesignRouterTest {
             )
         )
         given(repo.createDesign(any())).willReturn(Mono.just(design))
-        val response = webClient
+        val response: APIResponse<NewDesignResponse> = webClient
             .post()
             .uri("/design/")
             .header("Authorization", "Bearer $token")
@@ -120,26 +123,9 @@ class DesignRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody(Design::class.java)
+            .expectBody<APIResponse<NewDesignResponse>>()
             .returnResult()
             .responseBody!!
-        assertThat(response.id).isEqualTo(design.id)
-        assertThat(response.knitterId).isEqualTo(1)
-        assertThat(response.name).isEqualTo("test")
-        assertThat(response.designType).isEqualTo(DesignType.Sweater)
-        assertThat(response.patternType).isEqualTo(PatternType.Text)
-        assertThat(response.gauge.stitches).isEqualTo(23.5)
-        assertThat(response.gauge.rows).isEqualTo(25.0)
-        assertThat(response.needle).isEqualTo("5.0mm")
-        assertThat(response.yarn).isEqualTo("캐시미어 400g")
-        assertThat(response.extra).isEqualTo(null)
-        assertThat(response.price.value).isEqualTo(0)
-        assertThat(response.size.totalLength.value).isEqualTo(1.0)
-        assertThat(response.size.sleeveLength.value).isEqualTo(2.0)
-        assertThat(response.size.shoulderWidth.value).isEqualTo(3.0)
-        assertThat(response.size.bottomWidth.value).isEqualTo(4.0)
-        assertThat(response.size.armholeDepth.value).isEqualTo(5.0)
-        assertThat(response.pattern.value).isEqualTo("# Step1. 코를 10개 잡습니다.")
-        assertThat(response.createdAt).isEqualTo(design.createdAt)
+        assertThat(response.data.id).isEqualTo(design.id)
     }
 }

@@ -3,8 +3,9 @@ package com.kroffle.knitting.controller.router.design
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
-import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
 import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
+import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
+import com.kroffle.knitting.controller.router.design.extension.like
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.jwt.TokenDecoder
@@ -26,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 
 @WebFluxTest
@@ -98,7 +100,7 @@ class DesignsRouterTest {
                 )
             )
 
-        val responseBody: MyDesignsResponse = webClient
+        val responseBody: APIResponse<List<MyDesign>> = webClient
             .get()
             .uri("/designs/my")
             .header("Authorization", "Bearer $token")
@@ -106,12 +108,13 @@ class DesignsRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody(MyDesignsResponse::class.java)
+            .expectBody<APIResponse<List<MyDesign>>>()
             .returnResult()
             .responseBody!!
 
-        assertThat(responseBody.designs).isEqualTo(
-            listOf(
+        assertThat(responseBody.data.size).isEqualTo(1)
+        assert(
+            responseBody.data.first().like(
                 MyDesign(
                     id = 1,
                     name = "캔디리더 효정 니트",
@@ -125,7 +128,7 @@ class DesignsRouterTest {
 
     @Test
     fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
-        val responseBody: SalesSummaryResponse = webClient
+        val responseBody: APIResponse<SalesSummaryResponse> = webClient
             .get()
             .uri("/designs/sales-summary/my")
             .header("Authorization", "Bearer $token")
@@ -133,11 +136,11 @@ class DesignsRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody(SalesSummaryResponse::class.java)
+            .expectBody<APIResponse<SalesSummaryResponse>>()
             .returnResult()
             .responseBody!!
 
-        assertThat(responseBody).isEqualTo(
+        assertThat(responseBody.data).isEqualTo(
             SalesSummaryResponse(
                 numberOfDesignsOnSales = 1,
                 numberOfDesignsSold = 2,
