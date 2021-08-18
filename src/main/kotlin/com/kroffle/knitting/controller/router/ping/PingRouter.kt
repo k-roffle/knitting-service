@@ -13,15 +13,14 @@ class PingRouter(private val handler: PingHandler) {
     fun pingRouterFunction() = nest(
         path(ROOT_PATH),
         router {
-            listOf(GET(GET_PATH, handler::get))
+            listOf(GET(handler::get))
         }
     )
 
     companion object {
         private const val ROOT_PATH = "/ping"
-        private const val GET_PATH = "/"
         val PUBLIC_PATHS = listOf(
-            "$ROOT_PATH$GET_PATH",
+            "$ROOT_PATH",
         )
     }
 }
