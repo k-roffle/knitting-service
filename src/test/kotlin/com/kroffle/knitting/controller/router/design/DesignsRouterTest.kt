@@ -53,14 +53,14 @@ class DesignsRouterTest {
 
     private val secretKey = "I'M SECRET KEY!"
 
-    private val userId: Long = 1
+    private val knitterId: Long = 1
 
     @BeforeEach
     fun setUp() {
         tokenPublisher = TokenPublisher(secretKey)
         tokenDecoder = TokenDecoder(secretKey)
 
-        token = tokenPublisher.publish(userId)
+        token = tokenPublisher.publish(knitterId)
 
         val routerFunction = DesignsRouter(DesignHandler(DesignService(repo))).designsRouterFunction()
         webClient = WebTestClient

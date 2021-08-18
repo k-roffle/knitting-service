@@ -37,8 +37,8 @@ class AuthService(
             }
     }
 
-    fun refreshToken(userId: Long): String {
-        return tokenPublisher.publish(userId)
+    fun refreshToken(knitterId: Long): String {
+        return tokenPublisher.publish(knitterId)
     }
 
     fun getKnitter(knitterId: Long): Mono<Knitter> =

@@ -32,7 +32,7 @@ class GoogleLogInHandler(private val authService: AuthService) {
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getAuthenticatedId(req)
+        val knitterId = AuthHelper.getKnitterId(req)
         return ResponseHelper
             .makeJsonResponse(
                 RefreshTokenResponse(authService.refreshToken(knitterId))

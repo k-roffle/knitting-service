@@ -152,16 +152,16 @@ class LoginRouterTest {
             .expectBody<APIResponse<AuthorizedResponse>>()
             .returnResult()
             .responseBody!!
-        assert(tokenDecoder.getAuthorizedUserId(result.data.token) == targetKnitter.id)
+        assert(tokenDecoder.getKnitterId(result.data.token) == targetKnitter.id)
     }
 
     @Test
     fun `새로 가입하는 유저의 경우 계정을 생성한 후 access token 을 발급 받을 수 있어야 함`() {
         setWebClientWithMockOAuthHelper()
-        val newUserId: Long = 1
+        val newKnitterId: Long = 1
         val newUserCreatedAt = LocalDateTime.now()
         val mockUser = Knitter(
-            id = newUserId,
+            id = newKnitterId,
             email = "new@email.com",
             name = "Jessica Mars",
             profileImageUrl = "https://image.com",
@@ -198,7 +198,7 @@ class LoginRouterTest {
             .returnResult()
             .responseBody!!
 
-        assert(tokenDecoder.getAuthorizedUserId(result.data.token) == newUserId)
+        assert(tokenDecoder.getKnitterId(result.data.token) == newKnitterId)
 
         verify(repo).create(
             argThat {
@@ -215,8 +215,8 @@ class LoginRouterTest {
 
     @Test
     fun `리프레시 요청시 동일한 유저 id로 토큰이 갱신 되어야 함`() {
-        val userId: Long = 1
-        val token = tokenPublisher.publish(userId)
+        val knitterId: Long = 1
+        val token = tokenPublisher.publish(knitterId)
         val result = webClient
             .post()
             .uri("/auth/refresh")
@@ -226,6 +226,6 @@ class LoginRouterTest {
             .expectBody<APIResponse<RefreshTokenResponse>>()
             .returnResult()
             .responseBody!!
-        assert(TokenDecoder(secretKey).getAuthorizedUserId(result.data.token) == userId)
+        assert(TokenDecoder(secretKey).getKnitterId(result.data.token) == knitterId)
     }
 }

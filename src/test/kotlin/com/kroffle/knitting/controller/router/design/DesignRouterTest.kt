@@ -91,8 +91,8 @@ class DesignRouterTest {
 
     @Test
     fun `design 이 잘 생성되어야 함`() {
-        val userId: Long = 1
-        val token = tokenPublisher.publish(userId)
+        val knitterId: Long = 1
+        val token = tokenPublisher.publish(knitterId)
 
         val body = objectMapper.writeValueAsString(
             NewDesignRequest(
