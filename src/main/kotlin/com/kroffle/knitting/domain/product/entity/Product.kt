@@ -53,9 +53,6 @@ class Product(
             salesStatus == SalesStatus.ON_SALES &&
                 inputStatus == InputStatus.REGISTERED
 
-    val rateOfDiscount: Int
-        get() = netPrice.getDiscountPercent(discountPrice)
-
     val itemIds: List<Long>
         get() = goodsIds + designIds
 
