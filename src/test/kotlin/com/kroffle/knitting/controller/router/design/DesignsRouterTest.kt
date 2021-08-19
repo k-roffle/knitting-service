@@ -3,8 +3,9 @@ package com.kroffle.knitting.controller.router.design
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
-import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
 import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
+import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
+import com.kroffle.knitting.controller.router.design.extension.like
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.jwt.TokenDecoder
@@ -13,16 +14,21 @@ import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.verify
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 
 @WebFluxTest
@@ -64,7 +70,7 @@ class DesignsRouterTest {
 
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
-        given(repo.getDesignsByKnitterId(1))
+        given(repo.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(
                 Flux.just(
                     DesignEntity(
@@ -89,7 +95,7 @@ class DesignsRouterTest {
                 )
             )
 
-        val responseBody: MyDesignsResponse = webClient
+        val responseBody: APIResponse<List<MyDesign>> = webClient
             .get()
             .uri("/designs/my")
             .header("Authorization", "Bearer $token")
@@ -97,12 +103,13 @@ class DesignsRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody(MyDesignsResponse::class.java)
+            .expectBody<APIResponse<List<MyDesign>>>()
             .returnResult()
             .responseBody!!
 
-        assertThat(responseBody.designs).isEqualTo(
-            listOf(
+        assertThat(responseBody.data.size).isEqualTo(1)
+        assert(
+            responseBody.data.first().like(
                 MyDesign(
                     id = 1,
                     name = "캔디리더 효정 니트",
@@ -112,11 +119,26 @@ class DesignsRouterTest {
                 ),
             )
         )
+        verify(repo).getDesignsByKnitterId(
+            argThat { param -> param == 1.toLong() },
+            argThat {
+                param ->
+                assert(param.after == null)
+                assert(param.count == 10)
+                true
+            },
+            argThat {
+                param ->
+                assert(param.column == "id")
+                assert(param.direction == SortDirection.DESC)
+                true
+            },
+        )
     }
 
     @Test
     fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
-        val responseBody: SalesSummaryResponse = webClient
+        val responseBody: APIResponse<SalesSummaryResponse> = webClient
             .get()
             .uri("/designs/sales-summary/my")
             .header("Authorization", "Bearer $token")
@@ -124,11 +146,11 @@ class DesignsRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody(SalesSummaryResponse::class.java)
+            .expectBody<APIResponse<SalesSummaryResponse>>()
             .returnResult()
             .responseBody!!
 
-        assertThat(responseBody).isEqualTo(
+        assertThat(responseBody.data).isEqualTo(
             SalesSummaryResponse(
                 numberOfDesignsOnSales = 1,
                 numberOfDesignsSold = 2,

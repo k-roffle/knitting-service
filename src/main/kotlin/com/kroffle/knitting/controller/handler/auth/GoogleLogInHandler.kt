@@ -3,12 +3,12 @@ package com.kroffle.knitting.controller.handler.auth
 import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
 import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.usecase.auth.AuthService
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.ServerResponse.temporaryRedirect
 import reactor.core.publisher.Mono
 
@@ -23,20 +23,19 @@ class GoogleLogInHandler(private val authService: AuthService) {
         if (code.isEmpty) {
             throw Unauthorized("code is required")
         }
-        return authService.authorize(code.get()).flatMap {
-            ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(AuthorizedResponse(it))
-        }
+        return authService
+            .authorize(code.get())
+            .map { AuthorizedResponse(it) }
+            .flatMap {
+                ResponseHelper.makeJsonResponse(it)
+            }
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
-        return ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(RefreshTokenResponse(authService.refreshToken(userId.get() as Long)))
+        val knitterId = AuthHelper.getAuthenticatedId(req)
+        return ResponseHelper
+            .makeJsonResponse(
+                RefreshTokenResponse(authService.refreshToken(knitterId))
+            )
     }
 }

@@ -4,6 +4,7 @@ import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
 import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
+import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
@@ -148,10 +149,10 @@ class LoginRouterTest {
             }
             .exchange()
             .expectStatus().isOk
-            .expectBody<AuthorizedResponse>()
+            .expectBody<APIResponse<AuthorizedResponse>>()
             .returnResult()
             .responseBody!!
-        assert(tokenDecoder.getAuthorizedUserId(result.token) == targetKnitter.id)
+        assert(tokenDecoder.getAuthorizedUserId(result.data.token) == targetKnitter.id)
     }
 
     @Test
@@ -193,11 +194,11 @@ class LoginRouterTest {
             }
             .exchange()
             .expectStatus().isOk
-            .expectBody<AuthorizedResponse>()
+            .expectBody<APIResponse<AuthorizedResponse>>()
             .returnResult()
             .responseBody!!
 
-        assert(tokenDecoder.getAuthorizedUserId(result.token) == newUserId)
+        assert(tokenDecoder.getAuthorizedUserId(result.data.token) == newUserId)
 
         verify(repo).create(
             argThat {
@@ -222,9 +223,9 @@ class LoginRouterTest {
             .header("Authorization", "Bearer $token")
             .exchange()
             .expectStatus().isOk
-            .expectBody<RefreshTokenResponse>()
+            .expectBody<APIResponse<RefreshTokenResponse>>()
             .returnResult()
             .responseBody!!
-        assert(TokenDecoder(secretKey).getAuthorizedUserId(result.token) == userId)
+        assert(TokenDecoder(secretKey).getAuthorizedUserId(result.data.token) == userId)
     }
 }

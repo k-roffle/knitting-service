@@ -1,11 +1,13 @@
 package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
-import com.kroffle.knitting.controller.handler.design.dto.MyDesignsResponse
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
+import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
 import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.controller.handler.exception.BadRequest
-import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
+import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
@@ -13,13 +15,14 @@ import com.kroffle.knitting.domain.design.value.Money
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.usecase.design.DesignService
-import org.springframework.http.MediaType
+import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList
@@ -34,15 +37,12 @@ class DesignHandler(private val service: DesignService) {
             .bodyToMono(NewDesignRequest::class.java)
             .switchIfEmpty(Mono.error(BadRequest("Body is required")))
             .doOnNext { validate(it) }
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
+        val knitterId = AuthHelper.getAuthenticatedId(req)
         return design
             .flatMap {
                 service.create(
                     Design(
-                        knitterId = userId.get() as Long,
+                        knitterId = knitterId,
                         name = it.name,
                         designType = it.designType,
                         patternType = it.patternType,
@@ -78,20 +78,24 @@ class DesignHandler(private val service: DesignService) {
                     )
                 )
             }
-            .flatMap {
-                ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(it)
+            .map {
+                NewDesignResponse(id = it.id!!)
+            }.flatMap {
+                ResponseHelper.makeJsonResponse(it)
             }
     }
 
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
-        val userId = req.attribute("userId")
-        if (userId.isEmpty) {
-            throw Unauthorized("userId is required")
-        }
+        val paging = PaginationHelper.getPagingFromRequest(req)
+        val knitterId = AuthHelper.getAuthenticatedId(req)
         return service
-            .getMyDesign(userId.get() as Long)
+            .getMyDesign(
+                MyDesignFilter(
+                    knitterId,
+                    paging,
+                    Sort("id", SortDirection.DESC),
+                )
+            )
             .map {
                 design ->
                 MyDesign(
@@ -104,18 +108,13 @@ class DesignHandler(private val service: DesignService) {
             }
             .collect(toList())
             .flatMap {
-                ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(
-                        MyDesignsResponse(designs = it)
-                    )
+                ResponseHelper.makeJsonResponse(it)
             }
     }
 
     fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
-        return ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(
+        return ResponseHelper
+            .makeJsonResponse(
                 SalesSummaryResponse(
                     numberOfDesignsOnSales = 1,
                     numberOfDesignsSold = 2,
