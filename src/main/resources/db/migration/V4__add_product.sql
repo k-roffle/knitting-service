@@ -5,7 +5,7 @@ CREATE TABLE product (
     id BIGSERIAL NOT NULL,
     knitter_id bigint NOT NULL REFERENCES knitter(id),
     name VARCHAR NOT NULL,
-    net_price NUMERIC NOT NULL,
+    full_price NUMERIC NOT NULL,
     discount_price NUMERIC NOT NULL,
     representative_image_url VARCHAR NOT NULL,
     specified_sales_start_date DATE NOT NULL,
