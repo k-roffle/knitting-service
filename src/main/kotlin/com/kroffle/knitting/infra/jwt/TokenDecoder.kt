@@ -11,7 +11,7 @@ import com.kroffle.knitting.infra.jwt.exception.InvalidBodyTokenException
 import com.kroffle.knitting.infra.jwt.exception.UnauthorizedTokenException
 
 class TokenDecoder(private val jwtSecretKey: String) : AuthorizationFilter.TokenDecoder {
-    override fun getAuthorizedUserId(token: String): Long {
+    override fun getKnitterId(token: String): Long {
         val claims = this.decodeToken(token)
         val id = claims["id"] ?: throw InvalidBodyTokenException()
         return id.asString().toLong()

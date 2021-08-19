@@ -29,7 +29,7 @@ class DesignHandler(private val service: DesignService) {
         val design: Mono<NewDesignRequest> = req
             .bodyToMono(NewDesignRequest::class.java)
             .switchIfEmpty(Mono.error(BadRequest("Body is required")))
-        val knitterId = AuthHelper.getAuthenticatedId(req)
+        val knitterId = AuthHelper.getKnitterId(req)
         return design
             .flatMap {
                 service.create(
@@ -81,7 +81,7 @@ class DesignHandler(private val service: DesignService) {
 
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
         val paging = PaginationHelper.getPagingFromRequest(req)
-        val knitterId = AuthHelper.getAuthenticatedId(req)
+        val knitterId = AuthHelper.getKnitterId(req)
         return service
             .getMyDesign(
                 MyDesignFilter(

@@ -47,14 +47,14 @@ class ProfileRouterTest {
     private lateinit var webProperties: WebApplicationProperties
 
     private val secretKey = "I'M SECRET KEY!"
-    private val userId: Long = 1
+    private val knitterId: Long = 1
 
     @BeforeEach
     fun setUp() {
         tokenPublisher = TokenPublisher(secretKey)
         tokenDecoder = TokenDecoder(secretKey)
 
-        token = tokenPublisher.publish(userId)
+        token = tokenPublisher.publish(knitterId)
 
         val routerFunction = ProfileRouter(
             ProfileHandler(
@@ -82,7 +82,7 @@ class ProfileRouterTest {
 
     @Test
     fun `내 프로필을 조회할 수 있어야 함`() {
-        given(repo.findById(userId))
+        given(repo.findById(knitterId))
             .willReturn(
                 Mono.just(
                     KnitterEntity(

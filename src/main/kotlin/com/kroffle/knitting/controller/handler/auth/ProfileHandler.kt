@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 @Component
 class ProfileHandler(private val authService: AuthService) {
     fun getMyProfile(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getAuthenticatedId(req)
+        val knitterId = AuthHelper.getKnitterId(req)
         return authService
             .getKnitter(knitterId)
             .map {

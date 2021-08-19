@@ -5,12 +5,12 @@ import org.springframework.web.reactive.function.server.ServerRequest
 
 class AuthHelper {
     companion object {
-        fun getAuthenticatedId(request: ServerRequest): Long {
-            val userId = request.attribute("userId")
-            if (userId.isEmpty) {
-                throw Unauthorized("userId is required")
+        fun getKnitterId(request: ServerRequest): Long {
+            val knitterId = request.attribute("knitterId")
+            if (knitterId.isEmpty) {
+                throw Unauthorized("knitterId is required")
             }
-            return userId.get() as Long
+            return knitterId.get() as Long
         }
     }
 }

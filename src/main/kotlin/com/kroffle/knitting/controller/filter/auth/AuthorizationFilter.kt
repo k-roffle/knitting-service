@@ -31,7 +31,7 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
         val token = resolveToken(headers)
             ?: return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "Header is Empty"))
         return try {
-            Mono.just(tokenDecoder.getAuthorizedUserId(token))
+            Mono.just(tokenDecoder.getKnitterId(token))
         } catch (e: TokenDecodeException) {
             Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, e.message))
         }
@@ -51,14 +51,14 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
                 exchange.response.writeWith(Flux.just(buffer))
             }
         }.doOnSuccess {
-            exchange.attributes["userId"] = it
+            exchange.attributes["knitterId"] = it
         }.then(
             chain.filter(exchange)
         )
     }
 
     interface TokenDecoder {
-        fun getAuthorizedUserId(token: String): Long
+        fun getKnitterId(token: String): Long
     }
 
     companion object {
