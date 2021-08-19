@@ -9,6 +9,7 @@ import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
 import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
+import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
@@ -75,8 +76,10 @@ class DesignRouterTest {
             needle = "5.0mm",
             yarn = "캐시미어 400g",
             extra = null,
-            price = 0,
             pattern = "# Step1. 코를 10개 잡습니다.",
+            description = "이건 니트를 만드는 서술형 도안입니다.",
+            targetLevel = LevelType.HARD.key,
+            coverImageUrl = "http://test.kroffle.com/image.jpg",
         ).toDesign()
 
         val routerFunction = DesignRouter(DesignHandler(DesignService(repo))).designRouterFunction()
@@ -108,8 +111,10 @@ class DesignRouterTest {
                 needle = "5.0mm",
                 yarn = "캐시미어 400g",
                 extra = null,
-                price = 0,
                 pattern = "# Step1. 코를 10개 잡습니다.",
+                description = "이건 니트를 만드는 서술형 도안입니다.",
+                targetLevel = LevelType.HARD,
+                coverImageUrl = "http://test.kroffle.com/image.jpg",
             )
         )
         given(repo.createDesign(any())).willReturn(Mono.just(design))

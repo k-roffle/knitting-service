@@ -7,6 +7,7 @@ import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.controller.router.design.extension.like
 import com.kroffle.knitting.domain.design.enum.DesignType
+import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
@@ -89,8 +90,10 @@ class DesignsRouterTest {
                         needle = "5.0mm",
                         yarn = "패션아란 400g 1볼",
                         extra = null,
-                        price = 0,
                         pattern = "# Step1. 코를 10개 잡습니다.",
+                        description = "이건 니트를 만드는 서술형 도안입니다.",
+                        targetLevel = LevelType.HARD.key,
+                        coverImageUrl = "http://test.kroffle.com/image.jpg",
                     ).toDesign()
                 )
             )
@@ -114,7 +117,7 @@ class DesignsRouterTest {
                     id = 1,
                     name = "캔디리더 효정 니트",
                     yarn = "패션아란 400g 1볼",
-                    thumbnailImageUrl = null,
+                    coverImageUrl = "http://test.kroffle.com/image.jpg",
                     tags = listOf("니트", "서술형도안"),
                 ),
             )
