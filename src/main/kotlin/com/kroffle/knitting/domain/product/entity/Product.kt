@@ -106,7 +106,7 @@ class Product(
     }
 
     companion object {
-        fun draft(
+        fun draftProductPackage(
             knitterId: Long,
             name: String,
             fullPrice: Money,
