@@ -1,10 +1,11 @@
 package com.kroffle.knitting.domain.product.entity
 
-import com.kroffle.knitting.domain.product.exception.InvalidDiscountPrice
-import com.kroffle.knitting.domain.product.exception.InvalidPeriod
-import com.kroffle.knitting.domain.product.exception.UnableToRegister
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.enum.SalesStatus
+import com.kroffle.knitting.domain.product.exception.InvalidDiscountPrice
+import com.kroffle.knitting.domain.product.exception.InvalidFullPrice
+import com.kroffle.knitting.domain.product.exception.InvalidPeriod
+import com.kroffle.knitting.domain.product.exception.UnableToRegister
 import com.kroffle.knitting.domain.value.Money
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -39,6 +40,10 @@ class Product(
                 discountPrice <= fullPrice
         ) {
             throw InvalidDiscountPrice()
+        }
+
+        require(fullPrice > Money.MIN) {
+            throw InvalidFullPrice()
         }
     }
 
