@@ -1,8 +1,8 @@
 package com.kroffle.knitting.domain.product.entity
 
-import com.kroffle.knitting.domain.exception.InvalidDiscountPrice
-import com.kroffle.knitting.domain.exception.InvalidPeriod
-import com.kroffle.knitting.domain.exception.UnableToRegister
+import com.kroffle.knitting.domain.product.exception.InvalidDiscountPrice
+import com.kroffle.knitting.domain.product.exception.InvalidPeriod
+import com.kroffle.knitting.domain.product.exception.UnableToRegister
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.enum.SalesStatus
 import com.kroffle.knitting.domain.value.Money
@@ -119,7 +119,7 @@ class Product(
             designIds: List<Long>,
         ): Product {
             return Product(
-                null,
+                1, // FIXME
                 knitterId,
                 name,
                 fullPrice,
