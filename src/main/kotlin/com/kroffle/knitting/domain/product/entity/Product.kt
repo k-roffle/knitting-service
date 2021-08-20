@@ -1,5 +1,6 @@
 package com.kroffle.knitting.domain.product.entity
 
+import com.kroffle.knitting.domain.exception.InvalidDiscountPrice
 import com.kroffle.knitting.domain.exception.InvalidPeriod
 import com.kroffle.knitting.domain.exception.UnableToRegister
 import com.kroffle.knitting.domain.product.enum.InputStatus
@@ -31,6 +32,13 @@ class Product(
                 specifiedSalesStartDate > specifiedSalesEndDate
         ) {
             throw InvalidPeriod()
+        }
+
+        require(
+            Money.MIN < discountPrice &&
+                discountPrice <= fullPrice
+        ) {
+            throw InvalidDiscountPrice()
         }
     }
 
