@@ -24,6 +24,8 @@ class ProductEntity(
     private val inputStatus: InputStatus,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
+    fun getNotNullId(): Long = id!!
+
     fun toProduct(tags: List<ProductTag>, items: List<ProductItem>): Product =
         Product(
             id = id,

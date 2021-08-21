@@ -18,12 +18,12 @@ class ProductItemEntity(
     fun toItem() = ProductItem.create(id, itemId, createdAt, type)
 }
 
-fun Product.toProductItemEntities(): List<ProductItemEntity> =
+fun Product.toProductItemEntities(productId: Long): List<ProductItemEntity> =
     this.items.map {
         item ->
         ProductItemEntity(
             id = item.id,
-            productId = this.id!!,
+            productId = this.id ?: productId,
             itemId = item.itemId,
             type = item.type,
             createdAt = item.createdAt ?: LocalDateTime.now(),
