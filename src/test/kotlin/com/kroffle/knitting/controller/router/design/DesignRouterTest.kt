@@ -6,11 +6,11 @@ import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
-import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
@@ -118,7 +118,7 @@ class DesignRouterTest {
             )
         )
         given(repo.createDesign(any())).willReturn(Mono.just(design))
-        val response: APIResponse<NewDesignResponse> = webClient
+        val response: TestResponse<NewDesignResponse> = webClient
             .post()
             .uri("/design/")
             .header("Authorization", "Bearer $token")
@@ -128,9 +128,9 @@ class DesignRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<APIResponse<NewDesignResponse>>()
+            .expectBody<TestResponse<NewDesignResponse>>()
             .returnResult()
             .responseBody!!
-        assertThat(response.data.id).isEqualTo(design.id)
+        assertThat(response.payload.id).isEqualTo(design.id)
     }
 }
