@@ -2,8 +2,12 @@ package com.kroffle.knitting.infra.configuration
 
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.domain.product.enum.InputStatus
+import com.kroffle.knitting.domain.product.enum.ProductItemType
 import com.kroffle.knitting.infra.configuration.r2dbc.converter.DesignTypeConverter
+import com.kroffle.knitting.infra.configuration.r2dbc.converter.InputStatusConverter
 import com.kroffle.knitting.infra.configuration.r2dbc.converter.PatternTypeConverter
+import com.kroffle.knitting.infra.configuration.r2dbc.converter.ProductItemTypeConverter
 import com.kroffle.knitting.infra.properties.DatabaseProperties
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
@@ -30,15 +34,24 @@ class R2dbcConfiguration : AbstractR2dbcConfiguration() {
             .database(appProperties.database)
             .codecRegistrar(EnumCodec.builder().withEnum(DESIGN_TYPE, DesignType::class.java).build())
             .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, PatternType::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(INPUT_STATUS, InputStatus::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(PRODUCT_ITEM_TYPE, ProductItemType::class.java).build())
             .build()
     )
 
     override fun getCustomConverters(): MutableList<Any> {
-        return mutableListOf(DesignTypeConverter(), PatternTypeConverter())
+        return mutableListOf(
+            DesignTypeConverter(),
+            PatternTypeConverter(),
+            InputStatusConverter(),
+            ProductItemTypeConverter(),
+        )
     }
 
     companion object {
         private const val DESIGN_TYPE = "design_type"
         private const val PATTERN_TYPE = "pattern_type"
+        private const val INPUT_STATUS = "input_status"
+        private const val PRODUCT_ITEM_TYPE = "product_item_type"
     }
 }
