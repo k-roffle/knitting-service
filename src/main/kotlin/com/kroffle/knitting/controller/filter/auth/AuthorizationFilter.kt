@@ -15,6 +15,7 @@ import com.kroffle.knitting.controller.router.auth.ProfileRouter.Companion.PUBLI
 import com.kroffle.knitting.controller.router.design.DesignRouter.Companion.PUBLIC_PATHS as DesignRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignsRouter.Companion.PUBLIC_PATHS as DesignsRouterPublicPaths
 import com.kroffle.knitting.controller.router.ping.PingRouter.Companion.PUBLIC_PATHS as PingRouterPublicPaths
+import com.kroffle.knitting.controller.router.product.ProductRouter.Companion.PUBLIC_PATHS as ProductRouterPublicPaths
 
 @Component
 class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
@@ -68,7 +69,8 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
                 ProfileRouterPublicPaths +
                 DesignRouterPublicPaths +
                 DesignsRouterPublicPaths +
-                PingRouterPublicPaths
+                PingRouterPublicPaths +
+                ProductRouterPublicPaths
             )
     }
 }
