@@ -1,7 +1,8 @@
 package com.kroffle.knitting.infra.persistence.product.entity
 
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.infra.persistence.type.ProductItemType
+import com.kroffle.knitting.domain.product.enum.ProductItemType
+import com.kroffle.knitting.domain.product.value.ProductItem
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 
@@ -13,27 +14,17 @@ class ProductItemEntity(
     private val type: ProductItemType,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
-    fun toItemId() = this.itemId
+    fun toItem() = ProductItem.create(id, itemId, createdAt, type)
 }
 
 fun Product.toProductItemEntities(): List<ProductItemEntity> =
-    (
-        this.designIds.map {
-            itemId ->
-            ProductItemEntity(
-                id = null,
-                productId = this.id!!,
-                itemId = itemId,
-                type = ProductItemType.DESIGN,
-            )
-        } +
-            this.goodsIds.map {
-                itemId ->
-                ProductItemEntity(
-                    id = null,
-                    productId = this.id!!,
-                    itemId = itemId,
-                    type = ProductItemType.GOODS,
-                )
-            }
+    this.items.map {
+        item ->
+        ProductItemEntity(
+            id = item.id,
+            productId = this.id!!,
+            itemId = item.itemId,
+            type = item.type,
+            createdAt = item.createdAt ?: LocalDateTime.now(),
         )
+    }
