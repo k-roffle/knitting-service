@@ -5,6 +5,6 @@ class Money(val value: Int) {
         this.value.compareTo(money.value)
 
     companion object {
-        val MIN = Money(0)
+        val ZERO = Money(0)
     }
 }

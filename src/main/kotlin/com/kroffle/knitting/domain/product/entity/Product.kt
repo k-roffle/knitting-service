@@ -36,13 +36,13 @@ class Product(
         }
 
         require(
-            Money.MIN < discountPrice &&
+            Money.ZERO < discountPrice &&
                 discountPrice <= fullPrice
         ) {
             throw InvalidDiscountPrice()
         }
 
-        require(fullPrice > Money.MIN) {
+        require(fullPrice > Money.ZERO) {
             throw InvalidFullPrice()
         }
     }
