@@ -5,13 +5,14 @@ import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
+import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Table("product")
 class ProductEntity(
-    private val id: Long? = null,
+    @Id private var id: Long? = null,
     private val knitterId: Long,
     private val name: String,
     private val fullPrice: Int,
