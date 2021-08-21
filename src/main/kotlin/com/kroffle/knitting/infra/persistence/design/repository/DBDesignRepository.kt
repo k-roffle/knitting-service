@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.persistence.design
+package com.kroffle.knitting.infra.persistence.design.repository
 
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import org.springframework.data.domain.Pageable

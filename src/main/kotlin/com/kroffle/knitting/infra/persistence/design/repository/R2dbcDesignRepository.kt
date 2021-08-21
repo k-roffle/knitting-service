@@ -1,8 +1,9 @@
-package com.kroffle.knitting.infra.persistence.design
+package com.kroffle.knitting.infra.persistence.design.repository
 
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toDesignEntity
+import com.kroffle.knitting.infra.persistence.design.repository.DBDesignRepository
 import com.kroffle.knitting.infra.persistence.helper.pagination.PaginationHelper
 import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging

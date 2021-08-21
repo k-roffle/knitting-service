@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.persistence.knitter
+package com.kroffle.knitting.infra.persistence.knitter.repository
 
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.infra.persistence.knitter.entity.toKnitterEntity
