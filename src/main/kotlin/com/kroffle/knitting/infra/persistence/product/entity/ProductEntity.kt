@@ -2,6 +2,8 @@ package com.kroffle.knitting.infra.persistence.product.entity
 
 import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.domain.product.enum.InputStatus
+import com.kroffle.knitting.domain.product.value.ProductItem
+import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
@@ -21,11 +23,7 @@ class ProductEntity(
     private val inputStatus: InputStatus,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
-    fun toProduct(
-        tags: List<String>,
-        goodsIds: List<Long>,
-        designIds: List<Long>,
-    ): Product =
+    fun toProduct(tags: List<ProductTag>, items: List<ProductItem>): Product =
         Product(
             id = id,
             knitterId = knitterId,
@@ -38,8 +36,7 @@ class ProductEntity(
             content = content,
             inputStatus = inputStatus,
             tags = tags,
-            goodsIds = goodsIds,
-            designIds = designIds,
+            items = items,
             createdAt = createdAt,
         )
 }
