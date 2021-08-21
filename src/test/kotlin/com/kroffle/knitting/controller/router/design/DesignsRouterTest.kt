@@ -31,6 +31,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
+import java.time.LocalDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -54,6 +55,8 @@ class DesignsRouterTest {
     private val secretKey = "I'M SECRET KEY!"
 
     private val knitterId: Long = 1
+
+    private val today: LocalDateTime = LocalDateTime.now()
 
     @BeforeEach
     fun setUp() {
@@ -94,6 +97,7 @@ class DesignsRouterTest {
                         description = "이건 니트를 만드는 서술형 도안입니다.",
                         targetLevel = LevelType.HARD.key,
                         coverImageUrl = "http://test.kroffle.com/image.jpg",
+                        createdAt = today,
                     ).toDesign()
                 )
             )
@@ -119,6 +123,7 @@ class DesignsRouterTest {
                     yarn = "패션아란 400g 1볼",
                     coverImageUrl = "http://test.kroffle.com/image.jpg",
                     tags = listOf("니트", "서술형도안"),
+                    createdAt = today,
                 ),
             )
         )
