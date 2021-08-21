@@ -20,12 +20,12 @@ class ProductTagEntity(
     )
 }
 
-fun Product.toProductTagEntities(): List<ProductTagEntity> =
+fun Product.toProductTagEntities(productId: Long): List<ProductTagEntity> =
     this.tags.map {
         tag ->
         ProductTagEntity(
             id = tag.id,
-            productId = this.id!!,
+            productId = this.id ?: productId,
             tag = tag.tag,
             createdAt = tag.createdAt ?: LocalDateTime.now(),
         )
