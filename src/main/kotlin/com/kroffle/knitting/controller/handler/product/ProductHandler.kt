@@ -29,6 +29,7 @@ class ProductHandler(private val productService: ProductService) {
             body ->
             productService.draft(
                 DraftProductPackage(
+                    id = body.id,
                     knitterId = knitterId,
                     name = body.name,
                     fullPrice = Money(body.fullPrice),

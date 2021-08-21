@@ -108,6 +108,7 @@ class Product(
 
     companion object {
         fun draftProductPackage(
+            id: Long?,
             knitterId: Long,
             name: String,
             fullPrice: Money,
@@ -119,7 +120,7 @@ class Product(
             items: List<ProductItem>,
         ): Product {
             return Product(
-                1, // FIXME
+                id,
                 knitterId,
                 name,
                 fullPrice,

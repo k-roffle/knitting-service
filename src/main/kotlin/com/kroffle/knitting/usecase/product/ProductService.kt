@@ -10,6 +10,7 @@ class ProductService {
     fun draft(product: DraftProductPackage): Mono<Product> =
         Mono.just(
             Product.draftProductPackage(
+                id = product.id,
                 knitterId = product.knitterId,
                 name = product.name,
                 fullPrice = product.fullPrice,

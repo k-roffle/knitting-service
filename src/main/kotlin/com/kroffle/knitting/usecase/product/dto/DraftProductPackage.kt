@@ -6,6 +6,7 @@ import com.kroffle.knitting.domain.value.Money
 import java.time.LocalDate
 
 data class DraftProductPackage(
+    val id: Long?,
     val knitterId: Long,
     val name: String,
     val fullPrice: Money,
