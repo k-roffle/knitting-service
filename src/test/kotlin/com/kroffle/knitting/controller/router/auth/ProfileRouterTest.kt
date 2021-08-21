@@ -3,7 +3,7 @@ package com.kroffle.knitting.controller.router.auth
 import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.ProfileHandler
 import com.kroffle.knitting.controller.handler.auth.dto.MyProfileResponse
-import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
+import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
@@ -100,11 +100,11 @@ class ProfileRouterTest {
             .header("Authorization", "Bearer $token")
             .exchange()
             .expectStatus().isOk
-            .expectBody<APIResponse<MyProfileResponse>>()
+            .expectBody<TestResponse<MyProfileResponse>>()
             .returnResult()
             .responseBody!!
 
-        assertThat(result.data).isEqualTo(
+        assertThat(result.payload).isEqualTo(
             MyProfileResponse(
                 name = "홍길동",
                 email = "test@test.com",

@@ -4,8 +4,8 @@ import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
 import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
-import com.kroffle.knitting.controller.handler.helper.response.type.APIResponse
 import com.kroffle.knitting.domain.knitter.entity.Knitter
+import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
@@ -149,10 +149,10 @@ class LoginRouterTest {
             }
             .exchange()
             .expectStatus().isOk
-            .expectBody<APIResponse<AuthorizedResponse>>()
+            .expectBody<TestResponse<AuthorizedResponse>>()
             .returnResult()
             .responseBody!!
-        assert(tokenDecoder.getKnitterId(result.data.token) == targetKnitter.id)
+        assert(tokenDecoder.getKnitterId(result.payload.token) == targetKnitter.id)
     }
 
     @Test
@@ -194,11 +194,11 @@ class LoginRouterTest {
             }
             .exchange()
             .expectStatus().isOk
-            .expectBody<APIResponse<AuthorizedResponse>>()
+            .expectBody<TestResponse<AuthorizedResponse>>()
             .returnResult()
             .responseBody!!
 
-        assert(tokenDecoder.getKnitterId(result.data.token) == newKnitterId)
+        assert(tokenDecoder.getKnitterId(result.payload.token) == newKnitterId)
 
         verify(repo).create(
             argThat {
@@ -223,9 +223,9 @@ class LoginRouterTest {
             .header("Authorization", "Bearer $token")
             .exchange()
             .expectStatus().isOk
-            .expectBody<APIResponse<RefreshTokenResponse>>()
+            .expectBody<TestResponse<RefreshTokenResponse>>()
             .returnResult()
             .responseBody!!
-        assert(TokenDecoder(secretKey).getKnitterId(result.data.token) == knitterId)
+        assert(TokenDecoder(secretKey).getKnitterId(result.payload.token) == knitterId)
     }
 }
