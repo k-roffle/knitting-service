@@ -8,5 +8,6 @@ fun MyDesign.like(other: MyDesign): Boolean {
         name == other.name &&
         yarn == other.yarn &&
         coverImageUrl == other.coverImageUrl &&
-        tags == other.tags
+        tags == other.tags &&
+        createdAt == other.createdAt
 }

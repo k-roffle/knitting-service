@@ -97,7 +97,8 @@ class DesignHandler(private val service: DesignService) {
                     name = design.name,
                     yarn = design.yarn,
                     coverImageUrl = design.coverImageUrl,
-                    tags = listOf(design.designType.tag, design.patternType.tag)
+                    tags = listOf(design.designType.tag, design.patternType.tag),
+                    createdAt = design.createdAt!!,
                 )
             }
             .collect(toList())
