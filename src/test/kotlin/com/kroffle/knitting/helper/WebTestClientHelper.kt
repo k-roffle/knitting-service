@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 class WebTestClientHelper {
     companion object {
         const val AUTHORIZED_KNITTER_ID: Long = 1
-        private const val JWT_SECRET_KEY = "I'M SECRET KEY!"
+        const val JWT_SECRET_KEY = "I'M SECRET KEY!"
         private val tokenDecoder = TokenDecoder(JWT_SECRET_KEY)
         private val tokenPublisher = TokenPublisher(JWT_SECRET_KEY)
         private val token = tokenPublisher.publish(AUTHORIZED_KNITTER_ID)
