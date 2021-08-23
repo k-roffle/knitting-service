@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-class ProductService {
+class ProductService(private val repository: ProductRepository) {
     fun draft(product: DraftProductPackage): Mono<Product> =
-        Mono.just(
+        repository.save(
             Product.draftProductPackage(
                 id = product.id,
                 knitterId = product.knitterId,
@@ -22,4 +22,8 @@ class ProductService {
                 items = product.items,
             )
         )
+
+    interface ProductRepository {
+        fun save(product: Product): Mono<Product>
+    }
 }
