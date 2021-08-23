@@ -25,8 +25,8 @@ class WebTestClientHelper {
 
         fun addDefaultRequestHeader(
             request: WebTestClient.RequestBodySpec,
-            authorized: Boolean = true,
-            mediaType: MediaType = MediaType.APPLICATION_JSON,
+            authorized: Boolean,
+            mediaType: MediaType,
         ): WebTestClient.RequestBodySpec {
             val requestWithHeader =
                 if (authorized) {
@@ -43,8 +43,8 @@ class WebTestClientHelper {
 
         fun addDefaultRequestHeader(
             request: WebTestClient.RequestHeadersSpec<*>,
-            authorized: Boolean = true,
-            mediaType: MediaType = MediaType.APPLICATION_JSON,
+            authorized: Boolean,
+            mediaType: MediaType,
         ): WebTestClient.RequestHeadersSpec<*> {
             val requestWithHeader =
                 if (authorized) {
