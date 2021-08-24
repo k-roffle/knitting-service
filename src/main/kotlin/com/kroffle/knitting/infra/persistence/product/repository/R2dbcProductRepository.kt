@@ -37,4 +37,8 @@ class R2dbcProductRepository(
                     }
             }
     }
+
+    override fun findById(id: Long): Mono<Product> {
+        TODO("Not yet implemented")
+    }
 }

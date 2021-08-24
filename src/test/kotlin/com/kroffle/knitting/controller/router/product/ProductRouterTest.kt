@@ -2,6 +2,8 @@ package com.kroffle.knitting.controller.router.product
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.product.ProductHandler
+import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRequest
+import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentResponse
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
 import com.kroffle.knitting.domain.product.entity.Product
@@ -138,6 +140,65 @@ class ProductRouterTest {
                     assert(createdProduct.items[index].itemId == item.itemId)
                 }
                 true
+            }
+        )
+    }
+
+    @Test
+    fun `상품 설명을 저장할 수 있어야 함`() {
+        val today = LocalDateTime.now()
+        val tomorrow = LocalDate.now().plusDays(1)
+        val targetProduct = Product(
+            id = 1,
+            knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            name = "상품 이름",
+            fullPrice = Money(1000),
+            discountPrice = Money(1000),
+            representativeImageUrl = "http://test.knitting.com/image.jpg",
+            specifiedSalesStartDate = null,
+            specifiedSalesEndDate = tomorrow,
+            content = null,
+            inputStatus = InputStatus.DRAFT,
+            tags = listOf(
+                ProductTag(1, "서술형도안", today),
+                ProductTag(2, "초보자용", today),
+            ),
+            items = listOf(
+                ProductItem.create(1, 1, today, ProductItemType.DESIGN),
+            ),
+            createdAt = today,
+        )
+        val updatedProduct = targetProduct.draftContent("상품 설명")
+
+        given(repository.findById(1)).willReturn(Mono.just(targetProduct))
+        given(repository.save(any())).willReturn(Mono.just(updatedProduct))
+
+        val body = objectMapper
+            .writeValueAsString(
+                DraftProductContentRequest(
+                    id = 1,
+                    content = "상품 설명",
+                )
+            )
+
+        val response = webClient
+            .post()
+            .uri("/product/content/")
+            .addDefaultRequestHeader()
+            .bodyValue(body)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<DraftProductContentResponse>>()
+            .returnResult()
+            .responseBody!!
+
+        assertThat(response.payload.id).isEqualTo(targetProduct.id)
+        verify(repository).findById(1)
+        verify(repository).save(
+            argThat {
+                product ->
+                product.like(updatedProduct)
             }
         )
     }
