@@ -1,6 +1,8 @@
 package com.kroffle.knitting.infra.persistence.product.repository
 
 import com.kroffle.knitting.domain.product.entity.Product
+import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
+import com.kroffle.knitting.infra.persistence.product.entity.ProductEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductItemEntities
 import com.kroffle.knitting.infra.persistence.product.entity.toProductTagEntities
@@ -15,6 +17,26 @@ class R2dbcProductRepository(
     private val productTagRepository: DBProductTagRepository,
     private val productItemRepository: DBProductItemRepository,
 ) : ProductRepository {
+    private fun findById(id: Long): Mono<Product> {
+        val tags = productTagRepository
+            .findAllByProductId(id)
+            .map { it.toTag() }
+            .collect(toList())
+
+        val items = productItemRepository
+            .findAllByProductId(id)
+            .map { it.toItem() }
+            .collect(toList())
+
+        val product = productRepository
+            .findById(id)
+
+        return Mono.zip(product, tags, items)
+            .map {
+                it.t1.toProduct(it.t2, it.t3)
+            }
+    }
+
     override fun save(product: Product): Mono<Product> {
         return productRepository
             .save(product.toProductEntity())
@@ -38,23 +60,10 @@ class R2dbcProductRepository(
             }
     }
 
-    override fun findById(id: Long): Mono<Product> {
-        val tags = productTagRepository
-            .findAllByProductId(id)
-            .map { it.toTag() }
-            .collect(toList())
-
-        val items = productItemRepository
-            .findAllByProductId(id)
-            .map { it.toItem() }
-            .collect(toList())
-
-        val product = productRepository
-            .findById(id)
-
-        return Mono.zip(product, tags, items)
-            .map {
-                it.t1.toProduct(it.t2, it.t3)
+    override fun getProductByIdAndKnitterId(id: Long, knitterId: Long): Mono<Product> =
+        findById(id)
+            .filter {
+                it.knitterId == knitterId
             }
-    }
+            .switchIfEmpty(Mono.error(NotFoundEntity(ProductEntity::class.java)))
 }

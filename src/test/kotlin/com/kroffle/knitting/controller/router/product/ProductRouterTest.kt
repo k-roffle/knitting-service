@@ -6,6 +6,8 @@ import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRe
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentResponse
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
+import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
+import com.kroffle.knitting.controller.handler.product.dto.RegisterProductResponse
 import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.enum.ProductItemType
@@ -170,8 +172,10 @@ class ProductRouterTest {
         )
         val updatedProduct = targetProduct.draftContent("상품 설명")
 
-        given(repository.findById(1)).willReturn(Mono.just(targetProduct))
-        given(repository.save(any())).willReturn(Mono.just(updatedProduct))
+        given(repository.getProductByIdAndKnitterId(any(), any()))
+            .willReturn(Mono.just(targetProduct))
+        given(repository.save(any()))
+            .willReturn(Mono.just(updatedProduct))
 
         val body = objectMapper
             .writeValueAsString(
@@ -194,12 +198,79 @@ class ProductRouterTest {
             .responseBody!!
 
         assertThat(response.payload.id).isEqualTo(targetProduct.id)
-        verify(repository).findById(1)
-        verify(repository).save(
-            argThat {
-                product ->
-                product.like(updatedProduct)
-            }
+        verify(repository)
+            .getProductByIdAndKnitterId(
+                1,
+                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            )
+        verify(repository)
+            .save(
+                argThat {
+                    product ->
+                    product.like(updatedProduct)
+                }
+            )
+    }
+
+    @Test
+    fun `상품을 판매 등록 할 수 있어야 함`() {
+        val today = LocalDateTime.now()
+        val targetProduct = Product(
+            id = 1,
+            knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            name = "상품 이름",
+            fullPrice = Money(1000),
+            discountPrice = Money(1000),
+            representativeImageUrl = "http://test.knitting.com/image.jpg",
+            specifiedSalesStartDate = null,
+            specifiedSalesEndDate = null,
+            content = "이번에는 초보탈출 패키지를 준비해봤어요.",
+            inputStatus = InputStatus.DRAFT,
+            tags = listOf(
+                ProductTag(1, "서술형도안", today),
+                ProductTag(2, "초보자용", today),
+            ),
+            items = listOf(
+                ProductItem.create(1, 1, today, ProductItemType.DESIGN),
+            ),
+            createdAt = today,
         )
+        val updatedProduct = targetProduct.register()
+
+        given(repository.getProductByIdAndKnitterId(any(), any()))
+            .willReturn(Mono.just(targetProduct))
+        given(repository.save(any()))
+            .willReturn(Mono.just(updatedProduct))
+
+        val body = objectMapper
+            .writeValueAsString(
+                RegisterProductRequest(id = 1)
+            )
+
+        val response = webClient
+            .post()
+            .uri("/product")
+            .addDefaultRequestHeader()
+            .bodyValue(body)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<RegisterProductResponse>>()
+            .returnResult()
+            .responseBody!!
+
+        assertThat(response.payload.id).isEqualTo(targetProduct.id)
+        verify(repository)
+            .getProductByIdAndKnitterId(
+                1,
+                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            )
+        verify(repository)
+            .save(
+                argThat {
+                    product ->
+                    product.like(updatedProduct)
+                }
+            )
     }
 }

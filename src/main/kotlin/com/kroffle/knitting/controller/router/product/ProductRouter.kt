@@ -17,6 +17,7 @@ class ProductRouter(private val handler: ProductHandler) {
             listOf(
                 POST(DRAFT_PRODUCT_PACKAGE_PATH, handler::draftProductPackage),
                 POST(DRAFT_PRODUCT_CONTENT_PATH, handler::draftProductContent),
+                POST(handler::registerProduct),
             )
         }
     )
