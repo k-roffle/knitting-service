@@ -172,8 +172,10 @@ class ProductRouterTest {
         )
         val updatedProduct = targetProduct.draftContent("상품 설명")
 
-        given(repository.findById(any())).willReturn(Mono.just(targetProduct))
-        given(repository.save(any())).willReturn(Mono.just(updatedProduct))
+        given(repository.getProductByIdAndKnitterId(any(), any()))
+            .willReturn(Mono.just(targetProduct))
+        given(repository.save(any()))
+            .willReturn(Mono.just(updatedProduct))
 
         val body = objectMapper
             .writeValueAsString(
@@ -196,13 +198,18 @@ class ProductRouterTest {
             .responseBody!!
 
         assertThat(response.payload.id).isEqualTo(targetProduct.id)
-        verify(repository).findById(1)
-        verify(repository).save(
-            argThat {
-                product ->
-                product.like(updatedProduct)
-            }
-        )
+        verify(repository)
+            .getProductByIdAndKnitterId(
+                1,
+                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            )
+        verify(repository)
+            .save(
+                argThat {
+                    product ->
+                    product.like(updatedProduct)
+                }
+            )
     }
 
     @Test
@@ -230,8 +237,10 @@ class ProductRouterTest {
         )
         val updatedProduct = targetProduct.register()
 
-        given(repository.findById(any())).willReturn(Mono.just(targetProduct))
-        given(repository.save(any())).willReturn(Mono.just(updatedProduct))
+        given(repository.getProductByIdAndKnitterId(any(), any()))
+            .willReturn(Mono.just(targetProduct))
+        given(repository.save(any()))
+            .willReturn(Mono.just(updatedProduct))
 
         val body = objectMapper
             .writeValueAsString(
@@ -251,12 +260,17 @@ class ProductRouterTest {
             .responseBody!!
 
         assertThat(response.payload.id).isEqualTo(targetProduct.id)
-        verify(repository).findById(1)
-        verify(repository).save(
-            argThat {
-                product ->
-                product.like(updatedProduct)
-            }
-        )
+        verify(repository)
+            .getProductByIdAndKnitterId(
+                1,
+                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            )
+        verify(repository)
+            .save(
+                argThat {
+                    product ->
+                    product.like(updatedProduct)
+                }
+            )
     }
 }

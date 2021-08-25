@@ -1,7 +1,6 @@
 package com.kroffle.knitting.usecase.product
 
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.usecase.exception.NotFoundEntity
 import com.kroffle.knitting.usecase.product.dto.DraftProductContent
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackage
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
@@ -28,11 +27,7 @@ class ProductService(private val repository: ProductRepository) {
 
     fun draft(product: DraftProductContent): Mono<Product> {
         return repository
-            .findById(product.id)
-            .filter {
-                it.knitterId == product.knitterId
-            }
-            .switchIfEmpty(Mono.error(NotFoundEntity(Product::class.java)))
+            .getProductByIdAndKnitterId(product.id, product.knitterId)
             .flatMap {
                 repository
                     .save(it.draftContent(product.content))
@@ -41,11 +36,7 @@ class ProductService(private val repository: ProductRepository) {
 
     fun register(data: RegisterProductData): Mono<Product> {
         return repository
-            .findById(data.id)
-            .filter {
-                it.knitterId == data.knitterId
-            }
-            .switchIfEmpty(Mono.error(NotFoundEntity(Product::class.java)))
+            .getProductByIdAndKnitterId(data.id, data.knitterId)
             .flatMap {
                 repository
                     .save(it.register())
@@ -54,6 +45,6 @@ class ProductService(private val repository: ProductRepository) {
 
     interface ProductRepository {
         fun save(product: Product): Mono<Product>
-        fun findById(id: Long): Mono<Product>
+        fun getProductByIdAndKnitterId(id: Long, knitterId: Long): Mono<Product>
     }
 }

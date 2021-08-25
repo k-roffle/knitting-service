@@ -1,3 +1,3 @@
-package com.kroffle.knitting.usecase.exception
+package com.kroffle.knitting.infra.persistence.exception
 
 class NotFoundEntity(clazz: Class<*>) : Exception("Cannot found ${clazz.name}")
