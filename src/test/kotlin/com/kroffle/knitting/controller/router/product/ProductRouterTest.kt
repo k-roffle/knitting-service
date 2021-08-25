@@ -172,7 +172,7 @@ class ProductRouterTest {
         )
         val updatedProduct = targetProduct.draftContent("상품 설명")
 
-        given(repository.findById(1)).willReturn(Mono.just(targetProduct))
+        given(repository.findById(any())).willReturn(Mono.just(targetProduct))
         given(repository.save(any())).willReturn(Mono.just(updatedProduct))
 
         val body = objectMapper
