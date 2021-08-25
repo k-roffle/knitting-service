@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.persistence.design
+package com.kroffle.knitting.infra.persistence.design.repository
 
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
@@ -11,9 +11,9 @@ import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-class R2dbcDesignRepository(private val dbDesignRepository: DBDesignRepository) : DesignRepository {
+class R2dbcDesignRepository(private val repository: DBDesignRepository) : DesignRepository {
     override fun createDesign(design: Design): Mono<Design> =
-        dbDesignRepository
+        repository
             .save(design.toDesignEntity())
             .map { it.toDesign() }
 
@@ -23,14 +23,14 @@ class R2dbcDesignRepository(private val dbDesignRepository: DBDesignRepository) 
         val designs: Flux<DesignEntity> = when (sort.direction) {
             SortDirection.DESC ->
                 if (paging.after != null) {
-                    dbDesignRepository
+                    repository
                         .findAllByKnitterIdAndIdBefore(
                             knitterId = knitterId,
                             id = paging.after,
                             pageable = pageRequest,
                         )
                 } else {
-                    dbDesignRepository
+                    repository
                         .findAllByKnitterId(
                             knitterId = knitterId,
                             pageable = pageRequest,

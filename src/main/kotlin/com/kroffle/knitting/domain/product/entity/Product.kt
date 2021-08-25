@@ -6,6 +6,8 @@ import com.kroffle.knitting.domain.product.exception.InvalidDiscountPrice
 import com.kroffle.knitting.domain.product.exception.InvalidFullPrice
 import com.kroffle.knitting.domain.product.exception.InvalidPeriod
 import com.kroffle.knitting.domain.product.exception.UnableToRegister
+import com.kroffle.knitting.domain.product.value.ProductItem
+import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -19,11 +21,10 @@ class Product(
     val representativeImageUrl: String,
     val specifiedSalesStartDate: LocalDate?,
     val specifiedSalesEndDate: LocalDate?,
-    val tags: List<String>,
+    val tags: List<ProductTag>,
     val content: String?,
     val inputStatus: InputStatus,
-    val goodsIds: List<Long>,
-    val designIds: List<Long>,
+    val items: List<ProductItem>,
     val createdAt: LocalDateTime?,
 ) {
     init {
@@ -66,9 +67,6 @@ class Product(
             salesStatus == SalesStatus.ON_SALES &&
                 inputStatus == InputStatus.REGISTERED
 
-    val itemIds: List<Long>
-        get() = goodsIds + designIds
-
     fun writeContent(newContent: String): Product {
         return Product(
             id,
@@ -82,8 +80,7 @@ class Product(
             tags,
             newContent,
             inputStatus,
-            goodsIds,
-            designIds,
+            items,
             createdAt,
         )
     }
@@ -104,14 +101,14 @@ class Product(
             tags,
             content,
             InputStatus.REGISTERED,
-            goodsIds,
-            designIds,
+            items,
             createdAt,
         )
     }
 
     companion object {
         fun draftProductPackage(
+            id: Long?,
             knitterId: Long,
             name: String,
             fullPrice: Money,
@@ -119,12 +116,11 @@ class Product(
             representativeImageUrl: String,
             specifiedSalesStartDate: LocalDate?,
             specifiedSalesEndDate: LocalDate?,
-            tags: List<String>,
-            goodsIds: List<Long>,
-            designIds: List<Long>,
+            tags: List<ProductTag>,
+            items: List<ProductItem>,
         ): Product {
             return Product(
-                1, // FIXME
+                id,
                 knitterId,
                 name,
                 fullPrice,
@@ -135,8 +131,7 @@ class Product(
                 tags,
                 null,
                 InputStatus.DRAFT,
-                goodsIds,
-                designIds,
+                items,
                 null,
             )
         }

@@ -6,6 +6,9 @@ import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
 import com.kroffle.knitting.domain.product.entity.Product
+import com.kroffle.knitting.domain.product.enum.ProductItemType
+import com.kroffle.knitting.domain.product.value.ProductItem
+import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.usecase.product.ProductService
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackage
@@ -26,6 +29,7 @@ class ProductHandler(private val productService: ProductService) {
             body ->
             productService.draft(
                 DraftProductPackage(
+                    id = body.id,
                     knitterId = knitterId,
                     name = body.name,
                     fullPrice = Money(body.fullPrice),
@@ -33,9 +37,8 @@ class ProductHandler(private val productService: ProductService) {
                     representativeImageUrl = body.representativeImageUrl,
                     specifiedSalesStartDate = body.specifiedSalesStartDate,
                     specifiedSalesEndDate = body.specifiedSalesEndDate,
-                    tags = body.tags,
-                    designIds = body.designIds,
-                    goodsIds = listOf(),
+                    tags = body.tags.map { ProductTag(null, it, null) },
+                    items = body.designIds.map { ProductItem.create(null, it, null, ProductItemType.DESIGN) },
                 )
             )
         }

@@ -1,18 +1,18 @@
 package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
-import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.helper.TestResponse
+import com.kroffle.knitting.helper.WebTestClientHelper
+import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
+import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
-import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
@@ -23,10 +23,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
@@ -37,32 +38,31 @@ import reactor.core.publisher.Mono
 class DesignRouterTest {
     private lateinit var webClient: WebTestClient
 
-    private lateinit var design: Design
-
-    private lateinit var tokenPublisher: TokenPublisher
-
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
     @MockBean
-    lateinit var repo: DesignRepository
+    private lateinit var repository: DesignRepository
 
     @MockBean
-    lateinit var tokenDecoder: TokenDecoder
+    private lateinit var tokenDecoder: TokenDecoder
 
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
-    private val secretKey = "I'M SECRET KEY!"
-
     @BeforeEach
     fun setUp() {
-        tokenPublisher = TokenPublisher(secretKey)
-        tokenDecoder = TokenDecoder(secretKey)
+        webClient = WebTestClientHelper.createWebTestClient(
+            DesignRouter(DesignHandler(DesignService(repository)))
+                .designRouterFunction()
+        )
+    }
 
-        design = DesignEntity(
+    @Test
+    fun `design 이 잘 생성되어야 함`() {
+        val createdDesign = DesignEntity(
             id = 1,
-            knitterId = 1,
+            knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
             name = "test",
             designType = DesignType.Sweater,
             patternType = PatternType.Text,
@@ -81,18 +81,7 @@ class DesignRouterTest {
             targetLevel = LevelType.HARD.key,
             coverImageUrl = "http://test.kroffle.com/image.jpg",
         ).toDesign()
-
-        val routerFunction = DesignRouter(DesignHandler(DesignService(repo))).designRouterFunction()
-        webClient = WebTestClient
-            .bindToRouterFunction(routerFunction)
-            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
-            .build()
-    }
-
-    @Test
-    fun `design 이 잘 생성되어야 함`() {
-        val knitterId: Long = 1
-        val token = tokenPublisher.publish(knitterId)
+        given(repository.createDesign(any())).willReturn(Mono.just(createdDesign))
 
         val body = objectMapper.writeValueAsString(
             NewDesignRequest(
@@ -117,20 +106,40 @@ class DesignRouterTest {
                 coverImageUrl = "http://test.kroffle.com/image.jpg",
             )
         )
-        given(repo.createDesign(any())).willReturn(Mono.just(design))
-        val response: TestResponse<NewDesignResponse> = webClient
-            .post()
-            .uri("/design/")
-            .header("Authorization", "Bearer $token")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange()
-            .expectStatus()
-            .isOk
-            .expectBody<TestResponse<NewDesignResponse>>()
-            .returnResult()
-            .responseBody!!
-        assertThat(response.payload.id).isEqualTo(design.id)
+        val response: TestResponse<NewDesignResponse> =
+            webClient
+                .post()
+                .uri("/design/")
+                .addDefaultRequestHeader()
+                .bodyValue(body)
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody<TestResponse<NewDesignResponse>>()
+                .returnResult()
+                .responseBody!!
+
+        assertThat(response.payload.id).isEqualTo(createdDesign.id)
+        verify(repository).createDesign(
+            argThat {
+                design ->
+                assert(
+                    design.knitterId == createdDesign.knitterId &&
+                        design.name == createdDesign.name &&
+                        design.designType == createdDesign.designType &&
+                        design.patternType == createdDesign.patternType &&
+                        design.gauge.like(createdDesign.gauge) &&
+                        design.size.like(createdDesign.size) &&
+                        design.needle == createdDesign.needle &&
+                        design.yarn == createdDesign.yarn &&
+                        design.extra == createdDesign.extra &&
+                        design.pattern.like(createdDesign.pattern) &&
+                        design.description == createdDesign.description &&
+                        design.targetLevel == createdDesign.targetLevel &&
+                        design.coverImageUrl == createdDesign.coverImageUrl
+                )
+                true
+            }
+        )
     }
 }
