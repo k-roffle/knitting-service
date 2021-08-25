@@ -15,7 +15,7 @@ import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
-import com.kroffle.knitting.usecase.design.DesignRepository
+import com.kroffle.knitting.usecase.repository.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

@@ -3,6 +3,7 @@ package com.kroffle.knitting.controller.router.knitter
 import com.kroffle.knitting.controller.handler.knitter.MyselfHandler
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
 import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
+import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
@@ -11,7 +12,8 @@ import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.persistence.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
-import com.kroffle.knitting.usecase.auth.KnitterRepository
+import com.kroffle.knitting.usecase.knitter.KnitterService
+import com.kroffle.knitting.usecase.repository.KnitterRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -48,15 +50,8 @@ class MyselfRouterTest {
     fun setUp() {
         webClient = WebTestClientHelper
             .createWebTestClient(
-                MyselfRouter(
-                    MyselfHandler(
-                        AuthService(
-                            mockOAuthHelper,
-                            tokenPublisher,
-                            repository,
-                        ),
-                    )
-                ).profileRouterFunction()
+                MyselfRouter(MyselfHandler(KnitterService(repository)))
+                    .profileRouterFunction()
             )
     }
 

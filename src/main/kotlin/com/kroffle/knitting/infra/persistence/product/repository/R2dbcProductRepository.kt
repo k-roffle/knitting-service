@@ -6,7 +6,7 @@ import com.kroffle.knitting.infra.persistence.product.entity.ProductEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductItemEntities
 import com.kroffle.knitting.infra.persistence.product.entity.toProductTagEntities
-import com.kroffle.knitting.usecase.product.ProductRepository
+import com.kroffle.knitting.usecase.repository.ProductRepository
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList

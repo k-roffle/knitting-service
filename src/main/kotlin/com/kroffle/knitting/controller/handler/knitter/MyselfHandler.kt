@@ -4,17 +4,17 @@ import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
 import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
-import com.kroffle.knitting.usecase.auth.AuthService
+import com.kroffle.knitting.usecase.knitter.KnitterService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
 @Component
-class MyselfHandler(private val authService: AuthService) {
+class MyselfHandler(private val knitterService: KnitterService) {
     fun getMyProfile(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
-        return authService
+        return knitterService
             .getKnitter(knitterId)
             .map {
                 knitter ->
