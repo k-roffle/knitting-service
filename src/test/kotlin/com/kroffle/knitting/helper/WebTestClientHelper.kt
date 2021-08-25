@@ -11,9 +11,10 @@ import org.springframework.web.reactive.function.server.ServerResponse
 class WebTestClientHelper {
     companion object {
         const val AUTHORIZED_KNITTER_ID: Long = 1
-        private const val JWT_SECRET_KEY = "I'M SECRET KEY!"
+        const val JWT_SECRET_KEY = "I'M SECRET KEY!"
         private val tokenDecoder = TokenDecoder(JWT_SECRET_KEY)
         private val tokenPublisher = TokenPublisher(JWT_SECRET_KEY)
+        private val token = tokenPublisher.publish(AUTHORIZED_KNITTER_ID)
 
         fun createWebTestClient(routerFunction: RouterFunction<ServerResponse>): WebTestClient {
             return WebTestClient
@@ -24,12 +25,11 @@ class WebTestClientHelper {
 
         fun addDefaultRequestHeader(
             request: WebTestClient.RequestBodySpec,
-            authorized: Boolean = true,
-            mediaType: MediaType = MediaType.APPLICATION_JSON,
+            authorized: Boolean,
+            mediaType: MediaType,
         ): WebTestClient.RequestBodySpec {
             val requestWithHeader =
                 if (authorized) {
-                    val token = tokenPublisher.publish(AUTHORIZED_KNITTER_ID)
                     request
                         .header("Authorization", "Bearer $token")
                 } else {
@@ -39,6 +39,23 @@ class WebTestClientHelper {
             return requestWithHeader
                 .accept(mediaType)
                 .contentType(mediaType)
+        }
+
+        fun addDefaultRequestHeader(
+            request: WebTestClient.RequestHeadersSpec<*>,
+            authorized: Boolean,
+            mediaType: MediaType,
+        ): WebTestClient.RequestHeadersSpec<*> {
+            val requestWithHeader =
+                if (authorized) {
+                    request
+                        .header("Authorization", "Bearer $token")
+                } else {
+                    request
+                }
+
+            return requestWithHeader
+                .accept(mediaType)
         }
     }
 }

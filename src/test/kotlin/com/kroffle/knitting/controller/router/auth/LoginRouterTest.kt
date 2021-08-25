@@ -1,11 +1,12 @@
 package com.kroffle.knitting.controller.router.auth
 
-import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
 import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.helper.TestResponse
+import com.kroffle.knitting.helper.WebTestClientHelper
+import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
@@ -36,7 +37,7 @@ import java.time.LocalDateTime
 class LoginRouterTest {
     private lateinit var webClient: WebTestClient
 
-    private lateinit var tokenPublisher: TokenPublisher
+    private lateinit var webClientWithMockOAuthHelper: WebTestClient
 
     @MockBean
     private lateinit var mockOAuthHelper: AuthService.OAuthHelper
@@ -45,53 +46,46 @@ class LoginRouterTest {
     private lateinit var tokenDecoder: TokenDecoder
 
     @MockBean
-    lateinit var repo: KnitterRepository
+    private lateinit var tokenPublisher: TokenPublisher
+
+    @MockBean
+    private lateinit var repository: KnitterRepository
 
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
-    private val secretKey = "I'M SECRET KEY!"
-
     @BeforeEach
     fun setUp() {
+        val oAuthHelper = GoogleOAuthHelperImpl(
+            ClientInfo(
+                "http",
+                "localhost:2028"
+            ),
+            GoogleOAuthConfig(
+                "GOOGLE_CLIENT_ID",
+                "GOOGLE_SECRET_KEY",
+            ),
+        )
+        tokenPublisher = TokenPublisher(WebTestClientHelper.JWT_SECRET_KEY)
+        tokenDecoder = TokenDecoder(WebTestClientHelper.JWT_SECRET_KEY)
 
-        tokenPublisher = TokenPublisher(secretKey)
-        tokenDecoder = TokenDecoder(secretKey)
-
-        val routerFunction = LogInRouter(
-            GoogleLogInHandler(
-                AuthService(
-                    GoogleOAuthHelperImpl(
-                        ClientInfo(
-                            "http",
-                            "localhost:2028"
-                        ),
-                        GoogleOAuthConfig(
-                            "GOOGLE_CLIENT_ID",
-                            "GOOGLE_SECRET_KEY",
-                        ),
-                    ),
-                    tokenPublisher,
-                    repo,
-                ),
+        webClient = WebTestClientHelper
+            .createWebTestClient(
+                LogInRouter(
+                    GoogleLogInHandler(
+                        AuthService(oAuthHelper, tokenPublisher, repository),
+                    )
+                ).logInRouterFunction()
             )
-        ).logInRouterFunction()
-        webClient = WebTestClient
-            .bindToRouterFunction(routerFunction)
-            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
-            .build()
-    }
 
-    private fun setWebClientWithMockOAuthHelper() {
-        val routerFunction = LogInRouter(
-            GoogleLogInHandler(
-                AuthService(mockOAuthHelper, tokenPublisher, repo),
+        webClientWithMockOAuthHelper = WebTestClientHelper
+            .createWebTestClient(
+                LogInRouter(
+                    GoogleLogInHandler(
+                        AuthService(mockOAuthHelper, tokenPublisher, repository),
+                    )
+                ).logInRouterFunction()
             )
-        ).logInRouterFunction()
-        webClient = WebTestClient
-            .bindToRouterFunction(routerFunction)
-            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
-            .build()
     }
 
     @Test
@@ -115,7 +109,6 @@ class LoginRouterTest {
 
     @Test
     fun `이미 가입한 유저인 경우 access token 을 발급 받을 수 있어야 함`() {
-        setWebClientWithMockOAuthHelper()
         val targetKnitter = KnitterEntity(
             id = 1,
             email = "mock@email.com",
@@ -134,11 +127,11 @@ class LoginRouterTest {
             )
         )
 
-        given(repo.findByEmail(targetKnitter.email)).willReturn(
+        given(repository.findByEmail(targetKnitter.email)).willReturn(
             Mono.just(targetKnitter)
         )
 
-        val result = webClient
+        val result = webClientWithMockOAuthHelper
             .get()
             .uri {
                 uriBuilder ->
@@ -157,7 +150,6 @@ class LoginRouterTest {
 
     @Test
     fun `새로 가입하는 유저의 경우 계정을 생성한 후 access token 을 발급 받을 수 있어야 함`() {
-        setWebClientWithMockOAuthHelper()
         val newKnitterId: Long = 1
         val newUserCreatedAt = LocalDateTime.now()
         val mockUser = Knitter(
@@ -178,12 +170,13 @@ class LoginRouterTest {
             )
         )
 
-        given(repo.findByEmail(mockUser.email)).willReturn(Mono.empty())
+        given(repository.findByEmail(mockUser.email))
+            .willReturn(Mono.empty())
 
-        given(repo.create(any()))
+        given(repository.create(any()))
             .willReturn(Mono.just(mockUser))
 
-        val result = webClient
+        val result = webClientWithMockOAuthHelper
             .get()
             .uri {
                 uriBuilder ->
@@ -200,7 +193,7 @@ class LoginRouterTest {
 
         assert(tokenDecoder.getKnitterId(result.payload.token) == newKnitterId)
 
-        verify(repo).create(
+        verify(repository).create(
             argThat {
                 param ->
                 assert(param.id == null)
@@ -215,17 +208,17 @@ class LoginRouterTest {
 
     @Test
     fun `리프레시 요청시 동일한 유저 id로 토큰이 갱신 되어야 함`() {
-        val knitterId: Long = 1
-        val token = tokenPublisher.publish(knitterId)
         val result = webClient
             .post()
             .uri("/auth/refresh")
-            .header("Authorization", "Bearer $token")
+            .addDefaultRequestHeader()
             .exchange()
             .expectStatus().isOk
             .expectBody<TestResponse<RefreshTokenResponse>>()
             .returnResult()
             .responseBody!!
-        assert(TokenDecoder(secretKey).getKnitterId(result.payload.token) == knitterId)
+        val decodedToken = TokenDecoder(WebTestClientHelper.JWT_SECRET_KEY)
+            .getKnitterId(result.payload.token)
+        assert(decodedToken == WebTestClientHelper.AUTHORIZED_KNITTER_ID)
     }
 }

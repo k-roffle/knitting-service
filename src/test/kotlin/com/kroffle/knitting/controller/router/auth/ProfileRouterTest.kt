@@ -1,9 +1,10 @@
 package com.kroffle.knitting.controller.router.auth
 
-import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.auth.ProfileHandler
 import com.kroffle.knitting.controller.handler.auth.dto.MyProfileResponse
 import com.kroffle.knitting.helper.TestResponse
+import com.kroffle.knitting.helper.WebTestClientHelper
+import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
@@ -30,9 +31,8 @@ import reactor.core.publisher.Mono
 class ProfileRouterTest {
     private lateinit var webClient: WebTestClient
 
-    private lateinit var tokenPublisher: TokenPublisher
-
-    private lateinit var token: String
+    @MockBean
+    private lateinit var repository: KnitterRepository
 
     @MockBean
     private lateinit var mockOAuthHelper: AuthService.OAuthHelper
@@ -41,52 +41,43 @@ class ProfileRouterTest {
     private lateinit var tokenDecoder: TokenDecoder
 
     @MockBean
-    lateinit var repo: KnitterRepository
+    private lateinit var tokenPublisher: TokenPublisher
 
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
-    private val secretKey = "I'M SECRET KEY!"
-    private val knitterId: Long = 1
-
     @BeforeEach
     fun setUp() {
-        tokenPublisher = TokenPublisher(secretKey)
-        tokenDecoder = TokenDecoder(secretKey)
-
-        token = tokenPublisher.publish(knitterId)
-
-        val routerFunction = ProfileRouter(
-            ProfileHandler(
-                AuthService(
-                    GoogleOAuthHelperImpl(
-                        ClientInfo(
-                            "http",
-                            "localhost:2028"
+        webClient = WebTestClientHelper
+            .createWebTestClient(
+                ProfileRouter(
+                    ProfileHandler(
+                        AuthService(
+                            GoogleOAuthHelperImpl(
+                                ClientInfo(
+                                    "http",
+                                    "localhost:2028"
+                                ),
+                                GoogleOAuthConfig(
+                                    "GOOGLE_CLIENT_ID",
+                                    "GOOGLE_SECRET_KEY",
+                                ),
+                            ),
+                            tokenPublisher,
+                            repository,
                         ),
-                        GoogleOAuthConfig(
-                            "GOOGLE_CLIENT_ID",
-                            "GOOGLE_SECRET_KEY",
-                        ),
-                    ),
-                    tokenPublisher,
-                    repo,
-                ),
+                    )
+                ).profileRouterFunction()
             )
-        ).profileRouterFunction()
-        webClient = WebTestClient
-            .bindToRouterFunction(routerFunction)
-            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
-            .build()
     }
 
     @Test
     fun `내 프로필을 조회할 수 있어야 함`() {
-        given(repo.findById(knitterId))
+        given(repository.findById(WebTestClientHelper.AUTHORIZED_KNITTER_ID))
             .willReturn(
                 Mono.just(
                     KnitterEntity(
-                        id = 1,
+                        id = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
                         name = "홍길동",
                         email = "test@test.com",
                         profileImageUrl = null,
@@ -97,7 +88,7 @@ class ProfileRouterTest {
         val result = webClient
             .get()
             .uri("/profile")
-            .header("Authorization", "Bearer $token")
+            .addDefaultRequestHeader()
             .exchange()
             .expectStatus().isOk
             .expectBody<TestResponse<MyProfileResponse>>()

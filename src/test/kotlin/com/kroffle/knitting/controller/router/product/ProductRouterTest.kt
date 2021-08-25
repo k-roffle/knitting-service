@@ -130,12 +130,12 @@ class ProductRouterTest {
                         product.inputStatus == createdProduct.inputStatus
                 )
                 product.tags.mapIndexed {
-                    idx, tag ->
-                    assert(createdProduct.tags[idx].tag == tag.tag)
+                    index, tag ->
+                    assert(createdProduct.tags[index].tag == tag.tag)
                 }
                 product.items.mapIndexed {
-                    idx, item ->
-                    assert(createdProduct.items[idx].itemId == item.itemId)
+                    index, item ->
+                    assert(createdProduct.items[index].itemId == item.itemId)
                 }
                 true
             }

@@ -1,6 +1,5 @@
 package com.kroffle.knitting.controller.router.design
 
-import com.kroffle.knitting.controller.filter.auth.AuthorizationFilter
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
@@ -8,9 +7,10 @@ import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.helper.TestResponse
+import com.kroffle.knitting.helper.WebTestClientHelper
+import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
-import com.kroffle.knitting.infra.jwt.TokenPublisher
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignRepository
@@ -26,7 +26,6 @@ import org.mockito.kotlin.argThat
 import org.mockito.kotlin.verify
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
@@ -36,50 +35,34 @@ import java.time.LocalDateTime
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
 class DesignsRouterTest {
-
     private lateinit var webClient: WebTestClient
 
-    private lateinit var tokenPublisher: TokenPublisher
-
-    private lateinit var token: String
+    @MockBean
+    private lateinit var repository: DesignRepository
 
     @MockBean
-    lateinit var repo: DesignRepository
-
-    @MockBean
-    lateinit var tokenDecoder: AuthorizationFilter.TokenDecoder
+    private lateinit var tokenDecoder: TokenDecoder
 
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
-    private val secretKey = "I'M SECRET KEY!"
-
-    private val knitterId: Long = 1
-
-    private val today: LocalDateTime = LocalDateTime.now()
-
     @BeforeEach
     fun setUp() {
-        tokenPublisher = TokenPublisher(secretKey)
-        tokenDecoder = TokenDecoder(secretKey)
-
-        token = tokenPublisher.publish(knitterId)
-
-        val routerFunction = DesignsRouter(DesignHandler(DesignService(repo))).designsRouterFunction()
-        webClient = WebTestClient
-            .bindToRouterFunction(routerFunction)
-            .webFilter<WebTestClient.RouterFunctionSpec>(AuthorizationFilter(tokenDecoder))
-            .build()
+        webClient = WebTestClientHelper.createWebTestClient(
+            DesignsRouter(DesignHandler(DesignService(repository)))
+                .designsRouterFunction()
+        )
     }
 
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
-        given(repo.getDesignsByKnitterId(any(), any(), any()))
+        val today: LocalDateTime = LocalDateTime.now()
+        given(repository.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(
                 Flux.just(
                     DesignEntity(
                         id = 1,
-                        knitterId = 1,
+                        knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
                         name = "캔디리더 효정 니트",
                         designType = DesignType.Sweater,
                         patternType = PatternType.Text,
@@ -102,17 +85,17 @@ class DesignsRouterTest {
                 )
             )
 
-        val responseBody: TestResponse<List<MyDesign>> = webClient
-            .get()
-            .uri("/designs/my")
-            .header("Authorization", "Bearer $token")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus()
-            .isOk
-            .expectBody<TestResponse<List<MyDesign>>>()
-            .returnResult()
-            .responseBody!!
+        val responseBody: TestResponse<List<MyDesign>> =
+            webClient
+                .get()
+                .uri("/designs/my")
+                .addDefaultRequestHeader()
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody<TestResponse<List<MyDesign>>>()
+                .returnResult()
+                .responseBody!!
 
         assertThat(responseBody.payload.size).isEqualTo(1)
         assert(
@@ -127,7 +110,7 @@ class DesignsRouterTest {
                 ),
             )
         )
-        verify(repo).getDesignsByKnitterId(
+        verify(repository).getDesignsByKnitterId(
             argThat { param -> param == 1.toLong() },
             argThat {
                 param ->
@@ -149,8 +132,7 @@ class DesignsRouterTest {
         val responseBody: TestResponse<SalesSummaryResponse> = webClient
             .get()
             .uri("/designs/sales-summary/my")
-            .header("Authorization", "Bearer $token")
-            .accept(MediaType.APPLICATION_JSON)
+            .addDefaultRequestHeader()
             .exchange()
             .expectStatus()
             .isOk
