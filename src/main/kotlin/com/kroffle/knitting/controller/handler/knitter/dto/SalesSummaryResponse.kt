@@ -1,4 +1,4 @@
-package com.kroffle.knitting.controller.handler.design.dto
+package com.kroffle.knitting.controller.handler.knitter.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayload

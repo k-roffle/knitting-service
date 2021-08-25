@@ -2,7 +2,6 @@ package com.kroffle.knitting.controller.router.design
 
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
-import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
@@ -124,27 +123,6 @@ class DesignsRouterTest {
                 assert(param.direction == SortDirection.DESC)
                 true
             },
-        )
-    }
-
-    @Test
-    fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
-        val responseBody: TestResponse<SalesSummaryResponse> = webClient
-            .get()
-            .uri("/designs/sales-summary/my")
-            .addDefaultRequestHeader()
-            .exchange()
-            .expectStatus()
-            .isOk
-            .expectBody<TestResponse<SalesSummaryResponse>>()
-            .returnResult()
-            .responseBody!!
-
-        assertThat(responseBody.payload).isEqualTo(
-            SalesSummaryResponse(
-                numberOfDesignsOnSales = 1,
-                numberOfDesignsSold = 2,
-            ),
         )
     }
 }

@@ -1,15 +1,13 @@
-package com.kroffle.knitting.controller.router.auth
+package com.kroffle.knitting.controller.router.knitter
 
-import com.kroffle.knitting.controller.handler.auth.ProfileHandler
-import com.kroffle.knitting.controller.handler.auth.dto.MyProfileResponse
+import com.kroffle.knitting.controller.handler.knitter.MyselfHandler
+import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
+import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
-import com.kroffle.knitting.infra.oauth.GoogleOAuthHelperImpl
-import com.kroffle.knitting.infra.oauth.dto.ClientInfo
-import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.infra.persistence.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
@@ -28,7 +26,7 @@ import reactor.core.publisher.Mono
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
-class ProfileRouterTest {
+class MyselfRouterTest {
     private lateinit var webClient: WebTestClient
 
     @MockBean
@@ -50,19 +48,10 @@ class ProfileRouterTest {
     fun setUp() {
         webClient = WebTestClientHelper
             .createWebTestClient(
-                ProfileRouter(
-                    ProfileHandler(
+                MyselfRouter(
+                    MyselfHandler(
                         AuthService(
-                            GoogleOAuthHelperImpl(
-                                ClientInfo(
-                                    "http",
-                                    "localhost:2028"
-                                ),
-                                GoogleOAuthConfig(
-                                    "GOOGLE_CLIENT_ID",
-                                    "GOOGLE_SECRET_KEY",
-                                ),
-                            ),
+                            mockOAuthHelper,
                             tokenPublisher,
                             repository,
                         ),
@@ -87,7 +76,7 @@ class ProfileRouterTest {
 
         val result = webClient
             .get()
-            .uri("/profile")
+            .uri("/me/profile")
             .addDefaultRequestHeader()
             .exchange()
             .expectStatus().isOk
@@ -100,6 +89,27 @@ class ProfileRouterTest {
                 name = "홍길동",
                 email = "test@test.com",
                 profileImageUrl = null,
+            ),
+        )
+    }
+
+    @Test
+    fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
+        val responseBody: TestResponse<SalesSummaryResponse> = webClient
+            .get()
+            .uri("/me/sales-summary")
+            .addDefaultRequestHeader()
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<SalesSummaryResponse>>()
+            .returnResult()
+            .responseBody!!
+
+        assertThat(responseBody.payload).isEqualTo(
+            SalesSummaryResponse(
+                numberOfDesignsOnSales = 1,
+                numberOfDesignsSold = 2,
             ),
         )
     }

@@ -1,8 +1,9 @@
-package com.kroffle.knitting.controller.handler.auth
+package com.kroffle.knitting.controller.handler.knitter
 
-import com.kroffle.knitting.controller.handler.auth.dto.MyProfileResponse
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
+import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
+import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
 import com.kroffle.knitting.usecase.auth.AuthService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -10,7 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
 @Component
-class ProfileHandler(private val authService: AuthService) {
+class MyselfHandler(private val authService: AuthService) {
     fun getMyProfile(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
         return authService
@@ -26,5 +27,15 @@ class ProfileHandler(private val authService: AuthService) {
             .flatMap {
                 ResponseHelper.makeJsonResponse(it)
             }
+    }
+
+    fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
+        return ResponseHelper
+            .makeJsonResponse(
+                SalesSummaryResponse(
+                    numberOfDesignsOnSales = 1,
+                    numberOfDesignsSold = 2,
+                )
+            )
     }
 }

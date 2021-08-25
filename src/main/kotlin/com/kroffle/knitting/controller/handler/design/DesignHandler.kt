@@ -3,7 +3,6 @@ package com.kroffle.knitting.controller.handler.design
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
-import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
@@ -105,15 +104,5 @@ class DesignHandler(private val service: DesignService) {
             .flatMap {
                 ResponseHelper.makeJsonResponse(it)
             }
-    }
-
-    fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
-        return ResponseHelper
-            .makeJsonResponse(
-                SalesSummaryResponse(
-                    numberOfDesignsOnSales = 1,
-                    numberOfDesignsSold = 2,
-                )
-            )
     }
 }
