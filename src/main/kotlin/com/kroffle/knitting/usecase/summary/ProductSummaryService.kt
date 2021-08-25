@@ -10,7 +10,7 @@ class ProductSummaryService(private val repository: ProductRepository) {
     fun countProductOnList(knitterId: Long): Mono<Long> =
         repository
             .findRegisteredProduct(knitterId)
-            .filter{ it.onList }
+            .filter { it.onList }
             .count()
 
     interface ProductRepository {

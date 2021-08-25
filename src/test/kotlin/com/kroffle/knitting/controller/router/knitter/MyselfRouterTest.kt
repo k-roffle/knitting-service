@@ -109,10 +109,10 @@ class MyselfRouterTest {
     fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
         val yesterday = LocalDateTime.now().minusDays(1).toLocalDate()
         val productsToBeCounted = Flux.just(
-            MockFactory.create(MockProductData(id=1, content = "이 상품은요", inputStatus = InputStatus.REGISTERED)),
+            MockFactory.create(MockProductData(id = 1, content = "이 상품은요", inputStatus = InputStatus.REGISTERED)),
             MockFactory.create(
                 MockProductData(
-                    id=2,
+                    id = 2,
                     content = "이 상품은요",
                     inputStatus = InputStatus.REGISTERED,
                     specifiedSalesStartDate = yesterday,
@@ -120,11 +120,11 @@ class MyselfRouterTest {
             ),
         )
         val productsToBeSkipped = Flux.just(
-            MockFactory.create(MockProductData(id=3, inputStatus = InputStatus.DRAFT)),
-            MockFactory.create(MockProductData(id=4, content="이 상품은요", inputStatus = InputStatus.DRAFT)),
+            MockFactory.create(MockProductData(id = 3, inputStatus = InputStatus.DRAFT)),
+            MockFactory.create(MockProductData(id = 4, content = "이 상품은요", inputStatus = InputStatus.DRAFT)),
             MockFactory.create(
                 MockProductData(
-                    id=5,
+                    id = 5,
                     content = "이 상품은요",
                     inputStatus = InputStatus.REGISTERED,
                     specifiedSalesEndDate = yesterday,
