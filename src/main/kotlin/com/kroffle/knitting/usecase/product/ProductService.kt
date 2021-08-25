@@ -4,6 +4,7 @@ import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.usecase.exception.NotFoundEntity
 import com.kroffle.knitting.usecase.product.dto.DraftProductContent
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackage
+import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
@@ -35,6 +36,19 @@ class ProductService(private val repository: ProductRepository) {
             .flatMap {
                 repository
                     .save(it.draftContent(product.content))
+            }
+    }
+
+    fun register(data: RegisterProductData): Mono<Product> {
+        return repository
+            .findById(data.id)
+            .filter {
+                it.knitterId == data.knitterId
+            }
+            .switchIfEmpty(Mono.error(NotFoundEntity(Product::class.java)))
+            .flatMap {
+                repository
+                    .save(it.register())
             }
     }
 
