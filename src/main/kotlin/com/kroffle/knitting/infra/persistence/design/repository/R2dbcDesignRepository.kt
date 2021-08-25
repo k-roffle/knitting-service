@@ -8,9 +8,11 @@ import com.kroffle.knitting.usecase.repository.DesignRepository
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
+@Component
 class R2dbcDesignRepository(private val repository: DBDesignRepository) : DesignRepository {
     override fun createDesign(design: Design): Mono<Design> =
         repository
