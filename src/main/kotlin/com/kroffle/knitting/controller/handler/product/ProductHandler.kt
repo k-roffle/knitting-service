@@ -16,8 +16,8 @@ import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.usecase.product.ProductService
-import com.kroffle.knitting.usecase.product.dto.DraftProductContent
-import com.kroffle.knitting.usecase.product.dto.DraftProductPackage
+import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
+import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -35,7 +35,7 @@ class ProductHandler(private val productService: ProductService) {
         val product: Mono<Product> = bodyMono.flatMap {
             body ->
             productService.draft(
-                DraftProductPackage(
+                DraftProductPackageData(
                     id = body.id,
                     knitterId = knitterId,
                     name = body.name,
@@ -68,7 +68,7 @@ class ProductHandler(private val productService: ProductService) {
         val product: Mono<Product> = bodyMono.flatMap {
             body ->
             productService.draft(
-                DraftProductContent(
+                DraftProductContentData(
                     id = body.id,
                     knitterId = knitterId,
                     content = body.content,

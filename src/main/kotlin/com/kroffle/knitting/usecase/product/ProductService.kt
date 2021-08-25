@@ -1,36 +1,36 @@
 package com.kroffle.knitting.usecase.product
 
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.usecase.product.dto.DraftProductContent
-import com.kroffle.knitting.usecase.product.dto.DraftProductPackage
+import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
+import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class ProductService(private val repository: ProductRepository) {
-    fun draft(product: DraftProductPackage): Mono<Product> =
+    fun draft(data: DraftProductPackageData): Mono<Product> =
         repository.save(
             Product.draftProductPackage(
-                id = product.id,
-                knitterId = product.knitterId,
-                name = product.name,
-                fullPrice = product.fullPrice,
-                discountPrice = product.discountPrice,
-                representativeImageUrl = product.representativeImageUrl,
-                specifiedSalesStartDate = product.specifiedSalesStartDate,
-                specifiedSalesEndDate = product.specifiedSalesEndDate,
-                tags = product.tags,
-                items = product.items,
+                id = data.id,
+                knitterId = data.knitterId,
+                name = data.name,
+                fullPrice = data.fullPrice,
+                discountPrice = data.discountPrice,
+                representativeImageUrl = data.representativeImageUrl,
+                specifiedSalesStartDate = data.specifiedSalesStartDate,
+                specifiedSalesEndDate = data.specifiedSalesEndDate,
+                tags = data.tags,
+                items = data.items,
             )
         )
 
-    fun draft(product: DraftProductContent): Mono<Product> {
+    fun draft(data: DraftProductContentData): Mono<Product> {
         return repository
-            .getProductByIdAndKnitterId(product.id, product.knitterId)
+            .getProductByIdAndKnitterId(data.id, data.knitterId)
             .flatMap {
                 repository
-                    .save(it.draftContent(product.content))
+                    .save(it.draftContent(data.content))
             }
     }
 
