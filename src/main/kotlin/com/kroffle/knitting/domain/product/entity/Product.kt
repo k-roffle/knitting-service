@@ -4,6 +4,7 @@ import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.enum.SalesStatus
 import com.kroffle.knitting.domain.product.exception.InvalidDiscountPrice
 import com.kroffle.knitting.domain.product.exception.InvalidFullPrice
+import com.kroffle.knitting.domain.product.exception.InvalidInputStatus
 import com.kroffle.knitting.domain.product.exception.InvalidPeriod
 import com.kroffle.knitting.domain.product.exception.UnableToRegister
 import com.kroffle.knitting.domain.product.value.ProductItem
@@ -45,6 +46,10 @@ class Product(
 
         require(fullPrice > Money.ZERO) {
             throw InvalidFullPrice()
+        }
+
+        require(inputStatus == InputStatus.DRAFT || content != null) {
+            throw InvalidInputStatus()
         }
     }
 
