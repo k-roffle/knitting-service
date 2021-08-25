@@ -56,6 +56,16 @@ class LoginRouterTest {
 
     @BeforeEach
     fun setUp() {
+        val oAuthHelper = GoogleOAuthHelperImpl(
+            ClientInfo(
+                "http",
+                "localhost:2028"
+            ),
+            GoogleOAuthConfig(
+                "GOOGLE_CLIENT_ID",
+                "GOOGLE_SECRET_KEY",
+            ),
+        )
         tokenPublisher = TokenPublisher(WebTestClientHelper.JWT_SECRET_KEY)
         tokenDecoder = TokenDecoder(WebTestClientHelper.JWT_SECRET_KEY)
 
@@ -63,20 +73,7 @@ class LoginRouterTest {
             .createWebTestClient(
                 LogInRouter(
                     GoogleLogInHandler(
-                        AuthService(
-                            GoogleOAuthHelperImpl(
-                                ClientInfo(
-                                    "http",
-                                    "localhost:2028"
-                                ),
-                                GoogleOAuthConfig(
-                                    "GOOGLE_CLIENT_ID",
-                                    "GOOGLE_SECRET_KEY",
-                                ),
-                            ),
-                            tokenPublisher,
-                            repository,
-                        ),
+                        AuthService(oAuthHelper, tokenPublisher, repository),
                     )
                 ).logInRouterFunction()
             )
