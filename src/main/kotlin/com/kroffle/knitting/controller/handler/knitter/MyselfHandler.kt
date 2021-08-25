@@ -5,13 +5,17 @@ import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
 import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
 import com.kroffle.knitting.usecase.knitter.KnitterService
+import com.kroffle.knitting.usecase.summary.ProductSummaryService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
 @Component
-class MyselfHandler(private val knitterService: KnitterService) {
+class MyselfHandler(
+    private val knitterService: KnitterService,
+    private val productSummaryService: ProductSummaryService,
+) {
     fun getMyProfile(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
         return knitterService
@@ -30,12 +34,17 @@ class MyselfHandler(private val knitterService: KnitterService) {
     }
 
     fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
-        return ResponseHelper
-            .makeJsonResponse(
-                SalesSummaryResponse(
-                    numberOfDesignsOnSales = 1,
-                    numberOfDesignsSold = 2,
-                )
-            )
+        val knitterId = AuthHelper.getKnitterId(req)
+        return productSummaryService
+            .countProductOnList(knitterId)
+            .flatMap {
+                ResponseHelper
+                    .makeJsonResponse(
+                        SalesSummaryResponse(
+                            numberOfProductsOnSales = it.toInt(),
+                            numberOfProductsSold = 0,
+                        )
+                    )
+            }
     }
 }
