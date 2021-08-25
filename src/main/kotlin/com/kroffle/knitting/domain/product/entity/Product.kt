@@ -67,7 +67,7 @@ class Product(
             salesStatus == SalesStatus.ON_SALES &&
                 inputStatus == InputStatus.REGISTERED
 
-    fun writeContent(newContent: String): Product {
+    fun draftContent(newContent: String): Product {
         return Product(
             id,
             knitterId,

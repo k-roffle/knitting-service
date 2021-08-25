@@ -37,4 +37,24 @@ class R2dbcProductRepository(
                     }
             }
     }
+
+    override fun findById(id: Long): Mono<Product> {
+        val tags = productTagRepository
+            .findAllByProductId(id)
+            .map { it.toTag() }
+            .collect(toList())
+
+        val items = productItemRepository
+            .findAllByProductId(id)
+            .map { it.toItem() }
+            .collect(toList())
+
+        val product = productRepository
+            .findById(id)
+
+        return Mono.zip(product, tags, items)
+            .map {
+                it.t1.toProduct(it.t2, it.t3)
+            }
+    }
 }

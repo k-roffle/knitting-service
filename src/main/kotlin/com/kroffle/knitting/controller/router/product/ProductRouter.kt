@@ -16,6 +16,7 @@ class ProductRouter(private val handler: ProductHandler) {
         router {
             listOf(
                 POST(DRAFT_PRODUCT_PACKAGE_PATH, handler::draftProductPackage),
+                POST(DRAFT_PRODUCT_CONTENT_PATH, handler::draftProductContent),
             )
         }
     )
@@ -23,6 +24,7 @@ class ProductRouter(private val handler: ProductHandler) {
     companion object {
         private const val ROOT_PATH = "/product"
         private const val DRAFT_PRODUCT_PACKAGE_PATH = "/package"
+        private const val DRAFT_PRODUCT_CONTENT_PATH = "/content"
         val PUBLIC_PATHS = listOf<String>()
     }
 }
