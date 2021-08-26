@@ -18,6 +18,7 @@ class ProductTagEntity(
         tag = tag,
         createdAt = createdAt,
     )
+    fun getForeignKey(): Long = productId
 }
 
 fun Product.toProductTagEntities(productId: Long): List<ProductTagEntity> =

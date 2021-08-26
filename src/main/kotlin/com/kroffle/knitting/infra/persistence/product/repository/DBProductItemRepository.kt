@@ -6,4 +6,5 @@ import reactor.core.publisher.Flux
 
 interface DBProductItemRepository : ReactiveCrudRepository<ProductItemEntity, Long> {
     fun findAllByProductId(productId: Long): Flux<ProductItemEntity>
+    fun findAllByProductIdIn(productId: List<Long>): Flux<ProductItemEntity>
 }
