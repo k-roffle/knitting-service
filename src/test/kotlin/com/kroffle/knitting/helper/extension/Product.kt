@@ -5,14 +5,14 @@ import com.kroffle.knitting.domain.product.entity.Product
 fun Product.like(other: Product): Boolean {
     if (this === other) return true
     tags.mapIndexed {
-        idx, tag ->
-        if (other.tags[idx].tag != tag.tag) {
+        index, tag ->
+        if (other.tags[index].tag != tag.tag) {
             return false
         }
     }
     items.mapIndexed {
-        idx, item ->
-        if (other.items[idx].itemId != item.itemId) {
+        index, item ->
+        if (other.items[index].itemId != item.itemId) {
             return false
         }
     }
