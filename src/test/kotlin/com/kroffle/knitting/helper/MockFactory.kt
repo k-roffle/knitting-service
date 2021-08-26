@@ -20,6 +20,7 @@ class MockFactory {
                 inputStatus = data.inputStatus,
                 items = data.items,
                 createdAt = data.createdAt,
+                updatedAt = data.updatedAt,
             )
         }
     }

@@ -37,7 +37,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @WebFluxTest
@@ -57,6 +56,12 @@ class ProductRouterTest {
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
+    private val today = LocalDateTime.now()
+
+    private val tomorrow = today.plusDays(1)
+
+    private val yesterday = today.minusDays(1)
+
     @BeforeEach
     fun setUp() {
         webClient = WebTestClientHelper.createWebTestClient(
@@ -67,8 +72,6 @@ class ProductRouterTest {
 
     @Test
     fun `상품 구성을 저장할 수 있어야 함`() {
-        val today = LocalDateTime.now()
-        val tomorrow = LocalDate.now().plusDays(1)
         val createdProduct = Product(
             id = 1,
             knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
@@ -77,7 +80,7 @@ class ProductRouterTest {
             discountPrice = Money(1000),
             representativeImageUrl = "http://test.knitting.com/image.jpg",
             specifiedSalesStartDate = null,
-            specifiedSalesEndDate = tomorrow,
+            specifiedSalesEndDate = tomorrow.toLocalDate(),
             content = null,
             inputStatus = InputStatus.DRAFT,
             tags = listOf(
@@ -88,6 +91,7 @@ class ProductRouterTest {
                 ProductItem.create(1, 1, today, ProductItemType.DESIGN),
             ),
             createdAt = today,
+            updatedAt = today,
         )
         given(repository.save(any())).willReturn(Mono.just(createdProduct))
 
@@ -100,7 +104,7 @@ class ProductRouterTest {
                     discountPrice = 1000,
                     representativeImageUrl = "http://test.knitting.com/image.jpg",
                     specifiedSalesStartDate = null,
-                    specifiedSalesEndDate = tomorrow,
+                    specifiedSalesEndDate = tomorrow.toLocalDate(),
                     tags = listOf("서술형도안", "초보자용"),
                     designIds = listOf(1),
                 )
@@ -148,8 +152,6 @@ class ProductRouterTest {
 
     @Test
     fun `상품 설명을 저장할 수 있어야 함`() {
-        val today = LocalDateTime.now()
-        val tomorrow = LocalDate.now().plusDays(1)
         val targetProduct = Product(
             id = 1,
             knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
@@ -158,7 +160,7 @@ class ProductRouterTest {
             discountPrice = Money(1000),
             representativeImageUrl = "http://test.knitting.com/image.jpg",
             specifiedSalesStartDate = null,
-            specifiedSalesEndDate = tomorrow,
+            specifiedSalesEndDate = tomorrow.toLocalDate(),
             content = null,
             inputStatus = InputStatus.DRAFT,
             tags = listOf(
@@ -168,7 +170,8 @@ class ProductRouterTest {
             items = listOf(
                 ProductItem.create(1, 1, today, ProductItemType.DESIGN),
             ),
-            createdAt = today,
+            createdAt = yesterday,
+            updatedAt = yesterday,
         )
         val updatedProduct = targetProduct.draftContent("상품 설명")
 
@@ -208,6 +211,8 @@ class ProductRouterTest {
                 argThat {
                     product ->
                     product.like(updatedProduct)
+                    assert(product.updatedAt!! > yesterday)
+                    true
                 }
             )
     }
@@ -215,6 +220,7 @@ class ProductRouterTest {
     @Test
     fun `상품을 판매 등록 할 수 있어야 함`() {
         val today = LocalDateTime.now()
+        val yesterday = today.minusDays(1)
         val targetProduct = Product(
             id = 1,
             knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
@@ -233,7 +239,8 @@ class ProductRouterTest {
             items = listOf(
                 ProductItem.create(1, 1, today, ProductItemType.DESIGN),
             ),
-            createdAt = today,
+            createdAt = yesterday,
+            updatedAt = yesterday,
         )
         val updatedProduct = targetProduct.register()
 
@@ -270,6 +277,8 @@ class ProductRouterTest {
                 argThat {
                     product ->
                     product.like(updatedProduct)
+                    assert(product.updatedAt!! > yesterday)
+                    true
                 }
             )
     }

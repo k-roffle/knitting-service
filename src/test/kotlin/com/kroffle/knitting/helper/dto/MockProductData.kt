@@ -22,4 +22,5 @@ data class MockProductData(
     val inputStatus: InputStatus = InputStatus.DRAFT,
     val items: List<ProductItem> = listOf(),
     val createdAt: LocalDateTime? = LocalDateTime.now(),
+    val updatedAt: LocalDateTime? = LocalDateTime.now(),
 )

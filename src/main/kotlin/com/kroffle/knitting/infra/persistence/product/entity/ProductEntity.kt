@@ -23,6 +23,7 @@ class ProductEntity(
     private val content: String?,
     private val inputStatus: InputStatus,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
+    private val updatedAt: LocalDateTime = LocalDateTime.now(),
 ) {
     fun getNotNullId(): Long = id!!
 
@@ -41,6 +42,7 @@ class ProductEntity(
             tags = tags,
             items = items,
             createdAt = createdAt,
+            updatedAt = updatedAt,
         )
 }
 
@@ -57,4 +59,5 @@ fun Product.toProductEntity() =
         content = content,
         inputStatus = inputStatus,
         createdAt = this.createdAt ?: LocalDateTime.now(),
+        updatedAt = this.updatedAt ?: LocalDateTime.now(),
     )
