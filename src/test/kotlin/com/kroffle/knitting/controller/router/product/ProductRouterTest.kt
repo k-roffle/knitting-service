@@ -6,6 +6,7 @@ import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRe
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentResponse
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductResponse
 import com.kroffle.knitting.domain.product.entity.Product
@@ -14,8 +15,10 @@ import com.kroffle.knitting.domain.product.enum.ProductItemType
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
+import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
+import com.kroffle.knitting.helper.dto.MockProductData
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
@@ -280,6 +283,52 @@ class ProductRouterTest {
                     assert(product.updatedAt!! > yesterday)
                     true
                 }
+            )
+    }
+
+    @Test
+    fun `내 상품을 조회할 수 있어야 함`() {
+        val mockData = MockProductData(id = 1)
+        val targetProduct = MockFactory.create(mockData)
+        given(repository.getProductByIdAndKnitterId(any(), any()))
+            .willReturn(Mono.just(targetProduct))
+
+        val response = webClient
+            .get()
+            .uri("/product/mine/1")
+            .addDefaultRequestHeader()
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<GetMyProductResponse>>()
+            .returnResult()
+            .responseBody!!
+
+        val payload = response.payload
+        assertThat(payload)
+            .satisfies {
+                it.like(
+                    GetMyProductResponse(
+                        id = mockData.id,
+                        name = mockData.name,
+                        fullPrice = mockData.fullPrice.value,
+                        discountPrice = mockData.discountPrice.value,
+                        representativeImageUrl = mockData.representativeImageUrl,
+                        specifiedSalesStartDate = mockData.specifiedSalesStartDate,
+                        specifiedSalesEndDate = mockData.specifiedSalesEndDate,
+                        tags = mockData.tags,
+                        content = mockData.content,
+                        inputStatus = mockData.inputStatus,
+                        items = mockData.items,
+                        createdAt = mockData.createdAt,
+                        updatedAt = mockData.updatedAt,
+                    )
+                )
+            }
+        verify(repository)
+            .getProductByIdAndKnitterId(
+                1,
+                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
             )
     }
 }

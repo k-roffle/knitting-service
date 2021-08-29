@@ -8,6 +8,7 @@ import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRe
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentResponse
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductResponse
 import com.kroffle.knitting.domain.product.entity.Product
@@ -18,6 +19,7 @@ import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.usecase.product.ProductService
 import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
+import com.kroffle.knitting.usecase.product.dto.GetMyProductData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -112,6 +114,42 @@ class ProductHandler(private val productService: ProductService) {
                 ResponseHelper
                     .makeJsonResponse(
                         RegisterProductResponse(it.id!!)
+                    )
+            }
+    }
+
+    fun getMyProduct(req: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(req)
+        val productId = req.pathVariable("id").toLong()
+        val product: Mono<Product> =
+            productService.get(
+                GetMyProductData(
+                    id = productId,
+                    knitterId = knitterId,
+                )
+            )
+        return product
+            .onErrorResume {
+                Mono.error(BadRequest(it.message))
+            }
+            .flatMap {
+                ResponseHelper
+                    .makeJsonResponse(
+                        GetMyProductResponse(
+                            id = it.id!!,
+                            name = it.name,
+                            fullPrice = it.fullPrice.value,
+                            discountPrice = it.discountPrice.value,
+                            representativeImageUrl = it.representativeImageUrl,
+                            specifiedSalesStartDate = it.specifiedSalesStartDate,
+                            specifiedSalesEndDate = it.specifiedSalesEndDate,
+                            tags = it.tags,
+                            content = it.content,
+                            inputStatus = it.inputStatus,
+                            items = it.items,
+                            createdAt = it.createdAt!!,
+                            updatedAt = it.updatedAt!!,
+                        )
                     )
             }
     }
