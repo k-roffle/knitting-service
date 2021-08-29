@@ -1,11 +1,15 @@
 package com.kroffle.knitting.usecase.product
 
 import com.kroffle.knitting.domain.product.entity.Product
+import com.kroffle.knitting.usecase.helper.pagination.type.Paging
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
 import com.kroffle.knitting.usecase.product.dto.GetMyProductData
+import com.kroffle.knitting.usecase.product.dto.GetMyProductsData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Component
@@ -48,8 +52,13 @@ class ProductService(private val repository: ProductRepository) {
         repository
             .getProductByIdAndKnitterId(data.id, data.knitterId)
 
+    fun get(data: GetMyProductsData): Flux<Product> =
+        repository
+            .getProductsByKnitterId(data.knitterId, data.paging, data.sort)
+
     interface ProductRepository {
         fun save(product: Product): Mono<Product>
         fun getProductByIdAndKnitterId(id: Long, knitterId: Long): Mono<Product>
+        fun getProductsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Product>
     }
 }

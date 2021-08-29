@@ -110,7 +110,7 @@ class DesignsRouterTest {
             )
         )
         verify(repository).getDesignsByKnitterId(
-            argThat { param -> param == 1.toLong() },
+            argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
             argThat {
                 param ->
                 assert(param.after == null)

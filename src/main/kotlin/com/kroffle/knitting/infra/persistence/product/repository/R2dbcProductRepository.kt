@@ -9,6 +9,8 @@ import com.kroffle.knitting.infra.persistence.product.entity.ProductTagEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductItemEntities
 import com.kroffle.knitting.infra.persistence.product.entity.toProductTagEntities
+import com.kroffle.knitting.usecase.helper.pagination.type.Paging
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.repository.ProductRepository
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
@@ -70,6 +72,10 @@ class R2dbcProductRepository(
                 it.knitterId == knitterId
             }
             .switchIfEmpty(Mono.error(NotFoundEntity(ProductEntity::class.java)))
+
+    override fun getProductsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Product> {
+        TODO("Not yet implemented")
+    }
 
     override fun findRegisteredProduct(knitterId: Long): Flux<Product> {
         val products: Flux<ProductEntity> =

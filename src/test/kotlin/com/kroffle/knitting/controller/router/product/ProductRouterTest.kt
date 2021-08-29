@@ -7,6 +7,7 @@ import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRe
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductResponse
 import com.kroffle.knitting.domain.product.entity.Product
@@ -23,6 +24,7 @@ import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.product.ProductService
 import com.kroffle.knitting.usecase.repository.ProductRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -39,6 +41,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
@@ -222,8 +225,6 @@ class ProductRouterTest {
 
     @Test
     fun `상품을 판매 등록 할 수 있어야 함`() {
-        val today = LocalDateTime.now()
-        val yesterday = today.minusDays(1)
         val targetProduct = Product(
             id = 1,
             knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
@@ -330,5 +331,68 @@ class ProductRouterTest {
                 1,
                 WebTestClientHelper.AUTHORIZED_KNITTER_ID,
             )
+    }
+
+    @Test
+    fun `내 상품 리스트를 조회할 수 있어야 함`() {
+        val mockData = listOf(
+            MockProductData(id = 1, updatedAt = today.minusDays(1)),
+            MockProductData(id = 3, updatedAt = today.minusDays(2)),
+            MockProductData(id = 2, updatedAt = today.minusDays(3)),
+        )
+
+        val mockProducts: List<Product> = mockData.map { MockFactory.create(it) }
+        given(repository.getProductsByKnitterId(any(), any(), any()))
+            .willReturn(Flux.fromIterable(mockProducts))
+
+        val response = webClient
+            .get()
+            .uri("/product/mine")
+            .addDefaultRequestHeader()
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<List<GetMyProductsResponse>>>()
+            .returnResult()
+            .responseBody!!
+
+        val payload = response.payload
+        val firstMockData = mockData.first()
+        assertThat(payload.size).isEqualTo(3)
+        assertThat(
+            payload
+                .first()
+                .like(
+                    GetMyProductsResponse(
+                        id = firstMockData.id,
+                        name = firstMockData.name,
+                        fullPrice = firstMockData.fullPrice.value,
+                        discountPrice = firstMockData.discountPrice.value,
+                        representativeImageUrl = firstMockData.representativeImageUrl,
+                        specifiedSalesStartDate = firstMockData.specifiedSalesStartDate,
+                        specifiedSalesEndDate = firstMockData.specifiedSalesEndDate,
+                        inputStatus = firstMockData.inputStatus,
+                        updatedAt = firstMockData.updatedAt,
+                        tags = firstMockData.tags.map { tag -> tag.tag }
+                    )
+                )
+        )
+        assertThat(payload[1].id).isEqualTo(3)
+        assertThat(payload[2].id).isEqualTo(2)
+        verify(repository).getProductsByKnitterId(
+            argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
+            argThat {
+                param ->
+                assert(param.after == null)
+                assert(param.count == 10)
+                true
+            },
+            argThat {
+                param ->
+                assert(param.column == "id")
+                assert(param.direction == SortDirection.DESC)
+                true
+            },
+        )
     }
 }

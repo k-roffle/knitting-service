@@ -3,12 +3,14 @@ package com.kroffle.knitting.controller.handler.product
 import com.kroffle.knitting.controller.handler.exception.BadRequest
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentResponse
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
 import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductResponse
 import com.kroffle.knitting.domain.product.entity.Product
@@ -16,15 +18,20 @@ import com.kroffle.knitting.domain.product.enum.ProductItemType
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.product.ProductService
 import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
 import com.kroffle.knitting.usecase.product.dto.GetMyProductData
+import com.kroffle.knitting.usecase.product.dto.GetMyProductsData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.stream.Collectors.toList
 
 @Component
 class ProductHandler(private val productService: ProductService) {
@@ -151,6 +158,44 @@ class ProductHandler(private val productService: ProductService) {
                             updatedAt = it.updatedAt!!,
                         )
                     )
+            }
+    }
+
+    fun getMyProducts(req: ServerRequest): Mono<ServerResponse> {
+        val paging = PaginationHelper.getPagingFromRequest(req)
+        val knitterId = AuthHelper.getKnitterId(req)
+        val products: Flux<Product> =
+            productService
+                .get(
+                    GetMyProductsData(
+                        knitterId = knitterId,
+                        paging = paging,
+                        sort = Sort("id", SortDirection.DESC),
+                    )
+                )
+
+        return products
+            .onErrorResume {
+                Mono.error(BadRequest(it.message))
+            }
+            .map {
+                product ->
+                GetMyProductsResponse(
+                    id = product.id!!,
+                    name = product.name,
+                    fullPrice = product.fullPrice.value,
+                    discountPrice = product.discountPrice.value,
+                    representativeImageUrl = product.representativeImageUrl,
+                    specifiedSalesStartDate = product.specifiedSalesStartDate,
+                    specifiedSalesEndDate = product.specifiedSalesEndDate,
+                    tags = product.tags.map { it.tag },
+                    inputStatus = product.inputStatus,
+                    updatedAt = product.updatedAt,
+                )
+            }
+            .collect(toList())
+            .flatMap {
+                ResponseHelper.makeJsonResponse(it)
             }
     }
 }
