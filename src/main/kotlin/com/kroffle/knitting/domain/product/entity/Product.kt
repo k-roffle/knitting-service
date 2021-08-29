@@ -27,6 +27,7 @@ class Product(
     val inputStatus: InputStatus,
     val items: List<ProductItem>,
     val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?,
 ) {
     init {
         require(
@@ -87,6 +88,7 @@ class Product(
             inputStatus,
             items,
             createdAt,
+            LocalDateTime.now(),
         )
     }
 
@@ -108,6 +110,7 @@ class Product(
             InputStatus.REGISTERED,
             items,
             createdAt,
+            LocalDateTime.now(),
         )
     }
 
@@ -138,6 +141,7 @@ class Product(
                 InputStatus.DRAFT,
                 items,
                 null,
+                LocalDateTime.now(),
             )
         }
     }
