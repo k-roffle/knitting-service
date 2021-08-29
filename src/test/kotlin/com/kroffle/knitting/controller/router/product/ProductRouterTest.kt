@@ -20,8 +20,8 @@ import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
-import com.kroffle.knitting.usecase.product.ProductRepository
 import com.kroffle.knitting.usecase.product.ProductService
+import com.kroffle.knitting.usecase.repository.ProductRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

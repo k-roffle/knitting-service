@@ -1,13 +1,17 @@
 package com.kroffle.knitting.infra.persistence.product.repository
 
 import com.kroffle.knitting.domain.product.entity.Product
+import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.infra.persistence.product.entity.ProductEntity
+import com.kroffle.knitting.infra.persistence.product.entity.ProductItemEntity
+import com.kroffle.knitting.infra.persistence.product.entity.ProductTagEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductEntity
 import com.kroffle.knitting.infra.persistence.product.entity.toProductItemEntities
 import com.kroffle.knitting.infra.persistence.product.entity.toProductTagEntities
-import com.kroffle.knitting.usecase.product.ProductRepository
+import com.kroffle.knitting.usecase.repository.ProductRepository
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList
 
@@ -66,4 +70,44 @@ class R2dbcProductRepository(
                 it.knitterId == knitterId
             }
             .switchIfEmpty(Mono.error(NotFoundEntity(ProductEntity::class.java)))
+
+    override fun findRegisteredProduct(knitterId: Long): Flux<Product> {
+        val products: Flux<ProductEntity> =
+            productRepository
+                .findAllByKnitterIdAndInputStatus(knitterId, InputStatus.REGISTERED)
+
+        val productIds: Mono<List<Long>> =
+            products
+                .map {
+                    it.getNotNullId()
+                }
+                .collect(toList())
+
+        val tagMap: Mono<Map<Long, Collection<ProductTagEntity>>> =
+            productIds
+                .flatMap {
+                    productTagRepository
+                        .findAllByProductIdIn(it)
+                        .collectMultimap { tag -> tag.getForeignKey() }
+                }
+        val itemMap: Mono<Map<Long, Collection<ProductItemEntity>>> =
+            productIds
+                .flatMap {
+                    productItemRepository
+                        .findAllByProductIdIn(it)
+                        .collectMultimap { item -> item.getForeignKey() }
+                }
+        return products
+            .flatMap {
+                product ->
+                Mono.zip(tagMap, itemMap)
+                    .map {
+                        val productId = product.getNotNullId()
+                        product.toProduct(
+                            it.t1[productId]?.map { tag -> tag.toTag() } ?: listOf(),
+                            it.t2[productId]?.map { item -> item.toItem() } ?: listOf()
+                        )
+                    }
+            }
+    }
 }

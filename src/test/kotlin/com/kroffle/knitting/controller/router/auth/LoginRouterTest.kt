@@ -15,8 +15,8 @@ import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.infra.persistence.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
-import com.kroffle.knitting.usecase.auth.KnitterRepository
 import com.kroffle.knitting.usecase.auth.dto.OAuthProfile
+import com.kroffle.knitting.usecase.repository.KnitterRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

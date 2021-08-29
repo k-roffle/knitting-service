@@ -4,9 +4,11 @@ import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
+@Component
 class DesignService(private val repository: DesignRepository) {
     fun create(design: Design): Mono<Design> = repository.createDesign(design)
 

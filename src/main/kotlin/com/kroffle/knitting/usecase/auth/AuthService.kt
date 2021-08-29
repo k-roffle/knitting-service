@@ -41,9 +41,6 @@ class AuthService(
         return tokenPublisher.publish(knitterId)
     }
 
-    fun getKnitter(knitterId: Long): Mono<Knitter> =
-        knitterRepository.findById(knitterId)
-
     interface OAuthHelper {
         fun getAuthorizationUri(): URI
         fun getProfile(code: String): Mono<OAuthProfile>
@@ -56,6 +53,5 @@ class AuthService(
     interface KnitterRepository {
         fun create(user: Knitter): Mono<Knitter>
         fun findByEmail(email: String): Mono<Knitter>
-        fun findById(id: Long): Mono<Knitter>
     }
 }

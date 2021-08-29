@@ -2,7 +2,6 @@ package com.kroffle.knitting.controller.router.design
 
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
-import com.kroffle.knitting.controller.handler.design.dto.SalesSummaryResponse
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
@@ -13,9 +12,9 @@ import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
-import com.kroffle.knitting.usecase.design.DesignRepository
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
+import com.kroffle.knitting.usecase.repository.DesignRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -124,27 +123,6 @@ class DesignsRouterTest {
                 assert(param.direction == SortDirection.DESC)
                 true
             },
-        )
-    }
-
-    @Test
-    fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
-        val responseBody: TestResponse<SalesSummaryResponse> = webClient
-            .get()
-            .uri("/designs/sales-summary/my")
-            .addDefaultRequestHeader()
-            .exchange()
-            .expectStatus()
-            .isOk
-            .expectBody<TestResponse<SalesSummaryResponse>>()
-            .returnResult()
-            .responseBody!!
-
-        assertThat(responseBody.payload).isEqualTo(
-            SalesSummaryResponse(
-                numberOfDesignsOnSales = 1,
-                numberOfDesignsSold = 2,
-            ),
         )
     }
 }

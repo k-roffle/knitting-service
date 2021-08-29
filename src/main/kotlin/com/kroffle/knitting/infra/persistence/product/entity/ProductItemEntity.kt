@@ -16,6 +16,7 @@ class ProductItemEntity(
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     fun toItem() = ProductItem.create(id, itemId, createdAt, type)
+    fun getForeignKey(): Long = productId
 }
 
 fun Product.toProductItemEntities(productId: Long): List<ProductItemEntity> =
