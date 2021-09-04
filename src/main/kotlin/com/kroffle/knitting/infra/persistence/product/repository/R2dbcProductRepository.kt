@@ -40,9 +40,7 @@ class R2dbcProductRepository(
             .findById(id)
 
         return Mono.zip(product, tags, items)
-            .map {
-                it.t1.toProduct(it.t2, it.t3)
-            }
+            .map { it.t1.toProduct(it.t2, it.t3) }
     }
 
     private fun getProductAggregate(products: Flux<ProductEntity>): Flux<Product> {
@@ -106,9 +104,7 @@ class R2dbcProductRepository(
 
     override fun getProductByIdAndKnitterId(id: Long, knitterId: Long): Mono<Product> =
         findById(id)
-            .filter {
-                it.knitterId == knitterId
-            }
+            .filter { it.knitterId == knitterId }
             .switchIfEmpty(Mono.error(NotFoundEntity(ProductEntity::class.java)))
 
     override fun getProductsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Product> {

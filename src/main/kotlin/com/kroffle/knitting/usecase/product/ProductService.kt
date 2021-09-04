@@ -33,19 +33,13 @@ class ProductService(private val repository: ProductRepository) {
     fun draft(data: DraftProductContentData): Mono<Product> {
         return repository
             .getProductByIdAndKnitterId(data.id, data.knitterId)
-            .flatMap {
-                repository
-                    .save(it.draftContent(data.content))
-            }
+            .flatMap { repository.save(it.draftContent(data.content)) }
     }
 
     fun register(data: RegisterProductData): Mono<Product> {
         return repository
             .getProductByIdAndKnitterId(data.id, data.knitterId)
-            .flatMap {
-                repository
-                    .save(it.register())
-            }
+            .flatMap { repository.save(it.register()) }
     }
 
     fun get(data: GetMyProductData): Mono<Product> =

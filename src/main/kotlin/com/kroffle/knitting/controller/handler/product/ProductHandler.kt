@@ -86,10 +86,7 @@ class ProductHandler(private val productService: ProductService) {
         }
 
         return product
-            .onErrorResume {
-                error ->
-                Mono.error(BadRequest(error.message))
-            }
+            .onErrorResume { Mono.error(BadRequest(it.message)) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -114,9 +111,7 @@ class ProductHandler(private val productService: ProductService) {
             )
         }
         return product
-            .onErrorResume {
-                Mono.error(BadRequest(it.message))
-            }
+            .onErrorResume { Mono.error(BadRequest(it.message)) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -136,9 +131,7 @@ class ProductHandler(private val productService: ProductService) {
                 )
             )
         return product
-            .onErrorResume {
-                Mono.error(BadRequest(it.message))
-            }
+            .onErrorResume { Mono.error(BadRequest(it.message)) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -175,9 +168,7 @@ class ProductHandler(private val productService: ProductService) {
                 )
 
         return products
-            .onErrorResume {
-                Mono.error(BadRequest(it.message))
-            }
+            .onErrorResume { Mono.error(BadRequest(it.message)) }
             .map {
                 product ->
                 GetMyProductsResponse(
@@ -194,8 +185,6 @@ class ProductHandler(private val productService: ProductService) {
                 )
             }
             .collect(toList())
-            .flatMap {
-                ResponseHelper.makeJsonResponse(it)
-            }
+            .flatMap { ResponseHelper.makeJsonResponse(it) }
     }
 }
