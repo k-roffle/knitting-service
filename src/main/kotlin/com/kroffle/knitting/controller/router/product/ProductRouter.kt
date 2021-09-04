@@ -18,6 +18,7 @@ class ProductRouter(private val handler: ProductHandler) {
                 POST(DRAFT_PRODUCT_PACKAGE_PATH, handler::draftProductPackage),
                 POST(DRAFT_PRODUCT_CONTENT_PATH, handler::draftProductContent),
                 POST(handler::registerProduct),
+                GET(GET_MY_PRODUCT_PATH, handler::getMyProduct),
             )
         }
     )
@@ -26,6 +27,7 @@ class ProductRouter(private val handler: ProductHandler) {
         private const val ROOT_PATH = "/product"
         private const val DRAFT_PRODUCT_PACKAGE_PATH = "/package"
         private const val DRAFT_PRODUCT_CONTENT_PATH = "/content"
+        private const val GET_MY_PRODUCT_PATH = "/mine/{id}"
         val PUBLIC_PATHS = listOf<String>()
     }
 }

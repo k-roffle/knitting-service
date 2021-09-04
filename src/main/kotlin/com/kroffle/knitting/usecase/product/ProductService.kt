@@ -3,6 +3,7 @@ package com.kroffle.knitting.usecase.product
 import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
 import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
+import com.kroffle.knitting.usecase.product.dto.GetMyProductData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -42,6 +43,10 @@ class ProductService(private val repository: ProductRepository) {
                     .save(it.register())
             }
     }
+
+    fun get(data: GetMyProductData): Mono<Product> =
+        repository
+            .getProductByIdAndKnitterId(data.id, data.knitterId)
 
     interface ProductRepository {
         fun save(product: Product): Mono<Product>
