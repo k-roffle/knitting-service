@@ -3,8 +3,6 @@ package com.kroffle.knitting.controller.handler.product.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayload
 import com.kroffle.knitting.domain.product.enum.InputStatus
-import com.kroffle.knitting.domain.product.value.ProductItem
-import com.kroffle.knitting.domain.product.value.ProductTag
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -21,11 +19,11 @@ data class GetMyProductResponse(
     val specifiedSalesStartDate: LocalDate?,
     @JsonProperty("specified_sales_end_date")
     val specifiedSalesEndDate: LocalDate?,
-    val tags: List<ProductTag>,
+    val tags: List<String>,
     val content: String?,
     @JsonProperty("input_status")
     val inputStatus: InputStatus,
-    val items: List<ProductItem>,
+    val itemIds: List<Long>,
     @JsonProperty("created_at")
     val createdAt: LocalDateTime?,
     @JsonProperty("updated_at")

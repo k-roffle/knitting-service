@@ -316,10 +316,10 @@ class ProductRouterTest {
                         representativeImageUrl = mockData.representativeImageUrl,
                         specifiedSalesStartDate = mockData.specifiedSalesStartDate,
                         specifiedSalesEndDate = mockData.specifiedSalesEndDate,
-                        tags = mockData.tags,
+                        tags = mockData.tags.map { tag -> tag.tag },
                         content = mockData.content,
                         inputStatus = mockData.inputStatus,
-                        items = mockData.items,
+                        itemIds = mockData.items.map { item -> item.itemId },
                         createdAt = mockData.createdAt,
                         updatedAt = mockData.updatedAt,
                     )

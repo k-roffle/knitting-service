@@ -143,10 +143,10 @@ class ProductHandler(private val productService: ProductService) {
                             representativeImageUrl = it.representativeImageUrl,
                             specifiedSalesStartDate = it.specifiedSalesStartDate,
                             specifiedSalesEndDate = it.specifiedSalesEndDate,
-                            tags = it.tags,
+                            tags = it.tags.map { tag -> tag.tag },
                             content = it.content,
                             inputStatus = it.inputStatus,
-                            items = it.items,
+                            itemIds = it.items.map { item -> item.itemId },
                             createdAt = it.createdAt!!,
                             updatedAt = it.updatedAt!!,
                         )

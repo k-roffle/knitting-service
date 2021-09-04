@@ -6,13 +6,13 @@ fun GetMyProductResponse.like(other: GetMyProductResponse): Boolean {
     if (this === other) return true
     tags.mapIndexed {
         index, tag ->
-        if (other.tags[index].tag != tag.tag) {
+        if (other.tags[index] != tag) {
             return false
         }
     }
-    items.mapIndexed {
+    itemIds.mapIndexed {
         index, item ->
-        if (other.items[index].itemId != item.itemId) {
+        if (other.itemIds[index] != item) {
             return false
         }
     }
