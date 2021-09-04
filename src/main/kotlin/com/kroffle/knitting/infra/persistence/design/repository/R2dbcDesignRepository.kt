@@ -28,7 +28,7 @@ class R2dbcDesignRepository(private val repository: DBDesignRepository) : Design
                     repository
                         .findAllByKnitterIdAndIdBefore(
                             knitterId = knitterId,
-                            id = paging.after,
+                            id = paging.after.toLong(),
                             pageable = pageRequest,
                         )
                 } else {
