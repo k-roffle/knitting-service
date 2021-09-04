@@ -145,7 +145,7 @@ class ProductRouterTest {
                 )
                 product.tags.mapIndexed {
                     index, tag ->
-                    assert(createdProduct.tags[index].tag == tag.tag)
+                    assert(createdProduct.tags[index].name == tag.name)
                 }
                 product.items.mapIndexed {
                     index, item ->
@@ -317,7 +317,7 @@ class ProductRouterTest {
                         representativeImageUrl = mockData.representativeImageUrl,
                         specifiedSalesStartDate = mockData.specifiedSalesStartDate,
                         specifiedSalesEndDate = mockData.specifiedSalesEndDate,
-                        tags = mockData.tags.map { tag -> tag.tag },
+                        tags = mockData.tags.map { tag -> tag.name },
                         content = mockData.content,
                         inputStatus = mockData.inputStatus,
                         itemIds = mockData.items.map { item -> item.itemId },
@@ -373,7 +373,7 @@ class ProductRouterTest {
                         specifiedSalesEndDate = firstMockData.specifiedSalesEndDate,
                         inputStatus = firstMockData.inputStatus,
                         updatedAt = firstMockData.updatedAt,
-                        tags = firstMockData.tags.map { tag -> tag.tag }
+                        tags = firstMockData.tags.map { tag -> tag.name }
                     )
                 )
         )

@@ -143,7 +143,7 @@ class ProductHandler(private val productService: ProductService) {
                             representativeImageUrl = it.representativeImageUrl,
                             specifiedSalesStartDate = it.specifiedSalesStartDate,
                             specifiedSalesEndDate = it.specifiedSalesEndDate,
-                            tags = it.tags.map { tag -> tag.tag },
+                            tags = it.tags.map { tag -> tag.name },
                             content = it.content,
                             inputStatus = it.inputStatus,
                             itemIds = it.items.map { item -> item.itemId },
@@ -179,7 +179,7 @@ class ProductHandler(private val productService: ProductService) {
                     representativeImageUrl = product.representativeImageUrl,
                     specifiedSalesStartDate = product.specifiedSalesStartDate,
                     specifiedSalesEndDate = product.specifiedSalesEndDate,
-                    tags = product.tags.map { it.tag },
+                    tags = product.tags.map { it.name },
                     inputStatus = product.inputStatus,
                     updatedAt = product.updatedAt,
                 )

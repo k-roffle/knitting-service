@@ -10,12 +10,12 @@ import java.time.LocalDateTime
 class ProductTagEntity(
     @Id private var id: Long? = null,
     private val productId: Long,
-    private val tag: String,
+    private val name: String,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     fun toTag() = ProductTag(
         id = id,
-        tag = tag,
+        name = name,
         createdAt = createdAt,
     )
     fun getForeignKey(): Long = productId
@@ -27,7 +27,7 @@ fun Product.toProductTagEntities(productId: Long): List<ProductTagEntity> =
         ProductTagEntity(
             id = tag.id,
             productId = this.id ?: productId,
-            tag = tag.tag,
+            name = tag.name,
             createdAt = tag.createdAt ?: LocalDateTime.now(),
         )
     }
