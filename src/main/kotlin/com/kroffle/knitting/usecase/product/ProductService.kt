@@ -17,7 +17,6 @@ class ProductService(private val repository: ProductRepository) {
     fun draft(data: DraftProductPackageData): Mono<Product> =
         repository.save(
             Product.draftProductPackage(
-                id = data.id,
                 knitterId = data.knitterId,
                 name = data.name,
                 fullPrice = data.fullPrice,
