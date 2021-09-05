@@ -130,8 +130,7 @@ class ProductRouterTest {
 
         assertThat(response.payload.id).isEqualTo(createdProduct.id)
         verify(repository).save(
-            argThat {
-                product ->
+            argThat { product ->
                 assert(
                     product.knitterId == createdProduct.knitterId &&
                         product.name == createdProduct.name &&
@@ -150,6 +149,110 @@ class ProductRouterTest {
                 product.items.mapIndexed {
                     index, item ->
                     assert(createdProduct.items[index].itemId == item.itemId)
+                }
+                true
+            }
+        )
+    }
+
+    @Test
+    fun `상품 구성을 수정할 수 있어야 함`() {
+        val targetProduct = Product(
+            id = 1,
+            knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+            name = "상품 이름",
+            fullPrice = Money(1000),
+            discountPrice = Money(1000),
+            representativeImageUrl = "http://test.knitting.com/image.jpg",
+            specifiedSalesStartDate = null,
+            specifiedSalesEndDate = tomorrow.toLocalDate(),
+            content = null,
+            inputStatus = InputStatus.DRAFT,
+            tags = listOf(
+                ProductTag(1, "서술형도안", today),
+                ProductTag(2, "초보자용", today),
+            ),
+            items = listOf(
+                ProductItem.create(1, 1, today, ProductItemType.DESIGN),
+            ),
+            createdAt = today,
+            updatedAt = today,
+        )
+        val updatedProduct = targetProduct
+            .draftPackage(
+                knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                name = "바뀐 상품 이름",
+                fullPrice = Money(2000),
+                discountPrice = Money(2000),
+                representativeImageUrl = "http://test2.knitting.com/image.jpg",
+                specifiedSalesStartDate = tomorrow.toLocalDate(),
+                specifiedSalesEndDate = null,
+                tags = listOf(ProductTag(null, "서술형도안", today)),
+                items = listOf(ProductItem.create(null, 2, today, ProductItemType.DESIGN))
+            )
+        given(repository.getProductByIdAndKnitterId(any(), any()))
+            .willReturn(Mono.just(targetProduct))
+        given(repository.save(any())).willReturn(Mono.just(updatedProduct))
+
+        val body = objectMapper
+            .writeValueAsString(
+                DraftProductPackageRequest(
+                    id = targetProduct.id!!,
+                    name = "바뀐 상품 이름",
+                    fullPrice = 2000,
+                    discountPrice = 2000,
+                    representativeImageUrl = "http://test2.knitting.com/image.jpg",
+                    specifiedSalesStartDate = tomorrow.toLocalDate(),
+                    specifiedSalesEndDate = null,
+                    tags = listOf("서술형도안"),
+                    designIds = listOf(2),
+                )
+            )
+
+        val response = webClient
+            .post()
+            .uri("/product/package/")
+            .addDefaultRequestHeader()
+            .bodyValue(body)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<DraftProductPackageResponse>>()
+            .returnResult()
+            .responseBody!!
+
+        assertThat(response.payload.id)
+            .isEqualTo(targetProduct.id)
+            .isEqualTo(updatedProduct.id)
+
+        verify(repository)
+            .getProductByIdAndKnitterId(
+                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                targetProduct.id!!,
+            )
+
+        verify(repository).save(
+            argThat { product ->
+                assert(
+                    product.knitterId == updatedProduct.knitterId &&
+                        product.name == updatedProduct.name &&
+                        product.fullPrice.like(updatedProduct.fullPrice) &&
+                        product.discountPrice.like(updatedProduct.discountPrice) &&
+                        product.representativeImageUrl == updatedProduct.representativeImageUrl &&
+                        product.specifiedSalesStartDate == updatedProduct.specifiedSalesStartDate &&
+                        product.specifiedSalesEndDate == updatedProduct.specifiedSalesEndDate &&
+                        product.content == updatedProduct.content &&
+                        product.inputStatus == updatedProduct.inputStatus &&
+                        product.id == updatedProduct.id &&
+                        product.createdAt == updatedProduct.createdAt
+                )
+                product.tags.mapIndexed {
+                    index, tag ->
+                    assert(updatedProduct.tags[index].name == tag.name)
+                }
+                product.items.mapIndexed {
+                    index, item ->
+                    assert(updatedProduct.items[index].itemId == item.itemId)
                 }
                 true
             }

@@ -15,19 +15,38 @@ import reactor.core.publisher.Mono
 @Component
 class ProductService(private val repository: ProductRepository) {
     fun draft(data: DraftProductPackageData): Mono<Product> =
-        repository.save(
-            Product.draftProductPackage(
-                knitterId = data.knitterId,
-                name = data.name,
-                fullPrice = data.fullPrice,
-                discountPrice = data.discountPrice,
-                representativeImageUrl = data.representativeImageUrl,
-                specifiedSalesStartDate = data.specifiedSalesStartDate,
-                specifiedSalesEndDate = data.specifiedSalesEndDate,
-                tags = data.tags,
-                items = data.items,
+        if (data.id == null) {
+            repository.save(
+                Product.draftProductPackage(
+                    knitterId = data.knitterId,
+                    name = data.name,
+                    fullPrice = data.fullPrice,
+                    discountPrice = data.discountPrice,
+                    representativeImageUrl = data.representativeImageUrl,
+                    specifiedSalesStartDate = data.specifiedSalesStartDate,
+                    specifiedSalesEndDate = data.specifiedSalesEndDate,
+                    tags = data.tags,
+                    items = data.items,
+                )
             )
-        )
+        } else {
+            repository
+                .getProductByIdAndKnitterId(data.id, data.knitterId)
+                .flatMap {
+                    val updatedProduct = it.draftPackage(
+                        knitterId = data.knitterId,
+                        name = data.name,
+                        fullPrice = data.fullPrice,
+                        discountPrice = data.discountPrice,
+                        representativeImageUrl = data.representativeImageUrl,
+                        specifiedSalesStartDate = data.specifiedSalesStartDate,
+                        specifiedSalesEndDate = data.specifiedSalesEndDate,
+                        tags = data.tags,
+                        items = data.items,
+                    )
+                    repository.save(updatedProduct)
+                }
+        }
 
     fun draft(data: DraftProductContentData): Mono<Product> {
         return repository
