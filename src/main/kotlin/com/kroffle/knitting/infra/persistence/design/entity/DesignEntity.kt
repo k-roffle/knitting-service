@@ -8,6 +8,7 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
+import com.kroffle.knitting.domain.design.value.Technique
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
@@ -35,7 +36,7 @@ class DesignEntity(
     private val coverImageUrl: String,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
-    fun toDesign(): Design =
+    fun toDesign(techniques: List<Technique>): Design =
         Design(
             id = this.id,
             knitterId = this.knitterId,
@@ -57,6 +58,7 @@ class DesignEntity(
             description = this.description,
             targetLevel = LevelType.getFromKey(this.targetLevel),
             coverImageUrl = this.coverImageUrl,
+            techniques = techniques,
             createdAt = this.createdAt,
         )
 }

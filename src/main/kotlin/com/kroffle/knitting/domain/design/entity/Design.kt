@@ -6,6 +6,7 @@ import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
+import com.kroffle.knitting.domain.design.value.Technique
 import java.time.LocalDateTime
 
 class Design(
@@ -23,5 +24,6 @@ class Design(
     val description: String,
     val targetLevel: LevelType,
     val coverImageUrl: String,
+    val techniques: List<Technique>,
     val createdAt: LocalDateTime?,
 )
