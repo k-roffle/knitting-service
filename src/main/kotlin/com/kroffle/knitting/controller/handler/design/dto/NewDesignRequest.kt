@@ -23,4 +23,5 @@ data class NewDesignRequest(
     val targetLevel: LevelType,
     @JsonProperty("cover_image_url")
     val coverImageUrl: String,
+    val techniques: List<String>,
 )

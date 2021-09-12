@@ -11,6 +11,7 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
+import com.kroffle.knitting.domain.design.value.Technique
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
@@ -67,7 +68,7 @@ class DesignHandler(private val service: DesignService) {
                         description = it.description,
                         targetLevel = it.targetLevel,
                         coverImageUrl = it.coverImageUrl,
-                        techniques = listOf(),
+                        techniques = it.techniques.map { technique -> Technique(technique) },
                     )
                 )
             }
