@@ -395,4 +395,41 @@ class ProductRouterTest {
             },
         )
     }
+
+    @Test
+    fun `내 상품 리스트를 더 불러올 때 페이지네이션 정보가 적절히 넘어가야 함`() {
+        given(repository.getProductsByKnitterId(any(), any(), any()))
+            .willReturn(Flux.empty())
+
+        webClient
+            .get()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .path("/product/mine")
+                    .queryParam("count", "2")
+                    .queryParam("after", "1")
+                    .build()
+            }
+            .addDefaultRequestHeader()
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<List<GetMyProductsResponse>>>()
+            .returnResult()
+            .responseBody!!
+
+        verify(repository).getProductsByKnitterId(
+            argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
+            argThat { param ->
+                assert(param.after == "1")
+                assert(param.count == 2)
+                true
+            },
+            argThat { param ->
+                assert(param.column == "id")
+                assert(param.direction == SortDirection.DESC)
+                true
+            },
+        )
+    }
 }
