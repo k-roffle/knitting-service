@@ -12,6 +12,8 @@ class TechniqueEntity(
     private val name: String,
 ) {
     fun toTechnique() = Technique(name)
+
+    fun getForeignKey() = designId
 }
 
 fun Design.toTechniqueEntities(designId: Long): List<TechniqueEntity> =

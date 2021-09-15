@@ -36,6 +36,8 @@ class DesignEntity(
     private val coverImageUrl: String,
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
+    fun getNotNullId(): Long = id!!
+
     fun toDesign(techniques: List<Technique>): Design =
         Design(
             id = this.id,
