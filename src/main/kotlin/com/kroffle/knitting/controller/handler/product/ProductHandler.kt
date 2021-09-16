@@ -53,8 +53,8 @@ class ProductHandler(private val productService: ProductService) {
                     representativeImageUrl = body.representativeImageUrl,
                     specifiedSalesStartDate = body.specifiedSalesStartDate,
                     specifiedSalesEndDate = body.specifiedSalesEndDate,
-                    tags = body.tags.map { ProductTag(null, it, null) },
-                    items = body.designIds.map { ProductItem.create(null, it, null, ProductItemType.DESIGN) },
+                    tags = body.tags.map { ProductTag(it, null) },
+                    items = body.designIds.map { ProductItem.create(it, null, ProductItemType.DESIGN) },
                 )
             )
         }

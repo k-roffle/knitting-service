@@ -14,7 +14,6 @@ class ProductTagEntity(
     private val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     fun toTag() = ProductTag(
-        id = id,
         name = name,
         createdAt = createdAt,
     )
@@ -25,7 +24,7 @@ fun Product.toProductTagEntities(productId: Long): List<ProductTagEntity> =
     this.tags.map {
         tag ->
         ProductTagEntity(
-            id = tag.id,
+            id = null,
             productId = this.id ?: productId,
             name = tag.name,
             createdAt = tag.createdAt ?: LocalDateTime.now(),
