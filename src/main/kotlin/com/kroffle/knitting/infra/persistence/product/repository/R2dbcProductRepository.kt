@@ -85,20 +85,27 @@ class R2dbcProductRepository(
             .flatMap {
                 productEntity ->
                 val productId: Long = productEntity.getNotNullId()
+
                 val tags = productTagRepository
-                    .saveAll(product.toProductTagEntities(productId))
-                    .map { it.toTag() }
-                    .collect(toList())
+                    .deleteByProductId(productId)
+                    .flatMap {
+                        productTagRepository
+                            .saveAll(product.toProductTagEntities(productId))
+                            .map { it.toTag() }
+                            .collect(toList())
+                    }
 
                 val items = productItemRepository
-                    .saveAll(product.toProductItemEntities(productId))
-                    .map { it.toItem() }
-                    .collect(toList())
+                    .deleteByProductId(productId)
+                    .flatMap {
+                        productItemRepository
+                            .saveAll(product.toProductItemEntities(productId))
+                            .map { it.toItem() }
+                            .collect(toList())
+                    }
 
                 Mono.zip(tags, items)
-                    .map {
-                        productEntity.toProduct(it.t1, it.t2)
-                    }
+                    .map { productEntity.toProduct(it.t1, it.t2) }
             }
     }
 

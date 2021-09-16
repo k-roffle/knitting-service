@@ -73,6 +73,35 @@ class Product(
             salesStatus == SalesStatus.ON_SALES &&
                 inputStatus == InputStatus.REGISTERED
 
+    fun draftPackage(
+        knitterId: Long,
+        name: String,
+        fullPrice: Money,
+        discountPrice: Money,
+        representativeImageUrl: String,
+        specifiedSalesStartDate: LocalDate?,
+        specifiedSalesEndDate: LocalDate?,
+        tags: List<ProductTag>,
+        items: List<ProductItem>,
+    ): Product {
+        return Product(
+            id,
+            knitterId,
+            name,
+            fullPrice,
+            discountPrice,
+            representativeImageUrl,
+            specifiedSalesStartDate,
+            specifiedSalesEndDate,
+            tags,
+            content,
+            inputStatus,
+            items,
+            createdAt,
+            LocalDateTime.now(),
+        )
+    }
+
     fun draftContent(newContent: String): Product {
         return Product(
             id,
@@ -116,7 +145,6 @@ class Product(
 
     companion object {
         fun draftProductPackage(
-            id: Long?,
             knitterId: Long,
             name: String,
             fullPrice: Money,
@@ -128,7 +156,7 @@ class Product(
             items: List<ProductItem>,
         ): Product {
             return Product(
-                id,
+                null,
                 knitterId,
                 name,
                 fullPrice,
