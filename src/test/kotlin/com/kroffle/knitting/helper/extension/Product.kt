@@ -6,7 +6,7 @@ fun Product.like(other: Product): Boolean {
     if (this === other) return true
     tags.mapIndexed {
         index, tag ->
-        if (other.tags[index].tag != tag.tag) {
+        if (other.tags[index].name != tag.name) {
             return false
         }
     }

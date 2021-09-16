@@ -3,7 +3,7 @@ package com.kroffle.knitting.usecase.helper.pagination.type
 import java.lang.IllegalArgumentException
 
 class Paging(
-    val after: Long?,
+    val after: String?,
     val count: Int,
 ) {
     init {

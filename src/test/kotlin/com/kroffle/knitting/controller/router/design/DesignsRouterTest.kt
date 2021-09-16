@@ -110,7 +110,7 @@ class DesignsRouterTest {
             )
         )
         verify(repository).getDesignsByKnitterId(
-            argThat { param -> param == 1.toLong() },
+            argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
             argThat {
                 param ->
                 assert(param.after == null)
@@ -119,6 +119,43 @@ class DesignsRouterTest {
             },
             argThat {
                 param ->
+                assert(param.column == "id")
+                assert(param.direction == SortDirection.DESC)
+                true
+            },
+        )
+    }
+
+    @Test
+    fun `내가 만든 도안 리스트를 더 불러올 때 페이지네이션 정보가 적절히 넘어가야 함`() {
+        given(repository.getDesignsByKnitterId(any(), any(), any()))
+            .willReturn(Flux.empty())
+
+        webClient
+            .get()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .path("/designs/my")
+                    .queryParam("count", "2")
+                    .queryParam("after", "1")
+                    .build()
+            }
+            .addDefaultRequestHeader()
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<TestResponse<List<MyDesign>>>()
+            .returnResult()
+            .responseBody!!
+
+        verify(repository).getDesignsByKnitterId(
+            argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
+            argThat { param ->
+                assert(param.after == "1")
+                assert(param.count == 2)
+                true
+            },
+            argThat { param ->
                 assert(param.column == "id")
                 assert(param.direction == SortDirection.DESC)
                 true

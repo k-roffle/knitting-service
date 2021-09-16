@@ -1,18 +1,12 @@
 package com.kroffle.knitting.helper.extension
 
-import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
 
-fun GetMyProductResponse.like(other: GetMyProductResponse): Boolean {
+fun GetMyProductsResponse.like(other: GetMyProductsResponse): Boolean {
     if (this === other) return true
     tags.mapIndexed {
         index, tag ->
         if (other.tags[index] != tag) {
-            return false
-        }
-    }
-    itemIds.mapIndexed {
-        index, item ->
-        if (other.itemIds[index] != item) {
             return false
         }
     }
@@ -23,8 +17,6 @@ fun GetMyProductResponse.like(other: GetMyProductResponse): Boolean {
         representativeImageUrl == other.representativeImageUrl &&
         specifiedSalesStartDate == other.specifiedSalesStartDate &&
         specifiedSalesEndDate == other.specifiedSalesEndDate &&
-        content == other.content &&
         inputStatus == other.inputStatus &&
-        createdAt == other.createdAt &&
         updatedAt == other.updatedAt
 }
