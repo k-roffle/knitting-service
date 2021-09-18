@@ -11,7 +11,7 @@ import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Table("design")
 class DesignEntity(
@@ -34,7 +34,7 @@ class DesignEntity(
     private val description: String,
     private val targetLevel: String,
     private val coverImageUrl: String,
-    private val createdAt: LocalDateTime = LocalDateTime.now(),
+    private val createdAt: OffsetDateTime = OffsetDateTime.now(),
 ) {
     fun getNotNullId(): Long = id!!
 
@@ -86,5 +86,5 @@ fun Design.toDesignEntity() =
         description = this.description,
         targetLevel = this.targetLevel.key,
         coverImageUrl = this.coverImageUrl,
-        createdAt = this.createdAt ?: LocalDateTime.now(),
+        createdAt = this.createdAt ?: OffsetDateTime.now(),
     )

@@ -3,7 +3,7 @@ package com.kroffle.knitting.infra.persistence.knitter.entity
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Table("knitter")
 class KnitterEntity(
@@ -11,7 +11,7 @@ class KnitterEntity(
     private val email: String,
     private val name: String?,
     private val profileImageUrl: String?,
-    private val createdAt: LocalDateTime = LocalDateTime.now(),
+    private val createdAt: OffsetDateTime = OffsetDateTime.now(),
 ) {
     fun toKnitter(): Knitter =
         Knitter(
@@ -29,5 +29,5 @@ fun Knitter.toKnitterEntity() =
         email = this.email,
         name = this.name,
         profileImageUrl = this.profileImageUrl,
-        createdAt = this.createdAt ?: LocalDateTime.now(),
+        createdAt = this.createdAt ?: OffsetDateTime.now(),
     )

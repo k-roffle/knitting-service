@@ -7,7 +7,7 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 class Design(
     val id: Long? = null,
@@ -25,7 +25,7 @@ class Design(
     val targetLevel: LevelType,
     val coverImageUrl: String,
     val techniques: List<Technique>,
-    val createdAt: LocalDateTime?,
+    val createdAt: OffsetDateTime?,
 ) {
     companion object {
         fun new(

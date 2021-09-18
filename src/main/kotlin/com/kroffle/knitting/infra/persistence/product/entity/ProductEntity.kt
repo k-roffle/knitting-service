@@ -8,7 +8,7 @@ import com.kroffle.knitting.domain.value.Money
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Table("product")
 class ProductEntity(
@@ -22,8 +22,8 @@ class ProductEntity(
     private val specifiedSalesEndDate: LocalDate?,
     private val content: String?,
     private val inputStatus: InputStatus,
-    private val createdAt: LocalDateTime = LocalDateTime.now(),
-    private val updatedAt: LocalDateTime = LocalDateTime.now(),
+    private val createdAt: OffsetDateTime = OffsetDateTime.now(),
+    private val updatedAt: OffsetDateTime = OffsetDateTime.now(),
 ) {
     fun getNotNullId(): Long = id!!
 
@@ -58,6 +58,6 @@ fun Product.toProductEntity() =
         specifiedSalesEndDate = specifiedSalesEndDate,
         content = content,
         inputStatus = inputStatus,
-        createdAt = this.createdAt ?: LocalDateTime.now(),
-        updatedAt = this.updatedAt ?: LocalDateTime.now(),
+        createdAt = this.createdAt ?: OffsetDateTime.now(),
+        updatedAt = this.updatedAt ?: OffsetDateTime.now(),
     )

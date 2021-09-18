@@ -11,7 +11,7 @@ import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 class Product(
     val id: Long? = null,
@@ -26,8 +26,8 @@ class Product(
     val content: String?,
     val inputStatus: InputStatus,
     val items: List<ProductItem>,
-    val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?,
+    val createdAt: OffsetDateTime?,
+    val updatedAt: OffsetDateTime?,
 ) {
     init {
         require(
@@ -98,7 +98,7 @@ class Product(
             inputStatus,
             items,
             createdAt,
-            LocalDateTime.now(),
+            OffsetDateTime.now(),
         )
     }
 
@@ -117,7 +117,7 @@ class Product(
             inputStatus,
             items,
             createdAt,
-            LocalDateTime.now(),
+            OffsetDateTime.now(),
         )
     }
 
@@ -139,7 +139,7 @@ class Product(
             InputStatus.REGISTERED,
             items,
             createdAt,
-            LocalDateTime.now(),
+            OffsetDateTime.now(),
         )
     }
 
@@ -169,7 +169,7 @@ class Product(
                 InputStatus.DRAFT,
                 items,
                 null,
-                LocalDateTime.now(),
+                OffsetDateTime.now(),
             )
         }
     }
