@@ -52,7 +52,6 @@ class R2dbcProductRepository(
         val tagMap: Mono<Map<Long, Collection<ProductTagEntity>>> =
             productIds
                 .flatMap {
-                    // FIXME: 여러번 호출되는 이유 파악하여 고치기
                     productTagRepository
                         .findAllByProductIdIn(it)
                         .collectMultimap { tag -> tag.getForeignKey() }
@@ -65,14 +64,14 @@ class R2dbcProductRepository(
                         .collectMultimap { item -> item.getForeignKey() }
                 }
 
-        return products
-            .concatMap { product ->
-                Mono.zip(tagMap, itemMap)
-                    .map {
+        return Mono.zip(tagMap, itemMap)
+            .flatMapMany {
+                products
+                    .map { product ->
                         val productId = product.getNotNullId()
                         product.toProduct(
                             it.t1[productId]?.map { tag -> tag.toTag() } ?: listOf(),
-                            it.t2[productId]?.map { item -> item.toItem() } ?: listOf()
+                            it.t2[productId]?.map { item -> item.toItem() } ?: listOf(),
                         )
                     }
             }
