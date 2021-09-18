@@ -8,7 +8,7 @@
 
 ## Environment
 
-- `src/main/resources/application.properties` 를 복사하여 application-local.properties 파일을 만듭니다.
+- `src/main/resources/application-sample.properties` 를 복사하여 application-local.properties 파일을 만듭니다.
 - 해당 파일에 local 환경에 맞게 변수를 설정합니다.
 - `-Dspring.profiles.active=local` 옵션을 이용하여 local 환경으로 설정하고 실행합니다.
 
