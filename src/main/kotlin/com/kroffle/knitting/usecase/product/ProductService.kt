@@ -3,8 +3,8 @@ package com.kroffle.knitting.usecase.product
 import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
-import com.kroffle.knitting.usecase.product.dto.DraftProductContentData
-import com.kroffle.knitting.usecase.product.dto.DraftProductPackageData
+import com.kroffle.knitting.usecase.product.dto.EditProductContentData
+import com.kroffle.knitting.usecase.product.dto.EditProductPackageData
 import com.kroffle.knitting.usecase.product.dto.GetMyProductData
 import com.kroffle.knitting.usecase.product.dto.GetMyProductsData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono
 
 @Component
 class ProductService(private val repository: ProductRepository) {
-    fun draft(data: DraftProductPackageData): Mono<Product> =
+    fun edit(data: EditProductPackageData): Mono<Product> =
         if (data.id == null) {
             repository.save(
-                Product.draftProductPackage(
+                Product.create(
                     knitterId = data.knitterId,
                     name = data.name,
                     fullPrice = data.fullPrice,
@@ -33,7 +33,7 @@ class ProductService(private val repository: ProductRepository) {
             repository
                 .getProductByIdAndKnitterId(data.id, data.knitterId)
                 .flatMap {
-                    val updatedProduct = it.draftPackage(
+                    val updatedProduct = it.edit(
                         knitterId = data.knitterId,
                         name = data.name,
                         fullPrice = data.fullPrice,
@@ -48,10 +48,10 @@ class ProductService(private val repository: ProductRepository) {
                 }
         }
 
-    fun draft(data: DraftProductContentData): Mono<Product> {
+    fun edit(data: EditProductContentData): Mono<Product> {
         return repository
             .getProductByIdAndKnitterId(data.id, data.knitterId)
-            .flatMap { repository.save(it.draftContent(data.content)) }
+            .flatMap { repository.save(it.edit(data.content)) }
     }
 
     fun register(data: RegisterProductData): Mono<Product> {
