@@ -2,8 +2,10 @@ package com.kroffle.knitting.infra.persistence.design.repository
 
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
+import com.kroffle.knitting.infra.persistence.design.entity.SizeEntity
 import com.kroffle.knitting.infra.persistence.design.entity.TechniqueEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toDesignEntity
+import com.kroffle.knitting.infra.persistence.design.entity.toSizeEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toTechniqueEntities
 import com.kroffle.knitting.infra.persistence.helper.pagination.PaginationHelper
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
@@ -19,6 +21,7 @@ import java.util.stream.Collectors.toList
 class R2dbcDesignRepository(
     private val designRepository: DBDesignRepository,
     private val techniqueRepository: DBTechniqueRepository,
+    private val sizeRepository: DBSizeRepository,
 ) : DesignRepository {
     override fun createDesign(design: Design): Mono<Design> =
         designRepository
@@ -34,12 +37,21 @@ class R2dbcDesignRepository(
                                 .map { it.toTechnique() }
                                 .collect(toList())
                         }
-                techniques.map {
-                    designEntity.toDesign(techniques = it)
-                }
+                val size =
+                    sizeRepository
+                        .deleteByDesignId(designId)
+                        .flatMap {
+                            sizeRepository
+                                .save(design.toSizeEntity(designId))
+                                .map { it.toSize() }
+                        }
+                Mono.zip(techniques, size)
+                    .map {
+                        designEntity.toDesign(techniques = it.t1, size = it.t2)
+                    }
             }
 
-    private fun getDesignAggregate(designs: Flux<DesignEntity>): Flux<Design> {
+    private fun getDesignAggregates(designs: Flux<DesignEntity>): Flux<Design> {
         val designIds: Mono<List<Long>> =
             designs
                 .map { design -> design.getNotNullId() }
@@ -53,15 +65,22 @@ class R2dbcDesignRepository(
                         .collectMultimap { technique -> technique.getForeignKey() }
                 }
 
-        return techniqueMap
-            .flatMapMany { techniques ->
+        val sizeMap: Mono<Map<Long, SizeEntity>> =
+            designIds
+                .flatMap {
+                    sizeRepository
+                        .findAllByDesignIdIn(it)
+                        .collectMap { size -> size.getForeignKey() }
+                }
+
+        return Mono.zip(techniqueMap, sizeMap)
+            .flatMapMany {
                 designs
                     .map { design ->
                         val designId = design.getNotNullId()
                         design.toDesign(
-                            techniques[designId]
-                                ?.map { technique -> technique.toTechnique() }
-                                ?: listOf()
+                            it.t1[designId]?.map { technique -> technique.toTechnique() } ?: listOf(),
+                            it.t2[designId]?.toSize()!!,
                         )
                     }
             }
@@ -88,6 +107,6 @@ class R2dbcDesignRepository(
                 }
             else -> throw NotImplementedError()
         }
-        return getDesignAggregate(designs)
+        return getDesignAggregates(designs)
     }
 }

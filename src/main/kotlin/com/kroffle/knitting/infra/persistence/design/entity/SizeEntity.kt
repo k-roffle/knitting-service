@@ -26,6 +26,8 @@ class SizeEntity(
             armholeDepth = Length(armholeDepth, DEFAULT_UNIT),
         )
 
+    fun getForeignKey() = designId
+
     companion object {
         private val DEFAULT_UNIT = SizeUnitType.Cm
     }
