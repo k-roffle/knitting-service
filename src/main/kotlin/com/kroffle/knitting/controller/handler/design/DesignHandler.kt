@@ -7,12 +7,13 @@ import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
-import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
+import com.kroffle.knitting.domain.design.value.Technique
 import com.kroffle.knitting.usecase.design.DesignService
+import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
@@ -32,7 +33,7 @@ class DesignHandler(private val service: DesignService) {
         return design
             .flatMap {
                 service.create(
-                    Design(
+                    CreateDesignData(
                         knitterId = knitterId,
                         name = it.name,
                         designType = it.designType,
@@ -67,7 +68,7 @@ class DesignHandler(private val service: DesignService) {
                         description = it.description,
                         targetLevel = it.targetLevel,
                         coverImageUrl = it.coverImageUrl,
-                        createdAt = null,
+                        techniques = it.techniques.map { technique -> Technique(technique) },
                     )
                 )
             }

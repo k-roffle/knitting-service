@@ -1,6 +1,7 @@
 package com.kroffle.knitting.usecase.design
 
 import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
@@ -10,7 +11,26 @@ import reactor.core.publisher.Mono
 
 @Component
 class DesignService(private val repository: DesignRepository) {
-    fun create(design: Design): Mono<Design> = repository.createDesign(design)
+    fun create(data: CreateDesignData): Mono<Design> =
+        repository
+            .createDesign(
+                Design.new(
+                    data.knitterId,
+                    data.name,
+                    data.designType,
+                    data.patternType,
+                    data.gauge,
+                    data.size,
+                    data.needle,
+                    data.yarn,
+                    data.extra,
+                    data.pattern,
+                    data.description,
+                    data.targetLevel,
+                    data.coverImageUrl,
+                    data.techniques,
+                )
+            )
 
     fun getMyDesign(filter: MyDesignFilter): Flux<Design> =
         repository

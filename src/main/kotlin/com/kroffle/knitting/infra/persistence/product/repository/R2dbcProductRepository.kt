@@ -66,8 +66,7 @@ class R2dbcProductRepository(
                 }
 
         return products
-            .concatMap {
-                product ->
+            .concatMap { product ->
                 Mono.zip(tagMap, itemMap)
                     .map {
                         val productId = product.getNotNullId()

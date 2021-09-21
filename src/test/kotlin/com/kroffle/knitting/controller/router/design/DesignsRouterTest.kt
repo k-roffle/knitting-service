@@ -2,15 +2,20 @@ package com.kroffle.knitting.controller.router.design
 
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.domain.design.value.Gauge
+import com.kroffle.knitting.domain.design.value.Length
+import com.kroffle.knitting.domain.design.value.Pattern
+import com.kroffle.knitting.domain.design.value.Size
+import com.kroffle.knitting.domain.design.value.Technique
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
-import com.kroffle.knitting.infra.persistence.design.entity.DesignEntity
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
@@ -59,28 +64,33 @@ class DesignsRouterTest {
         given(repository.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(
                 Flux.just(
-                    DesignEntity(
+                    Design(
                         id = 1,
                         knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
                         name = "캔디리더 효정 니트",
                         designType = DesignType.Sweater,
                         patternType = PatternType.Text,
-                        stitches = 23.5,
-                        rows = 25.0,
-                        totalLength = 1.0,
-                        sleeveLength = 2.0,
-                        shoulderWidth = 3.0,
-                        bottomWidth = 4.0,
-                        armholeDepth = 5.0,
+                        gauge = Gauge(
+                            stitches = 23.5,
+                            rows = 25.0,
+                        ),
+                        size = Size(
+                            totalLength = Length(1.0),
+                            sleeveLength = Length(2.0),
+                            shoulderWidth = Length(3.0),
+                            bottomWidth = Length(4.0),
+                            armholeDepth = Length(5.0),
+                        ),
                         needle = "5.0mm",
                         yarn = "패션아란 400g 1볼",
                         extra = null,
-                        pattern = "# Step1. 코를 10개 잡습니다.",
+                        pattern = Pattern("# Step1. 코를 10개 잡습니다."),
                         description = "이건 니트를 만드는 서술형 도안입니다.",
-                        targetLevel = LevelType.HARD.key,
+                        targetLevel = LevelType.HARD,
                         coverImageUrl = "http://test.kroffle.com/image.jpg",
+                        techniques = listOf(Technique("안뜨기"), Technique("겉뜨기")),
                         createdAt = today,
-                    ).toDesign()
+                    )
                 )
             )
 

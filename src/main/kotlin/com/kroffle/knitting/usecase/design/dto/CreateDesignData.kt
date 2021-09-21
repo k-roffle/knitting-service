@@ -1,27 +1,26 @@
-package com.kroffle.knitting.controller.handler.design.dto
+package com.kroffle.knitting.usecase.design.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
 import com.kroffle.knitting.domain.design.enum.PatternType
+import com.kroffle.knitting.domain.design.value.Gauge
+import com.kroffle.knitting.domain.design.value.Pattern
+import com.kroffle.knitting.domain.design.value.Size
+import com.kroffle.knitting.domain.design.value.Technique
 
-data class NewDesignRequest(
+data class CreateDesignData(
+    val knitterId: Long,
     val name: String,
-    @JsonProperty("design_type")
     val designType: DesignType,
-    @JsonProperty("pattern_type")
     val patternType: PatternType,
-    val stitches: Double,
-    val rows: Double,
-    val size: NewDesignSize,
+    val gauge: Gauge,
+    val size: Size,
     val needle: String,
     val yarn: String,
     val extra: String?,
-    val pattern: String,
+    val pattern: Pattern,
     val description: String,
-    @JsonProperty("target_level")
     val targetLevel: LevelType,
-    @JsonProperty("cover_image_url")
     val coverImageUrl: String,
-    val techniques: List<String>,
+    val techniques: List<Technique>,
 )
