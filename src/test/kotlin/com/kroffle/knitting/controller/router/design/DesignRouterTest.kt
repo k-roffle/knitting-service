@@ -37,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -91,7 +91,7 @@ class DesignRouterTest {
             targetLevel = LevelType.HARD,
             coverImageUrl = "http://test.kroffle.com/image.jpg",
             techniques = listOf(Technique("겉뜨기"), Technique("안뜨기")),
-            createdAt = LocalDateTime.now(),
+            createdAt = OffsetDateTime.now(),
         )
         given(repository.createDesign(any())).willReturn(Mono.just(createdDesign))
 

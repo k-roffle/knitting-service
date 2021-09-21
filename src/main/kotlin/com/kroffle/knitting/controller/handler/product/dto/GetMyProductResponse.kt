@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayload
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class GetMyProductResponse(
     val id: Long,
@@ -25,7 +25,7 @@ data class GetMyProductResponse(
     val inputStatus: InputStatus,
     val itemIds: List<Long>,
     @JsonProperty("created_at")
-    val createdAt: LocalDateTime?,
+    val createdAt: OffsetDateTime?,
     @JsonProperty("updated_at")
-    val updatedAt: LocalDateTime?,
+    val updatedAt: OffsetDateTime?,
 ) : ObjectPayload

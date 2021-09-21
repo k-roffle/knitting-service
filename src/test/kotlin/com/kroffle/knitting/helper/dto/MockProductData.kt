@@ -6,7 +6,7 @@ import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.helper.WebTestClientHelper
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class MockProductData(
     val id: Long,
@@ -21,6 +21,6 @@ data class MockProductData(
     val content: String? = null,
     val inputStatus: InputStatus = InputStatus.DRAFT,
     val items: List<ProductItem> = listOf(),
-    val createdAt: LocalDateTime? = LocalDateTime.now(),
-    val updatedAt: LocalDateTime? = LocalDateTime.now(),
+    val createdAt: OffsetDateTime? = OffsetDateTime.now(),
+    val updatedAt: OffsetDateTime? = OffsetDateTime.now(),
 )

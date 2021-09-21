@@ -34,7 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -60,7 +60,7 @@ class DesignsRouterTest {
 
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
-        val today: LocalDateTime = LocalDateTime.now()
+        val today: OffsetDateTime = OffsetDateTime.now()
         given(repository.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(
                 Flux.just(

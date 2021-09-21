@@ -43,7 +43,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -62,7 +62,7 @@ class ProductRouterTest {
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
-    private val today = LocalDateTime.now()
+    private val today = OffsetDateTime.now()
 
     private val tomorrow = today.plusDays(1)
 

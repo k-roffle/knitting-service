@@ -30,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @WebFluxTest
 @ExtendWith(SpringExtension::class)
@@ -114,7 +114,7 @@ class LoginRouterTest {
             email = "mock@email.com",
             name = null,
             profileImageUrl = null,
-            createdAt = LocalDateTime.now(),
+            createdAt = OffsetDateTime.now(),
         ).toKnitter()
 
         given(mockOAuthHelper.getProfile("MOCK_CODE")).willReturn(
@@ -151,7 +151,7 @@ class LoginRouterTest {
     @Test
     fun `새로 가입하는 유저의 경우 계정을 생성한 후 access token 을 발급 받을 수 있어야 함`() {
         val newKnitterId: Long = 1
-        val newUserCreatedAt = LocalDateTime.now()
+        val newUserCreatedAt = OffsetDateTime.now()
         val mockUser = Knitter(
             id = newKnitterId,
             email = "new@email.com",

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ListItemPayload
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class GetMyProductsResponse(
     val id: Long,
@@ -23,7 +23,7 @@ data class GetMyProductsResponse(
     @JsonProperty("input_status")
     val inputStatus: InputStatus,
     @JsonProperty("updated_at")
-    val updatedAt: LocalDateTime?,
+    val updatedAt: OffsetDateTime?,
 ) : ListItemPayload {
     override fun getCursor(): String = updatedAt.toString()
 }
