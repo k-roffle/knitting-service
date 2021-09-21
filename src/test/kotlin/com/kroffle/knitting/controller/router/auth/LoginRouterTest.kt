@@ -133,8 +133,7 @@ class LoginRouterTest {
 
         val result = webClientWithMockOAuthHelper
             .get()
-            .uri {
-                uriBuilder ->
+            .uri { uriBuilder ->
                 uriBuilder
                     .path("/auth/google/authorized")
                     .queryParam("code", "MOCK_CODE")
@@ -178,8 +177,7 @@ class LoginRouterTest {
 
         val result = webClientWithMockOAuthHelper
             .get()
-            .uri {
-                uriBuilder ->
+            .uri { uriBuilder ->
                 uriBuilder
                     .path("/auth/google/authorized")
                     .queryParam("code", "MOCK_CODE")
@@ -194,8 +192,7 @@ class LoginRouterTest {
         assert(tokenDecoder.getKnitterId(result.payload.token) == newKnitterId)
 
         verify(repository).create(
-            argThat {
-                param ->
+            argThat { param ->
                 assert(param.id == null)
                 assert(param.email == "new@email.com")
                 assert(param.name == "Jessica Mars")

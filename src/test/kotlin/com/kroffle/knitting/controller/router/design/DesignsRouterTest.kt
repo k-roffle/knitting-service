@@ -121,14 +121,12 @@ class DesignsRouterTest {
         )
         verify(repository).getDesignsByKnitterId(
             argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
-            argThat {
-                param ->
+            argThat { param ->
                 assert(param.after == null)
                 assert(param.count == 10)
                 true
             },
-            argThat {
-                param ->
+            argThat { param ->
                 assert(param.column == "id")
                 assert(param.direction == SortDirection.DESC)
                 true

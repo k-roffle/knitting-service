@@ -142,12 +142,10 @@ class ProductRouterTest {
                         product.content == createdProduct.content &&
                         product.inputStatus == createdProduct.inputStatus
                 )
-                product.tags.mapIndexed {
-                    index, tag ->
+                product.tags.mapIndexed { index, tag ->
                     assert(createdProduct.tags[index].name == tag.name)
                 }
-                product.items.mapIndexed {
-                    index, item ->
+                product.items.mapIndexed { index, item ->
                     assert(createdProduct.items[index].itemId == item.itemId)
                 }
                 true
@@ -484,14 +482,12 @@ class ProductRouterTest {
         assertThat(payload[2].id).isEqualTo(2)
         verify(repository).getProductsByKnitterId(
             argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
-            argThat {
-                param ->
+            argThat { param ->
                 assert(param.after == null)
                 assert(param.count == 10)
                 true
             },
-            argThat {
-                param ->
+            argThat { param ->
                 assert(param.column == "id")
                 assert(param.direction == SortDirection.DESC)
                 true

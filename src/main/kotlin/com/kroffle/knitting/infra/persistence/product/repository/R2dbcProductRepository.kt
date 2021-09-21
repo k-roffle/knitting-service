@@ -80,8 +80,7 @@ class R2dbcProductRepository(
     override fun save(product: Product): Mono<Product> {
         return productRepository
             .save(product.toProductEntity())
-            .flatMap {
-                productEntity ->
+            .flatMap { productEntity ->
                 val productId: Long = productEntity.getNotNullId()
 
                 val tags = productTagRepository

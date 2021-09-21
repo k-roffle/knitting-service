@@ -4,8 +4,7 @@ import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
 
 fun GetMyProductsResponse.like(other: GetMyProductsResponse): Boolean {
     if (this === other) return true
-    tags.mapIndexed {
-        index, tag ->
+    tags.mapIndexed { index, tag ->
         if (other.tags[index] != tag) {
             return false
         }

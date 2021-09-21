@@ -21,8 +21,7 @@ class ProductTagEntity(
 }
 
 fun Product.toProductTagEntities(productId: Long): List<ProductTagEntity> =
-    this.tags.map {
-        tag ->
+    this.tags.map { tag ->
         ProductTagEntity(
             id = null,
             productId = this.id ?: productId,

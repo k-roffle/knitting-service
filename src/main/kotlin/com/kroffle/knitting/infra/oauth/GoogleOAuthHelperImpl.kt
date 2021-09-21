@@ -70,8 +70,7 @@ class GoogleOAuthHelperImpl(
         return getAccessToken(code).flatMap {
             webClient
                 .get()
-                .uri {
-                    uriBuilder ->
+                .uri { uriBuilder ->
                     uriBuilder
                         .path("/oauth2/v3/userinfo")
                         .queryParam("access_token", it)

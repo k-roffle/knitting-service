@@ -20,8 +20,7 @@ class ProductItemEntity(
 }
 
 fun Product.toProductItemEntities(productId: Long): List<ProductItemEntity> =
-    this.items.map {
-        item ->
+    this.items.map { item ->
         ProductItemEntity(
             productId = this.id ?: productId,
             itemId = item.itemId,
