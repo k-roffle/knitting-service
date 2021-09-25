@@ -7,39 +7,37 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
-class ResponseHelper {
+object ResponseHelper {
     private class Response<T>(
         val payload: T,
         val meta: MetaData,
     )
 
-    companion object {
-        private fun makeKnittingResponse(payload: ObjectPayload): Response<ObjectPayload> =
-            Response(
-                payload = payload,
-                meta = MetaData(),
-            )
+    private fun makeKnittingResponse(payload: ObjectPayload): Response<ObjectPayload> =
+        Response(
+            payload = payload,
+            meta = MetaData(),
+        )
 
-        private fun makeKnittingResponse(data: List<ListItemPayload>):
-            Response<List<ListItemPayload>> {
-                val metaData = if (data.isEmpty()) {
-                    MetaData()
-                } else {
-                    MetaData(lastCursor = data.last().getCursor())
-                }
-                return Response(data, metaData)
+    private fun makeKnittingResponse(data: List<ListItemPayload>):
+        Response<List<ListItemPayload>> {
+            val metaData = if (data.isEmpty()) {
+                MetaData()
+            } else {
+                MetaData(lastCursor = data.last().getCursor())
             }
-
-        fun makeJsonResponse(data: ObjectPayload): Mono<ServerResponse> {
-            return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(makeKnittingResponse(data))
+            return Response(data, metaData)
         }
 
-        fun makeJsonResponse(data: List<ListItemPayload>): Mono<ServerResponse> {
-            return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(makeKnittingResponse(data))
-        }
+    fun makeJsonResponse(data: ObjectPayload): Mono<ServerResponse> {
+        return ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(makeKnittingResponse(data))
+    }
+
+    fun makeJsonResponse(data: List<ListItemPayload>): Mono<ServerResponse> {
+        return ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(makeKnittingResponse(data))
     }
 }
