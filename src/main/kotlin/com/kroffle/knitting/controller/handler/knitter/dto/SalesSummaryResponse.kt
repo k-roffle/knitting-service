@@ -5,7 +5,7 @@ import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayloa
 
 data class SalesSummaryResponse(
     @JsonProperty("number_of_products_on_sales")
-    val numberOfProductsOnSales: Int,
+    val numberOfProductsOnSales: Long,
     @JsonProperty("number_of_products_sold")
-    val numberOfProductsSold: Int,
+    val numberOfProductsSold: Long,
 ) : ObjectPayload

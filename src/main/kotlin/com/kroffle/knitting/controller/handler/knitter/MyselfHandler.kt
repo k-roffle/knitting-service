@@ -40,7 +40,7 @@ class MyselfHandler(
                 ResponseHelper
                     .makeJsonResponse(
                         SalesSummaryResponse(
-                            numberOfProductsOnSales = it.toInt(),
+                            numberOfProductsOnSales = it,
                             numberOfProductsSold = 0,
                         )
                     )
