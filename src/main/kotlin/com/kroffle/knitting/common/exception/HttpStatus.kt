@@ -1,4 +1,4 @@
-package com.kroffle.knitting.pure.exception
+package com.kroffle.knitting.common.exception
 
 enum class HttpStatus(val code: Int) {
     BAD_REQUEST(400),

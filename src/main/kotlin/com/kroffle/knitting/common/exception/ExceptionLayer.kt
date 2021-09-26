@@ -1,4 +1,4 @@
-package com.kroffle.knitting.pure.exception
+package com.kroffle.knitting.common.exception
 
 enum class ExceptionLayer {
     DOMAIN,

@@ -1,6 +1,6 @@
 package com.kroffle.knitting.controller.handler.helper.exception
 
-import com.kroffle.knitting.pure.exception.HttpStatus
+import com.kroffle.knitting.common.exception.HttpStatus
 import org.springframework.http.HttpStatus as SpringHttpStatus
 
 fun HttpStatus.to(): SpringHttpStatus {

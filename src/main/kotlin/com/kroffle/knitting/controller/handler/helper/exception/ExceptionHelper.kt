@@ -1,6 +1,6 @@
 package com.kroffle.knitting.controller.handler.helper.exception
 
-import com.kroffle.knitting.pure.exception.BaseException
+import com.kroffle.knitting.common.exception.BaseException
 import org.springframework.web.server.ResponseStatusException
 
 object ExceptionHelper {

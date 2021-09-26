@@ -1,4 +1,4 @@
-package com.kroffle.knitting.pure.extensions
+package com.kroffle.knitting.common.extensions
 
 import java.time.LocalDateTime
 import java.time.ZoneId

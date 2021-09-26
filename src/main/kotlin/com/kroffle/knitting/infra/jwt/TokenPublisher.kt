@@ -2,7 +2,7 @@ package com.kroffle.knitting.infra.jwt
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.kroffle.knitting.pure.extensions.toDate
+import com.kroffle.knitting.common.extensions.toDate
 import com.kroffle.knitting.usecase.auth.AuthService
 import java.time.OffsetDateTime
 
