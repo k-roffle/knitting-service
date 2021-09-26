@@ -94,7 +94,7 @@ class DesignsRouterTest {
                 )
             )
 
-        val responseBody: TestResponse<List<MyDesign>> =
+        val responseBody: TestResponse<List<MyDesign.Response>> =
             webClient
                 .get()
                 .uri("/designs/my")
@@ -102,14 +102,14 @@ class DesignsRouterTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody<TestResponse<List<MyDesign>>>()
+                .expectBody<TestResponse<List<MyDesign.Response>>>()
                 .returnResult()
                 .responseBody!!
 
         assertThat(responseBody.payload.size).isEqualTo(1)
         assert(
             responseBody.payload.first().like(
-                MyDesign(
+                MyDesign.Response(
                     id = 1,
                     name = "캔디리더 효정 니트",
                     yarn = "패션아란 400g 1볼",

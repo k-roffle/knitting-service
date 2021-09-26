@@ -2,14 +2,11 @@ package com.kroffle.knitting.controller.router.product
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.product.ProductHandler
-import com.kroffle.knitting.controller.handler.product.dto.EditProductContentRequest
-import com.kroffle.knitting.controller.handler.product.dto.EditProductContentResponse
-import com.kroffle.knitting.controller.handler.product.dto.EditProductPackageRequest
-import com.kroffle.knitting.controller.handler.product.dto.EditProductPackageResponse
-import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
-import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
-import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
-import com.kroffle.knitting.controller.handler.product.dto.RegisterProductResponse
+import com.kroffle.knitting.controller.handler.product.dto.EditProductContent
+import com.kroffle.knitting.controller.handler.product.dto.EditProductPackage
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProduct
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProducts
+import com.kroffle.knitting.controller.handler.product.dto.RegisterProduct
 import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.enum.ProductItemType
@@ -103,7 +100,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                EditProductPackageRequest(
+                EditProductPackage.Request(
                     id = null,
                     name = "상품 이름",
                     fullPrice = 1000,
@@ -124,7 +121,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<EditProductPackageResponse>>()
+            .expectBody<TestResponse<EditProductPackage.Response>>()
             .returnResult()
             .responseBody!!
 
@@ -194,7 +191,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                EditProductPackageRequest(
+                EditProductPackage.Request(
                     id = targetProduct.id!!,
                     name = "바뀐 상품 이름",
                     fullPrice = 2000,
@@ -215,7 +212,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<EditProductPackageResponse>>()
+            .expectBody<TestResponse<EditProductPackage.Response>>()
             .returnResult()
             .responseBody!!
 
@@ -289,7 +286,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                EditProductContentRequest(
+                EditProductContent.Request(
                     id = 1,
                     content = "상품 설명",
                 )
@@ -303,7 +300,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<EditProductContentResponse>>()
+            .expectBody<TestResponse<EditProductContent.Response>>()
             .returnResult()
             .responseBody!!
 
@@ -356,7 +353,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                RegisterProductRequest(id = 1)
+                RegisterProduct.Request(id = 1)
             )
 
         val response = webClient
@@ -367,7 +364,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<RegisterProductResponse>>()
+            .expectBody<TestResponse<RegisterProduct.Response>>()
             .returnResult()
             .responseBody!!
 
@@ -402,7 +399,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<GetMyProductResponse>>()
+            .expectBody<TestResponse<GetMyProduct.Response>>()
             .returnResult()
             .responseBody!!
 
@@ -410,7 +407,7 @@ class ProductRouterTest {
         assertThat(payload)
             .satisfies {
                 it.like(
-                    GetMyProductResponse(
+                    GetMyProduct.Response(
                         id = mockData.id,
                         name = mockData.name,
                         fullPrice = mockData.fullPrice.value,
@@ -453,7 +450,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<List<GetMyProductsResponse>>>()
+            .expectBody<TestResponse<List<GetMyProducts.Response>>>()
             .returnResult()
             .responseBody!!
 
@@ -464,7 +461,7 @@ class ProductRouterTest {
             payload
                 .first()
                 .like(
-                    GetMyProductsResponse(
+                    GetMyProducts.Response(
                         id = firstMockData.id,
                         name = firstMockData.name,
                         fullPrice = firstMockData.fullPrice.value,
@@ -513,7 +510,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<List<GetMyProductsResponse>>>()
+            .expectBody<TestResponse<List<GetMyProducts.Response>>>()
             .returnResult()
             .responseBody!!
 

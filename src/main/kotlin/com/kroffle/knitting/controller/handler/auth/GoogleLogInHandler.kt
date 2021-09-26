@@ -1,7 +1,7 @@
 package com.kroffle.knitting.controller.handler.auth
 
-import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
-import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
+import com.kroffle.knitting.controller.handler.auth.dto.Authorized
+import com.kroffle.knitting.controller.handler.auth.dto.RefreshToken
 import com.kroffle.knitting.controller.handler.auth.exception.NotFoundCode
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
@@ -26,7 +26,7 @@ class GoogleLogInHandler(private val authService: AuthService) {
         }
         return authService
             .authorize(code.get())
-            .map { AuthorizedResponse(it) }
+            .map { Authorized.Response(it) }
             .flatMap {
                 ResponseHelper.makeJsonResponse(it)
             }
@@ -36,7 +36,7 @@ class GoogleLogInHandler(private val authService: AuthService) {
         val knitterId = AuthHelper.getKnitterId(req)
         return ResponseHelper
             .makeJsonResponse(
-                RefreshTokenResponse(authService.refreshToken(knitterId))
+                RefreshToken.Response(authService.refreshToken(knitterId))
             )
     }
 }

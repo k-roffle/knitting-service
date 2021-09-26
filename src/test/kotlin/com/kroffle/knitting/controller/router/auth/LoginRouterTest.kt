@@ -1,8 +1,8 @@
 package com.kroffle.knitting.controller.router.auth
 
 import com.kroffle.knitting.controller.handler.auth.GoogleLogInHandler
-import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
-import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
+import com.kroffle.knitting.controller.handler.auth.dto.Authorized
+import com.kroffle.knitting.controller.handler.auth.dto.RefreshToken
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
@@ -141,7 +141,7 @@ class LoginRouterTest {
             }
             .exchange()
             .expectStatus().isOk
-            .expectBody<TestResponse<AuthorizedResponse>>()
+            .expectBody<TestResponse<Authorized.Response>>()
             .returnResult()
             .responseBody!!
         assert(tokenDecoder.getKnitterId(result.payload.token) == targetKnitter.id)
@@ -185,7 +185,7 @@ class LoginRouterTest {
             }
             .exchange()
             .expectStatus().isOk
-            .expectBody<TestResponse<AuthorizedResponse>>()
+            .expectBody<TestResponse<Authorized.Response>>()
             .returnResult()
             .responseBody!!
 
@@ -211,7 +211,7 @@ class LoginRouterTest {
             .addDefaultRequestHeader()
             .exchange()
             .expectStatus().isOk
-            .expectBody<TestResponse<RefreshTokenResponse>>()
+            .expectBody<TestResponse<RefreshToken.Response>>()
             .returnResult()
             .responseBody!!
         val decodedToken = TokenDecoder(WebTestClientHelper.JWT_SECRET_KEY)

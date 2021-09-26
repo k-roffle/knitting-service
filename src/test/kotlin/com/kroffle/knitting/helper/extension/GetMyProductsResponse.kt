@@ -1,8 +1,8 @@
 package com.kroffle.knitting.helper.extension
 
-import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
+import com.kroffle.knitting.controller.handler.product.dto.GetMyProducts
 
-fun GetMyProductsResponse.like(other: GetMyProductsResponse): Boolean {
+fun GetMyProducts.Response.like(other: GetMyProducts.Response): Boolean {
     if (this === other) return true
     tags.mapIndexed { index, tag ->
         if (other.tags[index] != tag) {

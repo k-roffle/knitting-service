@@ -1,8 +1,8 @@
 package com.kroffle.knitting.controller.router.knitter
 
 import com.kroffle.knitting.controller.handler.knitter.MyselfHandler
-import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
-import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
+import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
+import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummary
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
@@ -92,12 +92,12 @@ class MyselfRouterTest {
             .addDefaultRequestHeader()
             .exchange()
             .expectStatus().isOk
-            .expectBody<TestResponse<MyProfileResponse>>()
+            .expectBody<TestResponse<MyProfile.Response>>()
             .returnResult()
             .responseBody!!
 
         assertThat(result.payload).isEqualTo(
-            MyProfileResponse(
+            MyProfile.Response(
                 name = "홍길동",
                 email = "test@test.com",
                 profileImageUrl = null,
@@ -135,19 +135,19 @@ class MyselfRouterTest {
         given(productRepository.findRegisteredProduct(any()))
             .willReturn(productsToBeCounted.concatWith(productsToBeSkipped))
 
-        val responseBody: TestResponse<SalesSummaryResponse> = webClient
+        val responseBody: TestResponse<SalesSummary.Response> = webClient
             .get()
             .uri("/me/sales-summary")
             .addDefaultRequestHeader()
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<SalesSummaryResponse>>()
+            .expectBody<TestResponse<SalesSummary.Response>>()
             .returnResult()
             .responseBody!!
 
         assertThat(responseBody.payload).isEqualTo(
-            SalesSummaryResponse(
+            SalesSummary.Response(
                 numberOfProductsOnSales = 2,
                 numberOfProductsSold = 0,
             ),
