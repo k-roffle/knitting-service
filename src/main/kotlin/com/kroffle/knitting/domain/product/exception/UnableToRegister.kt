@@ -1,5 +1,5 @@
 package com.kroffle.knitting.domain.product.exception
 
-import com.kroffle.knitting.domain.exception.DomainException
+import com.kroffle.knitting.domain.DomainException
 
-class UnableToRegister : DomainException("unable to register because of domain fields")
+class UnableToRegister : DomainException(message = "unable to register because of domain fields")

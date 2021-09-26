@@ -2,8 +2,9 @@ package com.kroffle.knitting.controller.handler.auth
 
 import com.kroffle.knitting.controller.handler.auth.dto.AuthorizedResponse
 import com.kroffle.knitting.controller.handler.auth.dto.RefreshTokenResponse
-import com.kroffle.knitting.controller.handler.exception.Unauthorized
+import com.kroffle.knitting.controller.handler.auth.exception.NotFoundCode
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.usecase.auth.AuthService
 import org.springframework.stereotype.Component
@@ -20,8 +21,8 @@ class GoogleLogInHandler(private val authService: AuthService) {
 
     fun authorized(req: ServerRequest): Mono<ServerResponse> {
         val code = req.queryParam("code")
-        if (code.isEmpty) {
-            throw Unauthorized("code is required")
+        if (code.isEmpty || code.get().isBlank()) {
+            ExceptionHelper.raiseException(NotFoundCode())
         }
         return authService
             .authorize(code.get())

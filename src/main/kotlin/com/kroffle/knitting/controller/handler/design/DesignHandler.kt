@@ -5,6 +5,7 @@ import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
 import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.domain.design.value.Gauge
@@ -72,11 +73,9 @@ class DesignHandler(private val service: DesignService) {
                     )
                 )
             }
-            .map {
-                NewDesignResponse(id = it.id!!)
-            }.flatMap {
-                ResponseHelper.makeJsonResponse(it)
-            }
+            .doOnError { ExceptionHelper.raiseException(it) }
+            .map { NewDesignResponse(id = it.id!!) }
+            .flatMap { ResponseHelper.makeJsonResponse(it) }
     }
 
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
@@ -90,6 +89,7 @@ class DesignHandler(private val service: DesignService) {
                     Sort("id", SortDirection.DESC),
                 )
             )
+            .doOnError { ExceptionHelper.raiseException(it) }
             .map { design ->
                 MyDesign(
                     id = design.id!!,

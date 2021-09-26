@@ -1,8 +1,8 @@
 package com.kroffle.knitting.controller.handler.product
 
-import com.kroffle.knitting.controller.handler.exception.BadRequest
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.product.dto.EditProductContentRequest
@@ -60,6 +60,7 @@ class ProductHandler(private val productService: ProductService) {
             }
 
         return product
+            .doOnError { ExceptionHelper.raiseException(it) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -86,7 +87,7 @@ class ProductHandler(private val productService: ProductService) {
             }
 
         return product
-            .onErrorResume { Mono.error(BadRequest(it.message)) }
+            .doOnError { ExceptionHelper.raiseException(it) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -111,7 +112,7 @@ class ProductHandler(private val productService: ProductService) {
                 )
             }
         return product
-            .onErrorResume { Mono.error(BadRequest(it.message)) }
+            .doOnError { ExceptionHelper.raiseException(it) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -131,7 +132,7 @@ class ProductHandler(private val productService: ProductService) {
                 )
             )
         return product
-            .onErrorResume { Mono.error(BadRequest(it.message)) }
+            .doOnError { ExceptionHelper.raiseException(it) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
@@ -168,7 +169,7 @@ class ProductHandler(private val productService: ProductService) {
                 )
 
         return products
-            .onErrorResume { Mono.error(BadRequest(it.message)) }
+            .doOnError { ExceptionHelper.raiseException(it) }
             .map {
                 product ->
                 GetMyProductsResponse(
