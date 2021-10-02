@@ -4,8 +4,12 @@ import com.kroffle.knitting.infra.oauth.dto.ClientInfo
 import com.kroffle.knitting.infra.oauth.dto.GoogleAccessTokenResponse
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
 import com.kroffle.knitting.infra.oauth.dto.GoogleProfileResponse
+import com.kroffle.knitting.infra.oauth.exception.InvalidGoogleAccessToken
+import com.kroffle.knitting.infra.oauth.exception.InvalidGoogleCode
+import com.kroffle.knitting.infra.oauth.exception.UnavailableGoogle
 import com.kroffle.knitting.usecase.auth.AuthService
 import com.kroffle.knitting.usecase.auth.dto.OAuthProfile
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -43,6 +47,12 @@ class GoogleOAuthHelperImpl(
                 )
             )
             .retrieve()
+            .onStatus(HttpStatus::isError) {
+                when (it.statusCode()) {
+                    HttpStatus.BAD_REQUEST -> throw InvalidGoogleCode()
+                    else -> throw UnavailableGoogle()
+                }
+            }
             .bodyToMono<GoogleAccessTokenResponse>()
             .flatMap {
                 Mono.just(it.accessToken)
@@ -77,6 +87,12 @@ class GoogleOAuthHelperImpl(
                         .build()
                 }
                 .retrieve()
+                .onStatus(HttpStatus::isError) {
+                    when (it.statusCode()) {
+                        HttpStatus.BAD_REQUEST -> throw InvalidGoogleAccessToken()
+                        else -> throw UnavailableGoogle()
+                    }
+                }
                 .bodyToMono(GoogleProfileResponse::class.java)
                 .flatMap {
                     Mono.just(

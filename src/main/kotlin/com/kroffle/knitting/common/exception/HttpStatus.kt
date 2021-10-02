@@ -6,4 +6,5 @@ enum class HttpStatus(val code: Int) {
     NOT_FOUND(404),
     FORBIDDEN(403),
     INTERNAL_SERVER_ERROR(500),
+    SERVICE_UNAVAILABLE(503),
 }

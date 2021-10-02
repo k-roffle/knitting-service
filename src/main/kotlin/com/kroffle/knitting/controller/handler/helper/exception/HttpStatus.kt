@@ -10,5 +10,6 @@ fun HttpStatus.to(): SpringHttpStatus {
         HttpStatus.FORBIDDEN -> SpringHttpStatus.FORBIDDEN
         HttpStatus.NOT_FOUND -> SpringHttpStatus.NOT_FOUND
         HttpStatus.INTERNAL_SERVER_ERROR -> SpringHttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.SERVICE_UNAVAILABLE -> SpringHttpStatus.SERVICE_UNAVAILABLE
     }
 }
