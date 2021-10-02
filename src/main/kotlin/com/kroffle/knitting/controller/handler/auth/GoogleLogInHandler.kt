@@ -26,6 +26,7 @@ class GoogleLogInHandler(private val authService: AuthService) {
         }
         return authService
             .authorize(code.get())
+            .doOnError { ExceptionHelper.raiseException(it) }
             .map { Authorized.Response(it) }
             .flatMap {
                 ResponseHelper.makeJsonResponse(it)
