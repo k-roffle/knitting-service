@@ -7,9 +7,9 @@ import reactor.core.publisher.Mono
 @Component
 class KnitterService(private val knitterRepository: KnitterRepository) {
     fun getKnitter(knitterId: Long): Mono<Knitter> =
-        knitterRepository.findById(knitterId)
+        knitterRepository.getById(knitterId)
 
     interface KnitterRepository {
-        fun findById(id: Long): Mono<Knitter>
+        fun getById(id: Long): Mono<Knitter>
     }
 }
