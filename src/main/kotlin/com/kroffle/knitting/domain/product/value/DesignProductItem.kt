@@ -1,12 +1,8 @@
 package com.kroffle.knitting.domain.product.value
 
 import com.kroffle.knitting.domain.product.enum.ProductItemType
-import java.time.OffsetDateTime
 
-class DesignProductItem(
-    itemId: Long,
-    createdAt: OffsetDateTime?,
-) : ProductItem(itemId, createdAt) {
+class DesignProductItem(itemId: Long) : ProductItem(itemId) {
     override val type: ProductItemType
         get() = ProductItemType.DESIGN
 }

@@ -9,5 +9,5 @@ fun MyDesign.Response.like(other: MyDesign.Response): Boolean {
         yarn == other.yarn &&
         coverImageUrl == other.coverImageUrl &&
         tags == other.tags &&
-        createdAt == other.createdAt
+        createdAt.isEqual(other.createdAt)
 }

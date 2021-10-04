@@ -87,11 +87,11 @@ class ProductRouterTest {
             content = null,
             inputStatus = InputStatus.DRAFT,
             tags = listOf(
-                ProductTag("서술형도안", today),
-                ProductTag("초보자용", today),
+                ProductTag("서술형도안"),
+                ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, today, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItemType.DESIGN),
             ),
             createdAt = today,
             updatedAt = today,
@@ -164,11 +164,11 @@ class ProductRouterTest {
             content = null,
             inputStatus = InputStatus.DRAFT,
             tags = listOf(
-                ProductTag("서술형도안", today),
-                ProductTag("초보자용", today),
+                ProductTag("서술형도안"),
+                ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, today, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItemType.DESIGN),
             ),
             createdAt = today,
             updatedAt = today,
@@ -182,8 +182,8 @@ class ProductRouterTest {
                 representativeImageUrl = "http://test2.knitting.com/image.jpg",
                 specifiedSalesStartDate = tomorrow.toLocalDate(),
                 specifiedSalesEndDate = null,
-                tags = listOf(ProductTag("서술형도안", today)),
-                items = listOf(ProductItem.create(2, today, ProductItemType.DESIGN))
+                tags = listOf(ProductTag("서술형도안")),
+                items = listOf(ProductItem.create(2, ProductItemType.DESIGN))
             )
         given(repository.getProductByIdAndKnitterId(any(), any()))
             .willReturn(Mono.just(targetProduct))
@@ -268,11 +268,11 @@ class ProductRouterTest {
             content = null,
             inputStatus = InputStatus.DRAFT,
             tags = listOf(
-                ProductTag("서술형도안", today),
-                ProductTag("초보자용", today),
+                ProductTag("서술형도안"),
+                ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, today, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItemType.DESIGN),
             ),
             createdAt = yesterday,
             updatedAt = yesterday,
@@ -335,11 +335,11 @@ class ProductRouterTest {
             content = "이번에는 초보탈출 패키지를 준비해봤어요.",
             inputStatus = InputStatus.DRAFT,
             tags = listOf(
-                ProductTag("서술형도안", today),
-                ProductTag("초보자용", today),
+                ProductTag("서술형도안"),
+                ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, today, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItemType.DESIGN),
             ),
             createdAt = yesterday,
             updatedAt = yesterday,
