@@ -43,19 +43,19 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
         if (path in PUBLIC_PATHS) {
             return chain.filter(exchange)
         }
-        return getAuthorization(headers = exchange.request.headers).doOnError {
-            error ->
-            val message = error.message
-            if (message != null) {
-                val byteMessages = message.toByteArray()
-                val buffer = exchange.response.bufferFactory().wrap(byteMessages)
-                exchange.response.writeWith(Flux.just(buffer))
-            }
-        }.doOnSuccess {
-            exchange.attributes["knitterId"] = it
-        }.then(
-            chain.filter(exchange)
-        )
+        return getAuthorization(headers = exchange.request.headers)
+            .doOnError { error ->
+                val message = error.message
+                if (message != null) {
+                    val byteMessages = message.toByteArray()
+                    val buffer = exchange.response.bufferFactory().wrap(byteMessages)
+                    exchange.response.writeWith(Flux.just(buffer))
+                }
+            }.doOnSuccess {
+                exchange.attributes["knitterId"] = it
+            }.then(
+                chain.filter(exchange)
+            )
     }
 
     interface TokenDecoder {

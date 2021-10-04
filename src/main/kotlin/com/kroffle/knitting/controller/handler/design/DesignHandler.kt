@@ -90,8 +90,7 @@ class DesignHandler(private val service: DesignService) {
                     Sort("id", SortDirection.DESC),
                 )
             )
-            .map {
-                design ->
+            .map { design ->
                 MyDesign(
                     id = design.id!!,
                     name = design.name,

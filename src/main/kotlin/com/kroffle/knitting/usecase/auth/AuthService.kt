@@ -16,8 +16,7 @@ class AuthService(
     fun authorize(code: String): Mono<String> {
         return oAuthHelper
             .getProfile(code)
-            .flatMap {
-                profile ->
+            .flatMap { profile ->
                 knitterRepository
                     .findByEmail(profile.email)
                     .switchIfEmpty {

@@ -43,7 +43,7 @@ class R2dbcProductRepository(
             .map { it.t1.toProduct(it.t2, it.t3) }
     }
 
-    private fun getProductAggregate(products: Flux<ProductEntity>): Flux<Product> {
+    private fun getProductAggregates(products: Flux<ProductEntity>): Flux<Product> {
         val productIds: Mono<List<Long>> =
             products
                 .map { product -> product.getNotNullId() }
@@ -80,8 +80,7 @@ class R2dbcProductRepository(
     override fun save(product: Product): Mono<Product> {
         return productRepository
             .save(product.toProductEntity())
-            .flatMap {
-                productEntity ->
+            .flatMap { productEntity ->
                 val productId: Long = productEntity.getNotNullId()
 
                 val tags = productTagRepository
@@ -133,13 +132,13 @@ class R2dbcProductRepository(
                 }
             else -> throw NotImplementedError()
         }
-        return getProductAggregate(products)
+        return getProductAggregates(products)
     }
 
     override fun findRegisteredProduct(knitterId: Long): Flux<Product> {
         val products: Flux<ProductEntity> =
             productRepository
                 .findAllByKnitterIdAndInputStatus(knitterId, InputStatus.REGISTERED)
-        return getProductAggregate(products)
+        return getProductAggregates(products)
     }
 }

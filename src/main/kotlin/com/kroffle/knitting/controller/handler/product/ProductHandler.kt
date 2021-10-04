@@ -41,23 +41,23 @@ class ProductHandler(private val productService: ProductService) {
             .bodyToMono(EditProductPackageRequest::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
 
-        val product: Mono<Product> = bodyMono.flatMap {
-            body ->
-            productService.edit(
-                EditProductPackageData(
-                    id = body.id,
-                    knitterId = knitterId,
-                    name = body.name,
-                    fullPrice = Money(body.fullPrice),
-                    discountPrice = Money(body.discountPrice),
-                    representativeImageUrl = body.representativeImageUrl,
-                    specifiedSalesStartDate = body.specifiedSalesStartDate,
-                    specifiedSalesEndDate = body.specifiedSalesEndDate,
-                    tags = body.tags.map { ProductTag(it, null) },
-                    items = body.designIds.map { ProductItem.create(it, null, ProductItemType.DESIGN) },
+        val product: Mono<Product> = bodyMono
+            .flatMap { body ->
+                productService.edit(
+                    EditProductPackageData(
+                        id = body.id,
+                        knitterId = knitterId,
+                        name = body.name,
+                        fullPrice = Money(body.fullPrice),
+                        discountPrice = Money(body.discountPrice),
+                        representativeImageUrl = body.representativeImageUrl,
+                        specifiedSalesStartDate = body.specifiedSalesStartDate,
+                        specifiedSalesEndDate = body.specifiedSalesEndDate,
+                        tags = body.tags.map { ProductTag(it, null) },
+                        items = body.designIds.map { ProductItem.create(it, null, ProductItemType.DESIGN) },
+                    )
                 )
-            )
-        }
+            }
 
         return product
             .flatMap {
@@ -74,16 +74,16 @@ class ProductHandler(private val productService: ProductService) {
             .bodyToMono(EditProductContentRequest::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
 
-        val product: Mono<Product> = bodyMono.flatMap {
-            body ->
-            productService.edit(
-                EditProductContentData(
-                    id = body.id,
-                    knitterId = knitterId,
-                    content = body.content,
+        val product: Mono<Product> = bodyMono
+            .flatMap { body ->
+                productService.edit(
+                    EditProductContentData(
+                        id = body.id,
+                        knitterId = knitterId,
+                        content = body.content,
+                    )
                 )
-            )
-        }
+            }
 
         return product
             .onErrorResume { Mono.error(BadRequest(it.message)) }
@@ -101,15 +101,15 @@ class ProductHandler(private val productService: ProductService) {
             .bodyToMono(RegisterProductRequest::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
 
-        val product: Mono<Product> = bodyMono.flatMap {
-            body ->
-            productService.register(
-                RegisterProductData(
-                    id = body.id,
-                    knitterId = knitterId,
+        val product: Mono<Product> = bodyMono
+            .flatMap { body ->
+                productService.register(
+                    RegisterProductData(
+                        id = body.id,
+                        knitterId = knitterId,
+                    )
                 )
-            )
-        }
+            }
         return product
             .onErrorResume { Mono.error(BadRequest(it.message)) }
             .flatMap {

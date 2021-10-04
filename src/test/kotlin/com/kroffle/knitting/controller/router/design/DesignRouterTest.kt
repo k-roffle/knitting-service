@@ -134,8 +134,7 @@ class DesignRouterTest {
 
         assertThat(response.payload.id).isEqualTo(createdDesign.id)
         verify(repository).createDesign(
-            argThat {
-                design ->
+            argThat { design ->
                 assert(
                     design.knitterId == createdDesign.knitterId &&
                         design.name == createdDesign.name &&

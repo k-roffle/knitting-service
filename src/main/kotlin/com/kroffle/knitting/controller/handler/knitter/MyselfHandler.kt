@@ -20,8 +20,7 @@ class MyselfHandler(
         val knitterId = AuthHelper.getKnitterId(req)
         return knitterService
             .getKnitter(knitterId)
-            .map {
-                knitter ->
+            .map { knitter ->
                 MyProfileResponse(
                     email = knitter.email,
                     name = knitter.name,
