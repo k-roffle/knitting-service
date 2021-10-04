@@ -23,9 +23,9 @@ class TokenDecoder(private val jwtSecretKey: String) : AuthorizationFilter.Token
                 .build()
                 .verify(token)
             return jwt.claims
-        } catch (e: TokenExpiredException) {
+        } catch (error: TokenExpiredException) {
             throw ExpiredTokenException()
-        } catch (e: JWTVerificationException) {
+        } catch (error: JWTVerificationException) {
             throw UnauthorizedTokenException()
         }
     }

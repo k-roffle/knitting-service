@@ -31,8 +31,8 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
             ?: return Mono.error(AuthorizationHeaderRequired())
         return try {
             Mono.just(tokenDecoder.getKnitterId(token))
-        } catch (e: Exception) {
-            Mono.error(e)
+        } catch (error: Exception) {
+            Mono.error(error)
         }
     }
 

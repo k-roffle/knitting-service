@@ -25,7 +25,7 @@ class PaginationHelper {
         fun getPagingFromRequest(req: ServerRequest): Paging {
             try {
                 return Paging(after = getAfter(req), count = getCount(req))
-            } catch (e: IllegalArgumentException) {
+            } catch (error: IllegalArgumentException) {
                 throw InvalidPagingParameter()
             }
         }
