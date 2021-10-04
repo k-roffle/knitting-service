@@ -53,17 +53,16 @@ class R2dbcDesignRepository(
                         .collectMultimap { technique -> technique.getForeignKey() }
                 }
 
-        return designs
-            .concatMap { design ->
-                techniqueMap
-                    .map { techniques ->
+        return techniqueMap
+            .flatMapMany { techniques ->
+                designs
+                    .map { design ->
                         val designId = design.getNotNullId()
-                        design
-                            .toDesign(
-                                techniques[designId]
-                                    ?.map { technique -> technique.toTechnique() }
-                                    ?: listOf()
-                            )
+                        design.toDesign(
+                            techniques[designId]
+                                ?.map { technique -> technique.toTechnique() }
+                                ?: listOf()
+                        )
                     }
             }
     }
