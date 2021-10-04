@@ -24,7 +24,7 @@ class R2dbcKnitterRepository(private val repository: DBKnitterRepository) : Knit
         findById(id)
             .switchIfEmpty(Mono.error(NotFoundEntity(KnitterEntity::class.java)))
 
-    fun findById(id: Long): Mono<Knitter> =
+    private fun findById(id: Long): Mono<Knitter> =
         repository
             .findById(id)
             .map { it.toKnitter() }
