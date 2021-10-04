@@ -2,10 +2,10 @@ package com.kroffle.knitting.controller.router.product
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.product.ProductHandler
-import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentRequest
-import com.kroffle.knitting.controller.handler.product.dto.DraftProductContentResponse
-import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageRequest
-import com.kroffle.knitting.controller.handler.product.dto.DraftProductPackageResponse
+import com.kroffle.knitting.controller.handler.product.dto.EditProductContentRequest
+import com.kroffle.knitting.controller.handler.product.dto.EditProductContentResponse
+import com.kroffle.knitting.controller.handler.product.dto.EditProductPackageRequest
+import com.kroffle.knitting.controller.handler.product.dto.EditProductPackageResponse
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProductResponse
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProductsResponse
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProductRequest
@@ -103,7 +103,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                DraftProductPackageRequest(
+                EditProductPackageRequest(
                     id = null,
                     name = "상품 이름",
                     fullPrice = 1000,
@@ -124,7 +124,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<DraftProductPackageResponse>>()
+            .expectBody<TestResponse<EditProductPackageResponse>>()
             .returnResult()
             .responseBody!!
 
@@ -179,7 +179,7 @@ class ProductRouterTest {
             updatedAt = today,
         )
         val updatedProduct = targetProduct
-            .draftPackage(
+            .edit(
                 knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
                 name = "바뀐 상품 이름",
                 fullPrice = Money(2000),
@@ -196,7 +196,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                DraftProductPackageRequest(
+                EditProductPackageRequest(
                     id = targetProduct.id!!,
                     name = "바뀐 상품 이름",
                     fullPrice = 2000,
@@ -217,7 +217,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<DraftProductPackageResponse>>()
+            .expectBody<TestResponse<EditProductPackageResponse>>()
             .returnResult()
             .responseBody!!
 
@@ -282,7 +282,7 @@ class ProductRouterTest {
             createdAt = yesterday,
             updatedAt = yesterday,
         )
-        val updatedProduct = targetProduct.draftContent("상품 설명")
+        val updatedProduct = targetProduct.edit("상품 설명")
 
         given(repository.getProductByIdAndKnitterId(any(), any()))
             .willReturn(Mono.just(targetProduct))
@@ -291,7 +291,7 @@ class ProductRouterTest {
 
         val body = objectMapper
             .writeValueAsString(
-                DraftProductContentRequest(
+                EditProductContentRequest(
                     id = 1,
                     content = "상품 설명",
                 )
@@ -305,7 +305,7 @@ class ProductRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<DraftProductContentResponse>>()
+            .expectBody<TestResponse<EditProductContentResponse>>()
             .returnResult()
             .responseBody!!
 

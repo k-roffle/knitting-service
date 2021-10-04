@@ -3,7 +3,7 @@ package com.kroffle.knitting.controller.handler.product.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
-data class DraftProductPackageRequest(
+data class EditProductPackageRequest(
     val id: Long?,
     val name: String,
     @JsonProperty("full_price")

@@ -73,7 +73,7 @@ class Product(
             salesStatus == SalesStatus.ON_SALES &&
                 inputStatus == InputStatus.REGISTERED
 
-    fun draftPackage(
+    fun edit(
         knitterId: Long,
         name: String,
         fullPrice: Money,
@@ -102,7 +102,7 @@ class Product(
         )
     }
 
-    fun draftContent(newContent: String): Product {
+    fun edit(newContent: String): Product {
         return Product(
             id,
             knitterId,
@@ -144,7 +144,7 @@ class Product(
     }
 
     companion object {
-        fun draftProductPackage(
+        fun create(
             knitterId: Long,
             name: String,
             fullPrice: Money,

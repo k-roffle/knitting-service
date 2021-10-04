@@ -15,8 +15,8 @@ class ProductRouter(private val handler: ProductHandler) {
         path(ROOT_PATH),
         router {
             listOf(
-                POST(DRAFT_PRODUCT_PACKAGE_PATH, handler::draftProductPackage),
-                POST(DRAFT_PRODUCT_CONTENT_PATH, handler::draftProductContent),
+                POST(DRAFT_PRODUCT_PACKAGE_PATH, handler::editProductPackage),
+                POST(DRAFT_PRODUCT_CONTENT_PATH, handler::editProductContent),
                 POST(handler::registerProduct),
                 GET(GET_MY_PRODUCT_PATH, handler::getMyProduct),
                 GET(GET_MY_PRODUCTS_PATH, handler::getMyProducts),
