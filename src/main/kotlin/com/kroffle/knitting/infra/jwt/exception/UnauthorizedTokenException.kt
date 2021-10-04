@@ -1,5 +1,8 @@
 package com.kroffle.knitting.infra.jwt.exception
 
-import com.kroffle.knitting.controller.filter.auth.exception.TokenDecodeException
+import com.kroffle.knitting.common.exception.HttpStatus
+import com.kroffle.knitting.infra.InfraException
 
-class UnauthorizedTokenException : TokenDecodeException("Token is unauthorized.")
+class UnauthorizedTokenException : InfraException(message = "Token is unauthorized.") {
+    override val httpStatus: HttpStatus = HttpStatus.UNAUTHORIZED
+}

@@ -1,14 +1,12 @@
 package com.kroffle.knitting.controller.filter.auth
 
-import com.kroffle.knitting.controller.filter.auth.exception.TokenDecodeException
+import com.kroffle.knitting.controller.filter.auth.exception.AuthorizationHeaderRequired
+import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import com.kroffle.knitting.controller.router.auth.LogInRouter.Companion.PUBLIC_PATHS as LogInRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignRouter.Companion.PUBLIC_PATHS as DesignRouterPublicPaths
@@ -30,11 +28,11 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
 
     private fun getAuthorization(headers: HttpHeaders): Mono<Long> {
         val token = resolveToken(headers)
-            ?: return Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, "Header is Empty"))
+            ?: return Mono.error(AuthorizationHeaderRequired())
         return try {
             Mono.just(tokenDecoder.getKnitterId(token))
-        } catch (e: TokenDecodeException) {
-            Mono.error(ResponseStatusException(HttpStatus.UNAUTHORIZED, e.message))
+        } catch (error: Exception) {
+            Mono.error(error)
         }
     }
 
@@ -44,18 +42,9 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
             return chain.filter(exchange)
         }
         return getAuthorization(headers = exchange.request.headers)
-            .doOnError { error ->
-                val message = error.message
-                if (message != null) {
-                    val byteMessages = message.toByteArray()
-                    val buffer = exchange.response.bufferFactory().wrap(byteMessages)
-                    exchange.response.writeWith(Flux.just(buffer))
-                }
-            }.doOnSuccess {
-                exchange.attributes["knitterId"] = it
-            }.then(
-                chain.filter(exchange)
-            )
+            .doOnError { error -> ExceptionHelper.raiseException(error) }
+            .doOnSuccess { exchange.attributes["knitterId"] = it }
+            .then(chain.filter(exchange))
     }
 
     interface TokenDecoder {
