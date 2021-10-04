@@ -33,7 +33,7 @@ class Product(
         require(
             specifiedSalesStartDate == null ||
                 specifiedSalesEndDate == null ||
-                specifiedSalesStartDate > specifiedSalesEndDate
+                specifiedSalesStartDate <= specifiedSalesEndDate
         ) {
             throw InvalidPeriod()
         }

@@ -35,21 +35,22 @@ class AppConfig {
     fun tokenPublisher() = TokenPublisher(authProperties.jwtSecretKey)
 
     @Bean
-    fun authService(repository: AuthService.KnitterRepository) = AuthService(
-        GoogleOAuthHelperImpl(
-            ClientInfo(
-                when (selfProperties.env) {
-                    "local" -> "http"
-                    else -> "https"
-                },
-                clientProperties.host,
+    fun authService(repository: AuthService.KnitterRepository): AuthService {
+        val scheme = when (selfProperties.env) {
+            "local" -> "http"
+            else -> "https"
+        }
+        val host = clientProperties.host
+        val googleClientId = webProperties.googleClientId
+        val googleClientSecret = webProperties.googleClientSecret
+
+        return AuthService(
+            GoogleOAuthHelperImpl(
+                ClientInfo(scheme, host),
+                GoogleOAuthConfig(googleClientId, googleClientSecret),
             ),
-            GoogleOAuthConfig(
-                webProperties.googleClientId,
-                webProperties.googleClientSecret,
-            ),
-        ),
-        tokenPublisher(),
-        repository,
-    )
+            tokenPublisher(),
+            repository,
+        )
+    }
 }

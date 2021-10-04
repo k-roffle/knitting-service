@@ -74,7 +74,7 @@ class MyselfRouterTest {
 
     @Test
     fun `내 프로필을 조회할 수 있어야 함`() {
-        given(knitterRepository.findById(WebTestClientHelper.AUTHORIZED_KNITTER_ID))
+        given(knitterRepository.getById(WebTestClientHelper.AUTHORIZED_KNITTER_ID))
             .willReturn(
                 Mono.just(
                     KnitterEntity(

@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.handler.knitter
 
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
+import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
 import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummary
@@ -20,6 +21,7 @@ class MyselfHandler(
         val knitterId = AuthHelper.getKnitterId(req)
         return knitterService
             .getKnitter(knitterId)
+            .doOnError { ExceptionHelper.raiseException(it) }
             .map { knitter ->
                 MyProfile.Response(
                     email = knitter.email,
@@ -36,6 +38,7 @@ class MyselfHandler(
         val knitterId = AuthHelper.getKnitterId(req)
         return productSummaryService
             .countProductOnList(knitterId)
+            .doOnError { ExceptionHelper.raiseException(it) }
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
