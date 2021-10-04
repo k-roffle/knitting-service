@@ -1,8 +1,7 @@
 package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
-import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
-import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
+import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
@@ -27,8 +26,8 @@ import java.util.stream.Collectors.toList
 @Component
 class DesignHandler(private val service: DesignService) {
     fun createDesign(req: ServerRequest): Mono<ServerResponse> {
-        val design: Mono<NewDesignRequest> = req
-            .bodyToMono(NewDesignRequest::class.java)
+        val design: Mono<NewDesign.Request> = req
+            .bodyToMono(NewDesign.Request::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
         val knitterId = AuthHelper.getKnitterId(req)
         return design
@@ -74,7 +73,7 @@ class DesignHandler(private val service: DesignService) {
                 )
             }
             .doOnError { ExceptionHelper.raiseException(it) }
-            .map { NewDesignResponse(id = it.id!!) }
+            .map { NewDesign.Response(id = it.id!!) }
             .flatMap { ResponseHelper.makeJsonResponse(it) }
     }
 
@@ -91,7 +90,7 @@ class DesignHandler(private val service: DesignService) {
             )
             .doOnError { ExceptionHelper.raiseException(it) }
             .map { design ->
-                MyDesign(
+                MyDesign.Response(
                     id = design.id!!,
                     name = design.name,
                     yarn = design.yarn,

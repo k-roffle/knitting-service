@@ -2,9 +2,7 @@ package com.kroffle.knitting.controller.router.design
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.design.DesignHandler
-import com.kroffle.knitting.controller.handler.design.dto.NewDesignRequest
-import com.kroffle.knitting.controller.handler.design.dto.NewDesignResponse
-import com.kroffle.knitting.controller.handler.design.dto.NewDesignSize
+import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.enum.DesignType
 import com.kroffle.knitting.domain.design.enum.LevelType
@@ -96,13 +94,13 @@ class DesignRouterTest {
         given(repository.createDesign(any())).willReturn(Mono.just(createdDesign))
 
         val body = objectMapper.writeValueAsString(
-            NewDesignRequest(
+            NewDesign.Request(
                 name = "test",
                 designType = DesignType.Sweater,
                 patternType = PatternType.Text,
                 stitches = 23.5,
                 rows = 25.0,
-                size = NewDesignSize(
+                size = NewDesign.Request.NewDesignSize(
                     totalLength = 1.0,
                     sleeveLength = 2.0,
                     shoulderWidth = 3.0,
@@ -119,7 +117,7 @@ class DesignRouterTest {
                 techniques = listOf("겉뜨기", "안뜨기")
             )
         )
-        val response: TestResponse<NewDesignResponse> =
+        val response: TestResponse<NewDesign.Response> =
             webClient
                 .post()
                 .uri("/design/")
@@ -128,7 +126,7 @@ class DesignRouterTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody<TestResponse<NewDesignResponse>>()
+                .expectBody<TestResponse<NewDesign.Response>>()
                 .returnResult()
                 .responseBody!!
 

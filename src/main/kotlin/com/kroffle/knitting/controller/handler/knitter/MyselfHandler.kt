@@ -2,8 +2,8 @@ package com.kroffle.knitting.controller.handler.knitter
 
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
-import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileResponse
-import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummaryResponse
+import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
+import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummary
 import com.kroffle.knitting.usecase.knitter.KnitterService
 import com.kroffle.knitting.usecase.summary.ProductSummaryService
 import org.springframework.stereotype.Component
@@ -21,7 +21,7 @@ class MyselfHandler(
         return knitterService
             .getKnitter(knitterId)
             .map { knitter ->
-                MyProfileResponse(
+                MyProfile.Response(
                     email = knitter.email,
                     name = knitter.name,
                     profileImageUrl = knitter.profileImageUrl,
@@ -39,7 +39,7 @@ class MyselfHandler(
             .flatMap {
                 ResponseHelper
                     .makeJsonResponse(
-                        SalesSummaryResponse(
+                        SalesSummary.Response(
                             numberOfProductsOnSales = it,
                             numberOfProductsSold = 0,
                         )

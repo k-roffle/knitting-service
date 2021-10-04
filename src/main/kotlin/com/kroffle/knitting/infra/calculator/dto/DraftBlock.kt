@@ -1,4 +1,4 @@
-package com.kroffle.knitting.infra.calculator.data
+package com.kroffle.knitting.infra.calculator.dto
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.kroffle.knitting.domain.design.value.Gauge
