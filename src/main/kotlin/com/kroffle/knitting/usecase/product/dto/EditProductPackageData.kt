@@ -1,8 +1,8 @@
 package com.kroffle.knitting.usecase.product.dto
 
+import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
-import com.kroffle.knitting.domain.value.Money
 import java.time.LocalDate
 
 data class EditProductPackageData(

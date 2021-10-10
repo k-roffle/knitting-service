@@ -10,9 +10,9 @@ import com.kroffle.knitting.controller.handler.product.dto.RegisterProduct
 import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.enum.ProductItemType
+import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
-import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
