@@ -1,4 +1,4 @@
-package com.kroffle.knitting.domain.value
+package com.kroffle.knitting.domain.product.value
 
 class Money(val value: Int) {
     operator fun compareTo(money: Money): Int =
