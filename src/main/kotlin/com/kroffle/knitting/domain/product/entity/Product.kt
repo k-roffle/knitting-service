@@ -1,7 +1,5 @@
 package com.kroffle.knitting.domain.product.entity
 
-import com.kroffle.knitting.domain.product.enum.InputStatus
-import com.kroffle.knitting.domain.product.enum.SalesStatus
 import com.kroffle.knitting.domain.product.exception.InvalidDiscountPrice
 import com.kroffle.knitting.domain.product.exception.InvalidFullPrice
 import com.kroffle.knitting.domain.product.exception.InvalidInputStatus
@@ -141,6 +139,17 @@ class Product(
             createdAt,
             OffsetDateTime.now(),
         )
+    }
+
+    enum class InputStatus {
+        DRAFT,
+        REGISTERED
+    }
+
+    enum class SalesStatus {
+        RESERVED,
+        ON_SALES,
+        COMPLETED,
     }
 
     companion object {

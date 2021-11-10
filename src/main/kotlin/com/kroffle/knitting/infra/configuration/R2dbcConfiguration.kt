@@ -1,9 +1,8 @@
 package com.kroffle.knitting.infra.configuration
 
-import com.kroffle.knitting.domain.design.enum.DesignType
-import com.kroffle.knitting.domain.design.enum.PatternType
-import com.kroffle.knitting.domain.product.enum.InputStatus
-import com.kroffle.knitting.domain.product.enum.ProductItemType
+import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.domain.product.entity.Product
+import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.infra.configuration.r2dbc.converter.DesignTypeConverter
 import com.kroffle.knitting.infra.configuration.r2dbc.converter.InputStatusConverter
 import com.kroffle.knitting.infra.configuration.r2dbc.converter.PatternTypeConverter
@@ -32,10 +31,10 @@ class R2dbcConfiguration : AbstractR2dbcConfiguration() {
             .username(appProperties.username)
             .password(appProperties.password)
             .database(appProperties.database)
-            .codecRegistrar(EnumCodec.builder().withEnum(DESIGN_TYPE, DesignType::class.java).build())
-            .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, PatternType::class.java).build())
-            .codecRegistrar(EnumCodec.builder().withEnum(INPUT_STATUS, InputStatus::class.java).build())
-            .codecRegistrar(EnumCodec.builder().withEnum(PRODUCT_ITEM_TYPE, ProductItemType::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(DESIGN_TYPE, Design.DesignType::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, Design.PatternType::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(INPUT_STATUS, Product.InputStatus::class.java).build())
+            .codecRegistrar(EnumCodec.builder().withEnum(PRODUCT_ITEM_TYPE, ProductItem.Type::class.java).build())
             .build()
     )
 

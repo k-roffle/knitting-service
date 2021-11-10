@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.domain.design.entity.Design
-import com.kroffle.knitting.domain.design.enum.DesignType
-import com.kroffle.knitting.domain.design.enum.LevelType
-import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
@@ -68,8 +65,8 @@ class DesignRouterTest {
             id = 1,
             knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
             name = "test",
-            designType = DesignType.Sweater,
-            patternType = PatternType.Text,
+            designType = Design.DesignType.Sweater,
+            patternType = Design.PatternType.Text,
             gauge = Gauge(
                 stitches = 23.5,
                 rows = 25.0,
@@ -86,7 +83,7 @@ class DesignRouterTest {
             extra = null,
             pattern = Pattern("# Step1. 코를 10개 잡습니다."),
             description = "이건 니트를 만드는 서술형 도안입니다.",
-            targetLevel = LevelType.HARD,
+            targetLevel = Design.LevelType.HARD,
             coverImageUrl = "http://test.kroffle.com/image.jpg",
             techniques = listOf(Technique("겉뜨기"), Technique("안뜨기")),
             createdAt = OffsetDateTime.now(),
@@ -96,8 +93,8 @@ class DesignRouterTest {
         val body = objectMapper.writeValueAsString(
             NewDesign.Request(
                 name = "test",
-                designType = DesignType.Sweater,
-                patternType = PatternType.Text,
+                designType = Design.DesignType.Sweater,
+                patternType = Design.PatternType.Text,
                 stitches = 23.5,
                 rows = 25.0,
                 size = NewDesign.Request.NewDesignSize(
@@ -112,7 +109,7 @@ class DesignRouterTest {
                 extra = null,
                 pattern = "# Step1. 코를 10개 잡습니다.",
                 description = "이건 니트를 만드는 서술형 도안입니다.",
-                targetLevel = LevelType.HARD,
+                targetLevel = Design.LevelType.HARD,
                 coverImageUrl = "http://test.kroffle.com/image.jpg",
                 techniques = listOf("겉뜨기", "안뜨기")
             )

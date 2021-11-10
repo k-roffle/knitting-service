@@ -1,15 +1,18 @@
 package com.kroffle.knitting.domain.product.value
 
-import com.kroffle.knitting.domain.product.enum.ProductItemType
-
 abstract class ProductItem(val itemId: Long) {
-    abstract val type: ProductItemType
+    abstract val type: Type
+
+    enum class Type {
+        GOODS,
+        DESIGN
+    }
 
     companion object {
-        fun create(itemId: Long, type: ProductItemType): ProductItem {
+        fun create(itemId: Long, type: Type): ProductItem {
             return when (type) {
-                ProductItemType.DESIGN -> DesignProductItem(itemId)
-                ProductItemType.GOODS -> GoodsProductItem(itemId)
+                Type.DESIGN -> DesignProductItem(itemId)
+                Type.GOODS -> GoodsProductItem(itemId)
             }
         }
     }

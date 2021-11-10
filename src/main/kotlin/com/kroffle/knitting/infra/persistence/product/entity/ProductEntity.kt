@@ -1,7 +1,6 @@
 package com.kroffle.knitting.infra.persistence.product.entity
 
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
@@ -21,7 +20,7 @@ class ProductEntity(
     private val specifiedSalesStartDate: LocalDate?,
     private val specifiedSalesEndDate: LocalDate?,
     private val content: String?,
-    private val inputStatus: InputStatus,
+    private val inputStatus: Product.InputStatus,
     private val createdAt: OffsetDateTime = OffsetDateTime.now(),
     private val updatedAt: OffsetDateTime = OffsetDateTime.now(),
 ) {

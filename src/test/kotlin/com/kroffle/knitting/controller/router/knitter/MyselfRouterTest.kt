@@ -3,7 +3,7 @@ package com.kroffle.knitting.controller.router.knitter
 import com.kroffle.knitting.controller.handler.knitter.MyselfHandler
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
 import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummary
-import com.kroffle.knitting.domain.product.enum.InputStatus
+import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
@@ -109,24 +109,30 @@ class MyselfRouterTest {
     fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
         val yesterday = OffsetDateTime.now().minusDays(1).toLocalDate()
         val productsToBeCounted = Flux.just(
-            MockFactory.create(MockProductData(id = 1, content = "이 상품은요", inputStatus = InputStatus.REGISTERED)),
+            MockFactory.create(
+                MockProductData(
+                    id = 1,
+                    content = "이 상품은요",
+                    inputStatus = Product.InputStatus.REGISTERED
+                )
+            ),
             MockFactory.create(
                 MockProductData(
                     id = 2,
                     content = "이 상품은요",
-                    inputStatus = InputStatus.REGISTERED,
+                    inputStatus = Product.InputStatus.REGISTERED,
                     specifiedSalesStartDate = yesterday,
                 )
             ),
         )
         val productsToBeSkipped = Flux.just(
-            MockFactory.create(MockProductData(id = 3, inputStatus = InputStatus.DRAFT)),
-            MockFactory.create(MockProductData(id = 4, content = "이 상품은요", inputStatus = InputStatus.DRAFT)),
+            MockFactory.create(MockProductData(id = 3, inputStatus = Product.InputStatus.DRAFT)),
+            MockFactory.create(MockProductData(id = 4, content = "이 상품은요", inputStatus = Product.InputStatus.DRAFT)),
             MockFactory.create(
                 MockProductData(
                     id = 5,
                     content = "이 상품은요",
-                    inputStatus = InputStatus.REGISTERED,
+                    inputStatus = Product.InputStatus.REGISTERED,
                     specifiedSalesEndDate = yesterday,
                 )
             ),

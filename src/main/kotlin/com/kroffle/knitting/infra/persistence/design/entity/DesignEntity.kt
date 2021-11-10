@@ -1,9 +1,6 @@
 package com.kroffle.knitting.infra.persistence.design.entity
 
 import com.kroffle.knitting.domain.design.entity.Design
-import com.kroffle.knitting.domain.design.enum.DesignType
-import com.kroffle.knitting.domain.design.enum.LevelType
-import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
@@ -17,8 +14,8 @@ class DesignEntity(
     @Id private var id: Long?,
     private val knitterId: Long,
     private val name: String,
-    private val designType: DesignType,
-    private val patternType: PatternType,
+    private val designType: Design.DesignType,
+    private val patternType: Design.PatternType,
     private val stitches: Double,
     private val rows: Double,
     private val needle: String,
@@ -46,7 +43,7 @@ class DesignEntity(
             extra = this.extra,
             pattern = Pattern(this.pattern),
             description = this.description,
-            targetLevel = LevelType.valueOf(this.targetLevel),
+            targetLevel = Design.LevelType.valueOf(this.targetLevel),
             coverImageUrl = this.coverImageUrl,
             techniques = techniques,
             createdAt = this.createdAt,
