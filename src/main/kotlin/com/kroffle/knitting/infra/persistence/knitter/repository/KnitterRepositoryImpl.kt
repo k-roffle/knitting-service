@@ -5,11 +5,11 @@ import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.infra.persistence.knitter.entity.KnitterEntity
 import com.kroffle.knitting.infra.persistence.knitter.entity.toKnitterEntity
 import com.kroffle.knitting.usecase.repository.KnitterRepository
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 
-@Component
-class R2dbcKnitterRepository(private val repository: DBKnitterRepository) : KnitterRepository {
+@Repository
+class KnitterRepositoryImpl(private val repository: R2DBCKnitterRepository) : KnitterRepository {
     override fun create(user: Knitter): Mono<Knitter> =
         repository
             .save(user.toKnitterEntity())
