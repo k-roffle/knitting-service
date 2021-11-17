@@ -46,7 +46,7 @@ class DesignEntity(
             extra = this.extra,
             pattern = Pattern(this.pattern),
             description = this.description,
-            targetLevel = LevelType.getFromKey(this.targetLevel),
+            targetLevel = LevelType.valueOf(this.targetLevel),
             coverImageUrl = this.coverImageUrl,
             techniques = techniques,
             createdAt = this.createdAt,
@@ -67,7 +67,7 @@ fun Design.toDesignEntity() =
         extra = this.extra,
         pattern = this.pattern.value,
         description = this.description,
-        targetLevel = this.targetLevel.key,
+        targetLevel = this.targetLevel.name,
         coverImageUrl = this.coverImageUrl,
         createdAt = this.createdAt ?: OffsetDateTime.now(),
     )
