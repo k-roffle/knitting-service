@@ -1,7 +1,6 @@
 package com.kroffle.knitting.controller.filter.cors
 
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
@@ -15,10 +14,7 @@ import reactor.core.publisher.Mono
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class CORSFilter : WebFilter {
-    @Autowired
-    lateinit var webProperties: WebApplicationProperties
-
+class CORSFilter(private val webProperties: WebApplicationProperties) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val request = exchange.request
         if (CorsUtils.isCorsRequest(request)) {
