@@ -2,18 +2,16 @@ package com.kroffle.knitting.controller.handler.design.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayload
-import com.kroffle.knitting.domain.design.enum.DesignType
-import com.kroffle.knitting.domain.design.enum.LevelType
-import com.kroffle.knitting.domain.design.enum.PatternType
-import com.kroffle.knitting.domain.design.enum.SizeUnitType
+import com.kroffle.knitting.domain.design.entity.Design
+import com.kroffle.knitting.domain.design.value.Length
 
 object NewDesign {
     data class Request(
         val name: String,
         @JsonProperty("design_type")
-        val designType: DesignType,
+        val designType: Design.DesignType,
         @JsonProperty("pattern_type")
-        val patternType: PatternType,
+        val patternType: Design.PatternType,
         val stitches: Double,
         val rows: Double,
         val size: NewDesignSize,
@@ -23,14 +21,14 @@ object NewDesign {
         val pattern: String,
         val description: String,
         @JsonProperty("target_level")
-        val targetLevel: LevelType,
+        val targetLevel: Design.LevelType,
         @JsonProperty("cover_image_url")
         val coverImageUrl: String,
         val techniques: List<String>,
     ) {
         data class NewDesignSize(
             @JsonProperty("size_unit")
-            val sizeUnit: SizeUnitType = SizeUnitType.Cm,
+            val sizeUnit: Length.Unit = Length.Unit.Cm,
             @JsonProperty("total_length")
             val totalLength: Double,
             @JsonProperty("sleeve_length")

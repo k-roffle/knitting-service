@@ -1,9 +1,11 @@
 package com.kroffle.knitting.domain.design.value
 
-import com.kroffle.knitting.domain.design.enum.SizeUnitType
-
-class Length(val value: Double, val unit: SizeUnitType = SizeUnitType.Cm) {
+class Length(val value: Double, val unit: Unit = Unit.Cm) {
     init {
         require(value > 0)
+    }
+
+    enum class Unit(val code: Int) {
+        Cm(1),
     }
 }

@@ -11,7 +11,6 @@ import com.kroffle.knitting.controller.handler.product.dto.GetMyProduct
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProducts
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProduct
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.domain.product.enum.ProductItemType
 import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
@@ -51,7 +50,7 @@ class ProductHandler(private val productService: ProductService) {
                         specifiedSalesStartDate = body.specifiedSalesStartDate,
                         specifiedSalesEndDate = body.specifiedSalesEndDate,
                         tags = body.tags.map { ProductTag(it) },
-                        items = body.designIds.map { ProductItem.create(it, ProductItemType.DESIGN) },
+                        items = body.designIds.map { ProductItem.create(it, ProductItem.Type.DESIGN) },
                     )
                 )
             }

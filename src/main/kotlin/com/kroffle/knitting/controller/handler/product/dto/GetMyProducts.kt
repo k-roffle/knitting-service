@@ -2,7 +2,7 @@ package com.kroffle.knitting.controller.handler.product.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ListItemPayload
-import com.kroffle.knitting.domain.product.enum.InputStatus
+import com.kroffle.knitting.domain.product.entity.Product
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -22,7 +22,7 @@ object GetMyProducts {
         val specifiedSalesEndDate: LocalDate?,
         val tags: List<String>,
         @JsonProperty("input_status")
-        val inputStatus: InputStatus,
+        val inputStatus: Product.InputStatus,
         @JsonProperty("updated_at")
         val updatedAt: OffsetDateTime?,
     ) : ListItemPayload {

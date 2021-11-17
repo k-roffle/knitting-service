@@ -1,6 +1,6 @@
 package com.kroffle.knitting.helper.dto
 
-import com.kroffle.knitting.domain.product.enum.InputStatus
+import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
@@ -19,7 +19,7 @@ data class MockProductData(
     val specifiedSalesEndDate: LocalDate? = null,
     val tags: List<ProductTag> = listOf(),
     val content: String? = null,
-    val inputStatus: InputStatus = InputStatus.DRAFT,
+    val inputStatus: Product.InputStatus = Product.InputStatus.DRAFT,
     val items: List<ProductItem> = listOf(),
     val createdAt: OffsetDateTime? = OffsetDateTime.now(),
     val updatedAt: OffsetDateTime? = OffsetDateTime.now(),

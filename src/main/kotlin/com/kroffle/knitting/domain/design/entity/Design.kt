@@ -1,8 +1,5 @@
 package com.kroffle.knitting.domain.design.entity
 
-import com.kroffle.knitting.domain.design.enum.DesignType
-import com.kroffle.knitting.domain.design.enum.LevelType
-import com.kroffle.knitting.domain.design.enum.PatternType
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
@@ -27,6 +24,23 @@ class Design(
     val techniques: List<Technique>,
     val createdAt: OffsetDateTime?,
 ) {
+    enum class DesignType(val code: Int, val tag: String) {
+        Sweater(1, "니트"),
+    }
+
+    enum class PatternType(val code: Int, val tag: String) {
+        Text(1, "서술형도안"),
+        Image(2, "이미지도안"),
+        Video(3, "영상도안"),
+    }
+
+    enum class LevelType {
+        PERSON_BY_PERSON,
+        EASY,
+        NORMAL,
+        HARD
+    }
+
     companion object {
         fun new(
             knitterId: Long,

@@ -1,7 +1,6 @@
 package com.kroffle.knitting.infra.persistence.product.repository
 
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.domain.product.enum.InputStatus
 import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.infra.persistence.helper.pagination.PaginationHelper
 import com.kroffle.knitting.infra.persistence.product.entity.ProductEntity
@@ -138,7 +137,7 @@ class R2dbcProductRepository(
     override fun findRegisteredProduct(knitterId: Long): Flux<Product> {
         val products: Flux<ProductEntity> =
             productRepository
-                .findAllByKnitterIdAndInputStatus(knitterId, InputStatus.REGISTERED)
+                .findAllByKnitterIdAndInputStatus(knitterId, Product.InputStatus.REGISTERED)
         return getProductAggregates(products)
     }
 }

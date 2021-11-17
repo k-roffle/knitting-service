@@ -1,7 +1,6 @@
 package com.kroffle.knitting.infra.persistence.design.entity
 
 import com.kroffle.knitting.domain.design.entity.Design
-import com.kroffle.knitting.domain.design.enum.SizeUnitType
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Size
 import org.springframework.data.annotation.Id
@@ -29,7 +28,7 @@ class SizeEntity(
     fun getForeignKey() = designId
 
     companion object {
-        private val DEFAULT_UNIT = SizeUnitType.Cm
+        private val DEFAULT_UNIT = Length.Unit.Cm
     }
 }
 

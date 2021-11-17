@@ -8,8 +8,6 @@ import com.kroffle.knitting.controller.handler.product.dto.GetMyProduct
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProducts
 import com.kroffle.knitting.controller.handler.product.dto.RegisterProduct
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.domain.product.enum.InputStatus
-import com.kroffle.knitting.domain.product.enum.ProductItemType
 import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
@@ -85,13 +83,13 @@ class ProductRouterTest {
             specifiedSalesStartDate = null,
             specifiedSalesEndDate = tomorrow.toLocalDate(),
             content = null,
-            inputStatus = InputStatus.DRAFT,
+            inputStatus = Product.InputStatus.DRAFT,
             tags = listOf(
                 ProductTag("서술형도안"),
                 ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItem.Type.DESIGN),
             ),
             createdAt = today,
             updatedAt = today,
@@ -162,13 +160,13 @@ class ProductRouterTest {
             specifiedSalesStartDate = null,
             specifiedSalesEndDate = tomorrow.toLocalDate(),
             content = null,
-            inputStatus = InputStatus.DRAFT,
+            inputStatus = Product.InputStatus.DRAFT,
             tags = listOf(
                 ProductTag("서술형도안"),
                 ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItem.Type.DESIGN),
             ),
             createdAt = today,
             updatedAt = today,
@@ -183,7 +181,7 @@ class ProductRouterTest {
                 specifiedSalesStartDate = tomorrow.toLocalDate(),
                 specifiedSalesEndDate = null,
                 tags = listOf(ProductTag("서술형도안")),
-                items = listOf(ProductItem.create(2, ProductItemType.DESIGN))
+                items = listOf(ProductItem.create(2, ProductItem.Type.DESIGN))
             )
         given(repository.getProductByIdAndKnitterId(any(), any()))
             .willReturn(Mono.just(targetProduct))
@@ -266,13 +264,13 @@ class ProductRouterTest {
             specifiedSalesStartDate = null,
             specifiedSalesEndDate = tomorrow.toLocalDate(),
             content = null,
-            inputStatus = InputStatus.DRAFT,
+            inputStatus = Product.InputStatus.DRAFT,
             tags = listOf(
                 ProductTag("서술형도안"),
                 ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItem.Type.DESIGN),
             ),
             createdAt = yesterday,
             updatedAt = yesterday,
@@ -333,13 +331,13 @@ class ProductRouterTest {
             specifiedSalesStartDate = null,
             specifiedSalesEndDate = null,
             content = "이번에는 초보탈출 패키지를 준비해봤어요.",
-            inputStatus = InputStatus.DRAFT,
+            inputStatus = Product.InputStatus.DRAFT,
             tags = listOf(
                 ProductTag("서술형도안"),
                 ProductTag("초보자용"),
             ),
             items = listOf(
-                ProductItem.create(1, ProductItemType.DESIGN),
+                ProductItem.create(1, ProductItem.Type.DESIGN),
             ),
             createdAt = yesterday,
             updatedAt = yesterday,
