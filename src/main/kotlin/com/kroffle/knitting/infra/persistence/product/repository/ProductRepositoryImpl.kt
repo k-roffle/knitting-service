@@ -13,16 +13,16 @@ import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.repository.ProductRepository
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList
 
-@Component
-class R2dbcProductRepository(
-    private val productRepository: DBProductRepository,
-    private val productTagRepository: DBProductTagRepository,
-    private val productItemRepository: DBProductItemRepository,
+@Repository
+class ProductRepositoryImpl(
+    private val productRepository: R2DBCProductRepository,
+    private val productTagRepository: R2DBCProductTagRepository,
+    private val productItemRepository: R2DBCProductItemRepository,
 ) : ProductRepository {
     private fun findById(id: Long): Mono<Product> {
         val tags = productTagRepository

@@ -10,24 +10,16 @@ import com.kroffle.knitting.infra.properties.ClientProperties
 import com.kroffle.knitting.infra.properties.SelfProperties
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.auth.AuthService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AppConfig {
-    @Autowired
-    lateinit var webProperties: WebApplicationProperties
-
-    @Autowired
-    lateinit var selfProperties: SelfProperties
-
-    @Autowired
-    lateinit var authProperties: AuthProperties
-
-    @Autowired
-    lateinit var clientProperties: ClientProperties
-
+class AppConfig(
+    private val webProperties: WebApplicationProperties,
+    private val selfProperties: SelfProperties,
+    private val authProperties: AuthProperties,
+    private val clientProperties: ClientProperties,
+) {
     @Bean
     fun tokenDecoder() = TokenDecoder(authProperties.jwtSecretKey)
 
@@ -35,7 +27,7 @@ class AppConfig {
     fun tokenPublisher() = TokenPublisher(authProperties.jwtSecretKey)
 
     @Bean
-    fun authService(repository: AuthService.KnitterRepository): AuthService {
+    fun googleOAuthHelper(): AuthService.OAuthHelper {
         val scheme = when (selfProperties.env) {
             "local" -> "http"
             else -> "https"
@@ -44,13 +36,9 @@ class AppConfig {
         val googleClientId = webProperties.googleClientId
         val googleClientSecret = webProperties.googleClientSecret
 
-        return AuthService(
-            GoogleOAuthHelperImpl(
-                ClientInfo(scheme, host),
-                GoogleOAuthConfig(googleClientId, googleClientSecret),
-            ),
-            tokenPublisher(),
-            repository,
+        return GoogleOAuthHelperImpl(
+            ClientInfo(scheme, host),
+            GoogleOAuthConfig(googleClientId, googleClientSecret),
         )
     }
 }

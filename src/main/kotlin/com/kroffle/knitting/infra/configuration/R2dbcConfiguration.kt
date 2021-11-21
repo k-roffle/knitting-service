@@ -12,7 +12,6 @@ import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.codec.EnumCodec
 import io.r2dbc.spi.ConnectionFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration
@@ -20,17 +19,14 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 
 @Configuration
 @EnableR2dbcRepositories
-class R2dbcConfiguration : AbstractR2dbcConfiguration() {
-    @Autowired
-    lateinit var appProperties: DatabaseProperties
-
+class R2dbcConfiguration(private val databaseProperties: DatabaseProperties) : AbstractR2dbcConfiguration() {
     @Bean
     override fun connectionFactory(): ConnectionFactory = PostgresqlConnectionFactory(
         PostgresqlConnectionConfiguration.builder()
-            .host(appProperties.host)
-            .username(appProperties.username)
-            .password(appProperties.password)
-            .database(appProperties.database)
+            .host(databaseProperties.host)
+            .username(databaseProperties.username)
+            .password(databaseProperties.password)
+            .database(databaseProperties.database)
             .codecRegistrar(EnumCodec.builder().withEnum(DESIGN_TYPE, Design.DesignType::class.java).build())
             .codecRegistrar(EnumCodec.builder().withEnum(PATTERN_TYPE, Design.PatternType::class.java).build())
             .codecRegistrar(EnumCodec.builder().withEnum(INPUT_STATUS, Product.InputStatus::class.java).build())

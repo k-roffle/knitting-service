@@ -12,16 +12,16 @@ import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.repository.DesignRepository
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors.toList
 
-@Component
-class R2dbcDesignRepository(
-    private val designRepository: DBDesignRepository,
-    private val techniqueRepository: DBTechniqueRepository,
-    private val sizeRepository: DBSizeRepository,
+@Repository
+class DesignRepositoryImpl(
+    private val designRepository: R2DBCDesignRepository,
+    private val techniqueRepository: R2DBCTechniqueRepository,
+    private val sizeRepository: R2DBCSizeRepository,
 ) : DesignRepository {
     override fun createDesign(design: Design): Mono<Design> =
         designRepository

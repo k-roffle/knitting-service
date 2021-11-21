@@ -5,7 +5,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-interface DBProductItemRepository : ReactiveCrudRepository<ProductItemEntity, Long> {
+interface R2DBCProductItemRepository : ReactiveCrudRepository<ProductItemEntity, Long> {
     fun findAllByProductId(productId: Long): Flux<ProductItemEntity>
     fun findAllByProductIdIn(productId: List<Long>): Flux<ProductItemEntity>
     fun deleteByProductId(productId: Long): Mono<Long>

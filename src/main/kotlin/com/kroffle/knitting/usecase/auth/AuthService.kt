@@ -2,10 +2,12 @@ package com.kroffle.knitting.usecase.auth
 
 import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.usecase.auth.dto.OAuthProfile
+import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.net.URI
 
+@Service
 class AuthService(
     private val oAuthHelper: OAuthHelper,
     private val tokenPublisher: TokenPublisher,

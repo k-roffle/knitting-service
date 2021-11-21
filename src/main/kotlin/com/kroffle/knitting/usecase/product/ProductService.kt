@@ -8,11 +8,11 @@ import com.kroffle.knitting.usecase.product.dto.EditProductPackageData
 import com.kroffle.knitting.usecase.product.dto.GetMyProductData
 import com.kroffle.knitting.usecase.product.dto.GetMyProductsData
 import com.kroffle.knitting.usecase.product.dto.RegisterProductData
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-@Component
+@Service
 class ProductService(private val repository: ProductRepository) {
     fun edit(data: EditProductPackageData): Mono<Product> =
         if (data.id == null) {
