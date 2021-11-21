@@ -3,6 +3,7 @@ package com.kroffle.knitting.controller.router.design
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.draftdesign.DraftDesignHandler
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
@@ -16,7 +17,9 @@ import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignService
+import com.kroffle.knitting.usecase.draftdesign.DraftDesignService
 import com.kroffle.knitting.usecase.repository.DesignRepository
+import com.kroffle.knitting.usecase.repository.DraftDesignRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -43,7 +46,10 @@ class DesignRouterTest {
     private lateinit var objectMapper: ObjectMapper
 
     @MockBean
-    private lateinit var repository: DesignRepository
+    private lateinit var designRepository: DesignRepository
+
+    @MockBean
+    private lateinit var draftDesignRepository: DraftDesignRepository
 
     @MockBean
     private lateinit var tokenDecoder: TokenDecoder
@@ -53,10 +59,11 @@ class DesignRouterTest {
 
     @BeforeEach
     fun setUp() {
-        webClient = WebTestClientHelper.createWebTestClient(
-            DesignRouter(DesignHandler(DesignService(repository)))
-                .designRouterFunction()
-        )
+        val designHandler = DesignHandler(DesignService(designRepository))
+        val draftDesignHandler = DraftDesignHandler(DraftDesignService(draftDesignRepository, designRepository))
+        val designRouter = DesignRouter(designHandler, draftDesignHandler)
+        webClient = WebTestClientHelper
+            .createWebTestClient(designRouter.designRouterFunction())
     }
 
     @Test
@@ -88,7 +95,7 @@ class DesignRouterTest {
             techniques = listOf(Technique("겉뜨기"), Technique("안뜨기")),
             createdAt = OffsetDateTime.now(),
         )
-        given(repository.createDesign(any())).willReturn(Mono.just(createdDesign))
+        given(designRepository.createDesign(any())).willReturn(Mono.just(createdDesign))
 
         val body = objectMapper.writeValueAsString(
             NewDesign.Request(
@@ -128,7 +135,7 @@ class DesignRouterTest {
                 .responseBody!!
 
         assertThat(response.payload.id).isEqualTo(createdDesign.id)
-        verify(repository).createDesign(
+        verify(designRepository).createDesign(
             argThat { design ->
                 assert(
                     design.knitterId == createdDesign.knitterId &&
