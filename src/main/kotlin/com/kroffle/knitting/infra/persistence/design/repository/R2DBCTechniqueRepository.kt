@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono
 interface R2DBCTechniqueRepository : ReactiveCrudRepository<TechniqueEntity, Long> {
     fun deleteByDesignId(designId: Long): Mono<Long>
     fun findAllByDesignIdIn(designIds: List<Long>): Flux<TechniqueEntity>
+    fun findAllByDesignId(designId: Long): Flux<TechniqueEntity>
 }
