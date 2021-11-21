@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono
 @Component
 class DraftDesignHandler(private val service: DraftDesignService) {
     fun saveDraft(req: ServerRequest): Mono<ServerResponse> {
+        // TODO: Add unit test
         val body: Mono<SaveDraftDesign.Request> = req
             .bodyToMono(SaveDraftDesign.Request::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
