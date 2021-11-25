@@ -17,6 +17,7 @@ import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.repository.DesignRepository
+import com.kroffle.knitting.usecase.repository.DraftDesignRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -39,7 +40,10 @@ class DesignsRouterTest {
     private lateinit var webClient: WebTestClient
 
     @MockBean
-    private lateinit var repository: DesignRepository
+    private lateinit var designRepository: DesignRepository
+
+    @MockBean
+    private lateinit var draftDesignRepository: DraftDesignRepository
 
     @MockBean
     private lateinit var tokenDecoder: TokenDecoder
@@ -50,7 +54,7 @@ class DesignsRouterTest {
     @BeforeEach
     fun setUp() {
         webClient = WebTestClientHelper.createWebTestClient(
-            DesignsRouter(DesignHandler(DesignService(repository)))
+            DesignsRouter(DesignHandler(DesignService(designRepository, draftDesignRepository)))
                 .designsRouterFunction()
         )
     }
@@ -58,7 +62,7 @@ class DesignsRouterTest {
     @Test
     fun `내가 만든 도안 리스트가 잘 반환되어야 함`() {
         val today: OffsetDateTime = OffsetDateTime.now()
-        given(repository.getDesignsByKnitterId(any(), any(), any()))
+        given(designRepository.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(
                 Flux.just(
                     Design(
@@ -116,7 +120,7 @@ class DesignsRouterTest {
                 ),
             )
         )
-        verify(repository).getDesignsByKnitterId(
+        verify(designRepository).getDesignsByKnitterId(
             argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
             argThat { param ->
                 assert(param.after == null)
@@ -133,7 +137,7 @@ class DesignsRouterTest {
 
     @Test
     fun `내가 만든 도안 리스트를 더 불러올 때 페이지네이션 정보가 적절히 넘어가야 함`() {
-        given(repository.getDesignsByKnitterId(any(), any(), any()))
+        given(designRepository.getDesignsByKnitterId(any(), any(), any()))
             .willReturn(Flux.empty())
 
         webClient
@@ -153,7 +157,7 @@ class DesignsRouterTest {
             .returnResult()
             .responseBody!!
 
-        verify(repository).getDesignsByKnitterId(
+        verify(designRepository).getDesignsByKnitterId(
             argThat { param -> param == WebTestClientHelper.AUTHORIZED_KNITTER_ID },
             argThat { param ->
                 assert(param.after == "1")
