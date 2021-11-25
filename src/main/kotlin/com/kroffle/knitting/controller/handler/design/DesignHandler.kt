@@ -69,6 +69,7 @@ class DesignHandler(private val service: DesignService) {
                         targetLevel = it.targetLevel,
                         coverImageUrl = it.coverImageUrl,
                         techniques = it.techniques.map { technique -> Technique(technique) },
+                        draftId = it.draftId,
                     )
                 )
             }
