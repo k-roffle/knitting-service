@@ -19,15 +19,16 @@ object ResponseHelper {
             meta = MetaData(),
         )
 
-    private fun makeKnittingResponse(data: List<ListItemPayload>):
-        Response<List<ListItemPayload>> {
-            val metaData = if (data.isEmpty()) {
-                MetaData()
-            } else {
-                MetaData(lastCursor = data.last().getCursor())
-            }
-            return Response(data, metaData)
+    private fun makeKnittingResponse(
+        data: List<ListItemPayload>,
+    ): Response<List<ListItemPayload>> {
+        val metaData = if (data.isEmpty()) {
+            MetaData()
+        } else {
+            MetaData(lastCursor = data.last().getCursor())
         }
+        return Response(data, metaData)
+    }
 
     fun makeJsonResponse(data: ObjectPayload): Mono<ServerResponse> {
         return ServerResponse.ok()
