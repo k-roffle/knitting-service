@@ -54,6 +54,7 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
 
     companion object {
         private const val HEADER_PREFIX = "Bearer "
+        private val ACTUATOR_PATHS = listOf("/actuator", "/actuator/health")
         private val PUBLIC_PATHS = (
             LogInRouterPublicPaths +
                 CertRouterPublicPaths +
@@ -61,7 +62,8 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
                 DesignRouterPublicPaths +
                 DesignsRouterPublicPaths +
                 PingRouterPublicPaths +
-                ProductRouterPublicPaths
+                ProductRouterPublicPaths +
+                ACTUATOR_PATHS
             )
     }
 }
