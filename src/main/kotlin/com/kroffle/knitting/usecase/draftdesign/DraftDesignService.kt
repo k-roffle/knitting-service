@@ -36,11 +36,11 @@ class DraftDesignService(
     }
 
     fun saveDraft(data: SaveDraftDesignData): Mono<DraftDesign> {
-        return if (data.designId != null) {
+        return if (data.designId == null) {
+            saveDraftDesign(data)
+        } else {
             verifyDesignId(data.designId, data.knitterId)
                 .flatMap { saveDraftDesign(data) }
-        } else {
-            saveDraftDesign(data)
         }
     }
 
