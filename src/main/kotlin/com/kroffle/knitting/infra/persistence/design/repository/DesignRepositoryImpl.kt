@@ -7,6 +7,7 @@ import com.kroffle.knitting.infra.persistence.design.entity.TechniqueEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toDesignEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toSizeEntity
 import com.kroffle.knitting.infra.persistence.design.entity.toTechniqueEntities
+import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.infra.persistence.helper.pagination.PaginationHelper
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
@@ -86,6 +87,25 @@ class DesignRepositoryImpl(
             }
     }
 
+    private fun getDesignAggregate(design: DesignEntity): Mono<Design> {
+        val techniqueMap: Mono<List<TechniqueEntity>> =
+            techniqueRepository
+                .findAllByDesignId(design.getNotNullId())
+                .collect(toList())
+
+        val sizeMap: Mono<SizeEntity> =
+            sizeRepository
+                .findByDesignId(design.getNotNullId())
+
+        return Mono.zip(techniqueMap, sizeMap)
+            .map {
+                design.toDesign(
+                    it.t1.map { technique -> technique.toTechnique() },
+                    it.t2.toSize(),
+                )
+            }
+    }
+
     override fun getDesignsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Design> {
         val pageRequest = PaginationHelper.makePageRequest(paging, sort)
 
@@ -109,4 +129,10 @@ class DesignRepositoryImpl(
         }
         return getDesignAggregates(designs)
     }
+
+    override fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<Design> =
+        designRepository
+            .findByIdAndKnitterId(id, knitterId)
+            .flatMap { getDesignAggregate(it) }
+            .switchIfEmpty(Mono.error(NotFoundEntity(DesignEntity::class.java)))
 }
