@@ -21,8 +21,7 @@ class CORSFilter(private val webProperties: WebApplicationProperties) : WebFilte
         if (CorsUtils.isCorsRequest(request)) {
             val response = exchange.response
             val headers = response.headers
-
-            headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, webProperties.origins.joinToString(","))
+            headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
             headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "*")
             headers.add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600")
             headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Authorization")
