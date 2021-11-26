@@ -48,6 +48,12 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("org.mockito:mockito-inline:3.9.0")
+
+    testImplementation("io.kotest:kotest-runner-junit5:4.6.3")
+    testImplementation("io.kotest:kotest-assertions-core:4.6.3")
+    testImplementation("io.kotest:kotest-extensions-spring:4.4.3")
+    testImplementation("io.mockk:mockk:1.11.0")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
 }
 
 tasks.withType<KotlinCompile> {
