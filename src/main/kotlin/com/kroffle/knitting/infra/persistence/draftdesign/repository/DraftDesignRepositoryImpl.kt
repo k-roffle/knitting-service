@@ -21,4 +21,7 @@ class DraftDesignRepositoryImpl(
         draftDesignRepository
             .save(draftDesign.toDraftDesignEntity())
             .map { it.toDraftDesign() }
+
+    override fun delete(draftDesign: DraftDesign): Mono<Long> =
+        draftDesignRepository.delete(draftDesign.toDraftDesignEntity()).map { draftDesign.id }
 }

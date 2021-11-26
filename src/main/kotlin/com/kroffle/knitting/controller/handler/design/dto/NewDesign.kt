@@ -25,6 +25,8 @@ object NewDesign {
         @JsonProperty("cover_image_url")
         val coverImageUrl: String,
         val techniques: List<String>,
+        @JsonProperty("draft_id")
+        val draftId: Long?,
     ) {
         data class NewDesignSize(
             @JsonProperty("size_unit")

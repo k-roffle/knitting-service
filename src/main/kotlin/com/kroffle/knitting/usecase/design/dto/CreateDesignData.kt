@@ -21,4 +21,5 @@ data class CreateDesignData(
     val targetLevel: Design.LevelType,
     val coverImageUrl: String,
     val techniques: List<Technique>,
+    val draftId: Long?,
 )

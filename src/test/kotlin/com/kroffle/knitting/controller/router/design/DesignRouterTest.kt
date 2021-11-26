@@ -59,7 +59,7 @@ class DesignRouterTest {
 
     @BeforeEach
     fun setUp() {
-        val designHandler = DesignHandler(DesignService(designRepository))
+        val designHandler = DesignHandler(DesignService(designRepository, draftDesignRepository))
         val draftDesignHandler = DraftDesignHandler(DraftDesignService(draftDesignRepository, designRepository))
         val designRouter = DesignRouter(designHandler, draftDesignHandler)
         webClient = WebTestClientHelper
@@ -118,7 +118,8 @@ class DesignRouterTest {
                 description = "이건 니트를 만드는 서술형 도안입니다.",
                 targetLevel = Design.LevelType.HARD,
                 coverImageUrl = "http://test.kroffle.com/image.jpg",
-                techniques = listOf("겉뜨기", "안뜨기")
+                techniques = listOf("겉뜨기", "안뜨기"),
+                draftId = null,
             )
         )
         val response: TestResponse<NewDesign.Response> =
