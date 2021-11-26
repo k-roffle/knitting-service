@@ -48,6 +48,8 @@ jobs:
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             POSTGRESQL_PASSWORD=${{ secrets.POSTGRESQL_PASSWORD }}
+            SSL_KEY_STORE_PASSWORD=${{ secrets.SSL_KEY_STORE_PASSWORD }}
+            SSL_KEY_PASSWORD=${{ secrets.SSL_KEY_PASSWORD }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -76,7 +78,7 @@ jobs:
             docker login -u dragonyool -p ${{ secrets.DOCKERHUB_PASSWORD }}
             docker pull dragonyool/knitting-service:latest
             docker stop knitting-service
-            docker run -d -p 80:8080 --rm --name knitting-service dragonyool/knitting-service:latest
+            docker run -d -p 443:8080 --rm --name knitting-service -v /home/docker:/home dragonyool/knitting-service:latest
             docker logout
 
       - name: notify slack
