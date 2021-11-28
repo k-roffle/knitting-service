@@ -50,6 +50,7 @@ jobs:
             POSTGRESQL_PASSWORD=${{ secrets.POSTGRESQL_PASSWORD }}
             SSL_KEY_STORE_PASSWORD=${{ secrets.SSL_KEY_STORE_PASSWORD }}
             SSL_KEY_PASSWORD=${{ secrets.SSL_KEY_PASSWORD }}
+            CERT_SECRET=${{ secrets.CERT_SECRET }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
