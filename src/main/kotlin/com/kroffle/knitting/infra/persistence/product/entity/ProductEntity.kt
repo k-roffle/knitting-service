@@ -1,9 +1,9 @@
 package com.kroffle.knitting.infra.persistence.product.entity
 
 import com.kroffle.knitting.domain.product.entity.Product
-import com.kroffle.knitting.domain.product.value.Money
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
+import com.kroffle.knitting.domain.value.Money
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
