@@ -13,7 +13,6 @@ import com.kroffle.knitting.controller.router.auth.LogInRouter.Companion.PUBLIC_
 import com.kroffle.knitting.controller.router.design.DesignRouter.Companion.PUBLIC_PATHS as DesignRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignsRouter.Companion.PUBLIC_PATHS as DesignsRouterPublicPaths
 import com.kroffle.knitting.controller.router.knitter.MyselfRouter.Companion.PUBLIC_PATHS as MyselfRouterPublicPaths
-import com.kroffle.knitting.controller.router.ping.PingRouter.Companion.PUBLIC_PATHS as PingRouterPublicPaths
 import com.kroffle.knitting.controller.router.product.ProductRouter.Companion.PUBLIC_PATHS as ProductRouterPublicPaths
 
 @Component
@@ -54,14 +53,15 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
 
     companion object {
         private const val HEADER_PREFIX = "Bearer "
+        private val ACTUATOR_PATHS = listOf("/actuator", "/actuator/health")
         private val PUBLIC_PATHS = (
             LogInRouterPublicPaths +
                 CertRouterPublicPaths +
                 MyselfRouterPublicPaths +
                 DesignRouterPublicPaths +
                 DesignsRouterPublicPaths +
-                PingRouterPublicPaths +
-                ProductRouterPublicPaths
+                ProductRouterPublicPaths +
+                ACTUATOR_PATHS
             )
     }
 }
