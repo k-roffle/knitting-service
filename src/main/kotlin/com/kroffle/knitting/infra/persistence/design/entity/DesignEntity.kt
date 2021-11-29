@@ -5,6 +5,7 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.value.Money
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.time.OffsetDateTime
@@ -21,6 +22,7 @@ class DesignEntity(
     private val needle: String,
     private val yarn: String,
     private val extra: String?,
+    private val price: Int,
     private val pattern: String,
     private val description: String,
     private val targetLevel: String,
@@ -41,6 +43,7 @@ class DesignEntity(
             needle = this.needle,
             yarn = this.yarn,
             extra = this.extra,
+            price = Money(this.price),
             pattern = Pattern(this.pattern),
             description = this.description,
             targetLevel = Design.LevelType.valueOf(this.targetLevel),
@@ -62,6 +65,7 @@ fun Design.toDesignEntity() =
         needle = this.needle,
         yarn = this.yarn,
         extra = this.extra,
+        price = this.price.value,
         pattern = this.pattern.value,
         description = this.description,
         targetLevel = this.targetLevel.name,
