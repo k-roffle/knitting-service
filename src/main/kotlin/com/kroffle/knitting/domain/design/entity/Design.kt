@@ -4,6 +4,7 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.value.Money
 import java.time.OffsetDateTime
 
 class Design(
@@ -17,6 +18,7 @@ class Design(
     val needle: String,
     val yarn: String,
     val extra: String?,
+    val price: Money,
     val pattern: Pattern,
     val description: String,
     val targetLevel: LevelType,
@@ -52,6 +54,7 @@ class Design(
             needle: String,
             yarn: String,
             extra: String?,
+            price: Money,
             pattern: Pattern,
             description: String,
             targetLevel: LevelType,
@@ -68,6 +71,7 @@ class Design(
             needle = needle,
             yarn = yarn,
             extra = extra,
+            price = price,
             pattern = pattern,
             description = description,
             targetLevel = targetLevel,
