@@ -18,6 +18,7 @@ object NewDesign {
         val needle: String,
         val yarn: String,
         val extra: String?,
+        val price: Int,
         val pattern: String,
         val description: String,
         @JsonProperty("target_level")

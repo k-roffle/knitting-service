@@ -12,6 +12,7 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
@@ -64,6 +65,7 @@ class DesignHandler(private val service: DesignService) {
                         needle = it.needle,
                         yarn = it.yarn,
                         extra = it.extra,
+                        price = Money(it.price),
                         pattern = Pattern(it.pattern),
                         description = it.description,
                         targetLevel = it.targetLevel,

@@ -8,6 +8,7 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
@@ -85,6 +86,7 @@ class DesignsRouterTest {
                         needle = "5.0mm",
                         yarn = "패션아란 400g 1볼",
                         extra = null,
+                        price = Money(1000),
                         pattern = Pattern("# Step1. 코를 10개 잡습니다."),
                         description = "이건 니트를 만드는 서술형 도안입니다.",
                         targetLevel = Design.LevelType.HARD,
