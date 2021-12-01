@@ -28,6 +28,7 @@ class DesignService(
                     needle = data.needle,
                     yarn = data.yarn,
                     extra = data.extra,
+                    price = data.price,
                     pattern = data.pattern,
                     description = data.description,
                     targetLevel = data.targetLevel,

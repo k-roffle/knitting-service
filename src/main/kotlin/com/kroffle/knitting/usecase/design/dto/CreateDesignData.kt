@@ -5,6 +5,7 @@ import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.value.Money
 
 data class CreateDesignData(
     val knitterId: Long,
@@ -16,6 +17,7 @@ data class CreateDesignData(
     val needle: String,
     val yarn: String,
     val extra: String?,
+    val price: Money,
     val pattern: Pattern,
     val description: String,
     val targetLevel: Design.LevelType,

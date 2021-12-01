@@ -10,6 +10,7 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
@@ -88,6 +89,7 @@ class DesignRouterTest {
             needle = "5.0mm",
             yarn = "캐시미어 400g",
             extra = null,
+            price = Money(1000),
             pattern = Pattern("# Step1. 코를 10개 잡습니다."),
             description = "이건 니트를 만드는 서술형 도안입니다.",
             targetLevel = Design.LevelType.HARD,
@@ -114,6 +116,7 @@ class DesignRouterTest {
                 needle = "5.0mm",
                 yarn = "캐시미어 400g",
                 extra = null,
+                price = 1000,
                 pattern = "# Step1. 코를 10개 잡습니다.",
                 description = "이건 니트를 만드는 서술형 도안입니다.",
                 targetLevel = Design.LevelType.HARD,
@@ -148,6 +151,7 @@ class DesignRouterTest {
                         design.needle == createdDesign.needle &&
                         design.yarn == createdDesign.yarn &&
                         design.extra == createdDesign.extra &&
+                        design.price.like(createdDesign.price) &&
                         design.pattern.like(createdDesign.pattern) &&
                         design.description == createdDesign.description &&
                         design.targetLevel == createdDesign.targetLevel &&
