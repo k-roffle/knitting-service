@@ -3,6 +3,7 @@ package com.kroffle.knitting.controller.handler.design
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
+import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
@@ -29,6 +30,7 @@ class DesignHandler(private val service: DesignService) {
     fun createDesign(req: ServerRequest): Mono<ServerResponse> {
         val design: Mono<NewDesign.Request> = req
             .bodyToMono(NewDesign.Request::class.java)
+            .onErrorResume { Mono.error(InvalidBodyException()) }
             .switchIfEmpty(Mono.error(EmptyBodyException()))
         val knitterId = AuthHelper.getKnitterId(req)
         return design
