@@ -11,10 +11,10 @@ import com.kroffle.knitting.domain.product.entity.Product
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
+import com.kroffle.knitting.helper.MockData
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
-import com.kroffle.knitting.helper.dto.MockProductData
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
@@ -385,7 +385,7 @@ class ProductRouterTest {
 
     @Test
     fun `내 상품을 조회할 수 있어야 함`() {
-        val mockData = MockProductData(id = 1)
+        val mockData = MockData.Product(id = 1)
         val targetProduct = MockFactory.create(mockData)
         given(repository.getProductByIdAndKnitterId(any(), any()))
             .willReturn(Mono.just(targetProduct))
@@ -432,9 +432,9 @@ class ProductRouterTest {
     @Test
     fun `내 상품 리스트를 조회할 수 있어야 함`() {
         val mockData = listOf(
-            MockProductData(id = 1, updatedAt = today.minusDays(1)),
-            MockProductData(id = 3, updatedAt = today.minusDays(2)),
-            MockProductData(id = 2, updatedAt = today.minusDays(3)),
+            MockData.Product(id = 1, updatedAt = today.minusDays(1)),
+            MockData.Product(id = 3, updatedAt = today.minusDays(2)),
+            MockData.Product(id = 2, updatedAt = today.minusDays(3)),
         )
 
         val mockProducts: List<Product> = mockData.map { MockFactory.create(it) }
