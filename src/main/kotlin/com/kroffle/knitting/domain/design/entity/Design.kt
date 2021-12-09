@@ -7,7 +7,7 @@ import com.kroffle.knitting.domain.design.value.Technique
 import com.kroffle.knitting.domain.value.Money
 import java.time.OffsetDateTime
 
-class Design(
+data class Design(
     val id: Long? = null,
     val knitterId: Long,
     val name: String,

@@ -4,10 +4,10 @@ import com.kroffle.knitting.controller.handler.knitter.MyselfHandler
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
 import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummary
 import com.kroffle.knitting.domain.product.entity.Product
+import com.kroffle.knitting.helper.MockData
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
-import com.kroffle.knitting.helper.dto.MockProductData
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.jwt.TokenPublisher
@@ -110,14 +110,14 @@ class MyselfRouterTest {
         val yesterday = OffsetDateTime.now().minusDays(1).toLocalDate()
         val productsToBeCounted = Flux.just(
             MockFactory.create(
-                MockProductData(
+                MockData.Product(
                     id = 1,
                     content = "이 상품은요",
                     inputStatus = Product.InputStatus.REGISTERED
                 )
             ),
             MockFactory.create(
-                MockProductData(
+                MockData.Product(
                     id = 2,
                     content = "이 상품은요",
                     inputStatus = Product.InputStatus.REGISTERED,
@@ -126,10 +126,10 @@ class MyselfRouterTest {
             ),
         )
         val productsToBeSkipped = Flux.just(
-            MockFactory.create(MockProductData(id = 3, inputStatus = Product.InputStatus.DRAFT)),
-            MockFactory.create(MockProductData(id = 4, content = "이 상품은요", inputStatus = Product.InputStatus.DRAFT)),
+            MockFactory.create(MockData.Product(id = 3, inputStatus = Product.InputStatus.DRAFT)),
+            MockFactory.create(MockData.Product(id = 4, content = "이 상품은요", inputStatus = Product.InputStatus.DRAFT)),
             MockFactory.create(
-                MockProductData(
+                MockData.Product(
                     id = 5,
                     content = "이 상품은요",
                     inputStatus = Product.InputStatus.REGISTERED,

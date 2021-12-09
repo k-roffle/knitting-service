@@ -1,6 +1,6 @@
 package com.kroffle.knitting.domain.design.value
 
-class Size(
+data class Size(
     val totalLength: Length,
     val sleeveLength: Length,
     val shoulderWidth: Length,
