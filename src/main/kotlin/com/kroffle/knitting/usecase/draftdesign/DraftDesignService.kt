@@ -4,6 +4,7 @@ import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.usecase.draftdesign.dto.SaveDraftDesignData
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
@@ -44,8 +45,12 @@ class DraftDesignService(
         }
     }
 
+    fun getMyDraftDesigns(knitterId: Long): Flux<DraftDesign> =
+        draftDesignRepository.findNewDraftDesignsByKnitterId(knitterId)
+
     interface DraftDesignRepository {
         fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesign>
+        fun findNewDraftDesignsByKnitterId(knitterId: Long): Flux<DraftDesign>
         fun save(draftDesign: DraftDesign): Mono<DraftDesign>
     }
 
