@@ -2,6 +2,7 @@ package com.kroffle.knitting.controller.router.design
 
 import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.controller.handler.draftdesign.DraftDesignHandler
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
@@ -16,6 +17,7 @@ import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.design.DesignService
+import com.kroffle.knitting.usecase.draftdesign.DraftDesignService
 import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.repository.DesignRepository
 import com.kroffle.knitting.usecase.repository.DraftDesignRepository
@@ -54,10 +56,14 @@ class DesignsRouterTest {
 
     @BeforeEach
     fun setUp() {
-        webClient = WebTestClientHelper.createWebTestClient(
-            DesignsRouter(DesignHandler(DesignService(designRepository, draftDesignRepository)))
-                .designsRouterFunction()
-        )
+        webClient = WebTestClientHelper
+            .createWebTestClient(
+                DesignsRouter(
+                    DesignHandler(DesignService(designRepository, draftDesignRepository)),
+                    DraftDesignHandler(DraftDesignService(draftDesignRepository, designRepository)),
+                )
+                    .designsRouterFunction()
+            )
     }
 
     @Test
