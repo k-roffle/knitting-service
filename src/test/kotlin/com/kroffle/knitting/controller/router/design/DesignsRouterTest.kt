@@ -106,7 +106,7 @@ class DesignsRouterTest {
         val responseBody: TestResponse<List<MyDesign.Response>> =
             webClient
                 .get()
-                .uri("/designs/my")
+                .uri("/designs/mine")
                 .addDefaultRequestHeader()
                 .exchange()
                 .expectStatus()
@@ -152,7 +152,7 @@ class DesignsRouterTest {
             .get()
             .uri { uriBuilder ->
                 uriBuilder
-                    .path("/designs/my")
+                    .path("/designs/mine")
                     .queryParam("count", "2")
                     .queryParam("after", "1")
                     .build()
