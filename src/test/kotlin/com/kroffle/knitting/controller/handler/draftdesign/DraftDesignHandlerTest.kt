@@ -146,7 +146,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .expectBody<TestResponse<List<GetMyDraftDesigns.Response>>>()
                     .returnResult()
 
-                it("service 를 통해 생성 요청해야 함") {
+                it("service 를 통해 조회 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService.getMyDraftDesigns(WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
@@ -177,7 +177,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .expectBody<TestResponse<List<GetMyDraftDesigns.Response>>>()
                     .returnResult()
 
-                it("service 를 통해 생성 요청해야 함") {
+                it("service 를 통해 조회 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService.getMyDraftDesigns(WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
@@ -214,7 +214,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .expectBody<TestResponse<GetMyDraftDesign.Response>>()
                     .returnResult()
 
-                it("service 를 통해 생성 요청해야 함") {
+                it("service 를 통해 조회 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService
                             .getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
@@ -240,7 +240,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .expectBody<TestResponse<GetMyDraftDesign.Response>>()
                     .returnResult()
 
-                it("service 를 통해 생성 요청해야 함") {
+                it("service 를 통해 조회 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService.getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
@@ -338,7 +338,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .expectBody<TestResponse<DeleteDraftDesign.Response>>()
                     .returnResult()
 
-                it("service 를 통해 생성 요청해야 함") {
+                it("service 를 통해 삭제 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService
                             .deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
@@ -360,7 +360,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .expectBody<TestResponse<DeleteDraftDesign.Response>>()
                     .returnResult()
 
-                it("service 를 통해 생성 요청해야 함") {
+                it("service 를 통해 삭제 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService.deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
