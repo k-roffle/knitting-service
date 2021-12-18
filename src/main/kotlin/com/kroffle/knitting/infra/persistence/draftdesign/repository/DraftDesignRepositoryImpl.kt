@@ -24,6 +24,12 @@ class DraftDesignRepositoryImpl(
             .findByKnitterIdAndDesignId(knitterId, null)
             .map { it.toDraftDesign() }
 
+    override fun getDraftDesignToUpdate(designId: Long, knitterId: Long): Mono<DraftDesign> =
+        draftDesignRepository
+            .getByKnitterIdAndDesignId(knitterId = knitterId, designId = designId)
+            .switchIfEmpty(Mono.error(NotFoundEntity(DraftDesign::class.java)))
+            .map { it.toDraftDesign() }
+
     override fun save(draftDesign: DraftDesign): Mono<DraftDesign> =
         draftDesignRepository
             .save(draftDesign.toDraftDesignEntity())
