@@ -27,7 +27,7 @@ class DesignsRouter(private val designHandler: DesignHandler, private val draftD
         private const val ROOT_PATH = "/designs"
         private const val GET_MY_DESIGNS_PATH = "/mine"
         private const val GET_MY_DRAFT_DESIGNS_PATH = "/draft/mine"
-        private const val GET_MY_DRAFT_DESIGN_PATH = "/draft/mine/{id}"
+        private const val GET_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
         private const val GET_MY_DRAFT_DESIGN_TO_UPDATE_PATH = "/{designId}/draft/mine"
         val PUBLIC_PATHS: List<String> = listOf()
     }

@@ -61,7 +61,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
 
     fun getMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
-        val draftDesignId = req.pathVariable("id").toLong()
+        val draftDesignId = req.pathVariable("draftDesignId").toLong()
         return service
             .getMyDraftDesign(draftDesignId, knitterId)
             .doOnError { ExceptionHelper.raiseException(it) }
@@ -93,7 +93,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
 
     fun deleteMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
-        val draftDesignId = req.pathVariable("id").toLong()
+        val draftDesignId = req.pathVariable("draftDesignId").toLong()
         return service
             .deleteMyDraftDesign(draftDesignId, knitterId)
             .doOnError { ExceptionHelper.raiseException(it) }

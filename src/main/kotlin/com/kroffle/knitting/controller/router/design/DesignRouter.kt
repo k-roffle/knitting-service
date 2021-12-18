@@ -29,7 +29,7 @@ class DesignRouter(
         private const val ROOT_PATH = "/design"
         private const val CREATE_DESIGN_PATH = ""
         private const val SAVE_DRAFT_PATH = "/draft"
-        private const val DELETE_MY_DRAFT_DESIGN_PATH = "/draft/mine/{id}"
+        private const val DELETE_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
         val PUBLIC_PATHS = listOf<String>()
     }
 }
