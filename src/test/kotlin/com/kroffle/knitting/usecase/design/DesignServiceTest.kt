@@ -88,7 +88,7 @@ class DesignServiceTest : BehaviorSpec() {
                 val draftDesign = MockFactory.create(MockData.DraftDesign(id = 1))
 
                 every {
-                    draftDesignRepository.findByIdAndKnitterId(any(), any())
+                    draftDesignRepository.getDraftDesign(any(), any())
                 } returns Mono.just(draftDesign)
 
                 every {
@@ -103,7 +103,7 @@ class DesignServiceTest : BehaviorSpec() {
 
                 Then("유저가 해당 임시저장 내역을 가지고 있는지 확인해야 한다") {
                     verify(exactly = 1) {
-                        draftDesignRepository.findByIdAndKnitterId(
+                        draftDesignRepository.getDraftDesign(
                             id = 1,
                             knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
                         )

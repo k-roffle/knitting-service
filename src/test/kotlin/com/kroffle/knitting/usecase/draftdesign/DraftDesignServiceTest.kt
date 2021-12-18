@@ -30,14 +30,14 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
             When("작성 중이던 도안리스트를 요청하면") {
                 every {
-                    mockDraftDesignRepository.findDraftDesignsToCreateByKnitterId(any())
+                    mockDraftDesignRepository.findDraftDesignsToCreate(any())
                 } returns Flux.fromIterable(listOf(mockDraftDesign))
 
                 val result = service.getMyDraftDesigns(1).collectList().block()
                 Then("작성 중이던 도안 목록을 조회해와야 한다") {
                     verify(exactly = 1) {
                         mockDraftDesignRepository
-                            .findDraftDesignsToCreateByKnitterId(1)
+                            .findDraftDesignsToCreate(1)
                     }
                 }
                 Then("작성 중이던 도안 리스트가 반환되어야 한다") {
@@ -47,13 +47,13 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
             When("작성 중이던 도안 상세를 요청하면") {
                 every {
-                    mockDraftDesignRepository.findByIdAndKnitterId(any(), any())
+                    mockDraftDesignRepository.getDraftDesign(any(), any())
                 } returns Mono.just(mockDraftDesign)
 
                 val result = service.getMyDraftDesign(1, 1).block()
                 Then("작성 중이던 도안을 조회해와야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDraftDesignRepository.getDraftDesign(1, 1)
                     }
                 }
                 Then("작성 중이던 도안 상세가 반환되어야 한다") {
@@ -64,7 +64,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
             When("작성 중이던 도안을 삭제 요청하면") {
                 every {
                     mockDraftDesignRepository
-                        .findByIdAndKnitterId(any(), any())
+                        .getDraftDesign(any(), any())
                 } returns Mono.just(mockDraftDesign)
 
                 every {
@@ -75,7 +75,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
                 Then("작성 중이던 도안을 조회해야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDraftDesignRepository.getDraftDesign(1, 1)
                     }
                 }
                 Then("작성 중이던 도안을 삭제해야 한다") {
@@ -92,13 +92,13 @@ class DraftDesignServiceTest : BehaviorSpec() {
         Given("내가 작성 중이던 도안이 존재하지 않고") {
             When("작성 중이던 도안리스트를 요청하면") {
                 every {
-                    mockDraftDesignRepository.findDraftDesignsToCreateByKnitterId(any())
+                    mockDraftDesignRepository.findDraftDesignsToCreate(any())
                 } returns Flux.empty()
 
                 val result = service.getMyDraftDesigns(1).collectList().block()
                 Then("작성 중이던 도안 목록을 조회해와야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findDraftDesignsToCreateByKnitterId(1)
+                        mockDraftDesignRepository.findDraftDesignsToCreate(1)
                     }
                 }
                 Then("빈 리스트가 반환되어야 한다") {
@@ -108,14 +108,14 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
             When("작성 중이던 도안 상세를 요청하면") {
                 every {
-                    mockDraftDesignRepository.findByIdAndKnitterId(any(), any())
+                    mockDraftDesignRepository.getDraftDesign(any(), any())
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
 
                 val result = service.deleteMyDraftDesign(1, 1).test()
 
                 Then("작성 중이던 도안을 조회해와야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDraftDesignRepository.getDraftDesign(1, 1)
                     }
                 }
                 Then("NotFoundEntity exception 이 발생해야 한다") {
@@ -125,14 +125,14 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
             When("작성 중이던 도안을 삭제 요청하면") {
                 every {
-                    mockDraftDesignRepository.findByIdAndKnitterId(any(), any())
+                    mockDraftDesignRepository.getDraftDesign(any(), any())
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
 
                 val result = service.deleteMyDraftDesign(1, 1).test()
 
                 Then("작성 중이던 도안을 조회해와야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDraftDesignRepository.getDraftDesign(1, 1)
                     }
                 }
 
@@ -199,7 +199,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
                 every {
                     mockDraftDesignRepository
-                        .findByIdAndKnitterId(any(), any())
+                        .getDraftDesign(any(), any())
                 } returns Mono.just(beforeDraftDesign)
 
                 every {
@@ -209,7 +209,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 val result = service.saveDraft(data).block()
                 Then("기존 임시저장 내역을 조회해야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDraftDesignRepository.getDraftDesign(1, 1)
                     }
                 }
                 Then("기존 임시저장 내역을 수정하여 저장해야 한다") {
@@ -293,7 +293,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
                 every {
                     mockDraftDesignRepository
-                        .findByIdAndKnitterId(any(), any())
+                        .getDraftDesign(any(), any())
                 } returns Mono.just(beforeDraftDesign)
 
                 every {
@@ -308,7 +308,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 }
                 Then("기존 임시저장 내역을 조회해야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDraftDesignRepository.getDraftDesign(1, 1)
                     }
                 }
                 Then("기존 임시저장 내역을 수정하여 저장해야 한다") {

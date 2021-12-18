@@ -13,13 +13,13 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 class DraftDesignRepositoryImpl(
     private val draftDesignRepository: R2DBCDraftDesignRepository,
 ) : DraftDesignRepository {
-    override fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesign> =
+    override fun getDraftDesign(id: Long, knitterId: Long): Mono<DraftDesign> =
         draftDesignRepository
             .findByIdAndKnitterId(id, knitterId)
             .switchIfEmpty(Mono.error(NotFoundEntity(DraftDesign::class.java)))
             .map { it.toDraftDesign() }
 
-    override fun findDraftDesignsToCreateByKnitterId(knitterId: Long): Flux<DraftDesign> =
+    override fun findDraftDesignsToCreate(knitterId: Long): Flux<DraftDesign> =
         draftDesignRepository
             .findByKnitterIdAndDesignId(knitterId, null)
             .map { it.toDraftDesign() }
