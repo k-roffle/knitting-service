@@ -5,8 +5,8 @@ import java.time.OffsetDateTime
 
 object GetMyDraftDesign {
     data class Response(
-        val id: Long? = null,
+        val id: Long,
         val value: String,
-        val updatedAt: OffsetDateTime?,
+        val updatedAt: OffsetDateTime,
     ) : ObjectPayload
 }
