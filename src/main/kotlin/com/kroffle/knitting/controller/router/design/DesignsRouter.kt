@@ -17,6 +17,7 @@ class DesignsRouter(private val designHandler: DesignHandler, private val draftD
             listOf(
                 GET(GET_MY_DESIGNS_PATH, designHandler::getMyDesigns),
                 GET(GET_MY_DRAFT_DESIGNS_PATH, draftDesignHandler::getMyDraftDesigns),
+                GET(GET_MY_DRAFT_DESIGN_PATh, draftDesignHandler::getMyDraftDesign),
             )
         }
     )
@@ -25,6 +26,7 @@ class DesignsRouter(private val designHandler: DesignHandler, private val draftD
         private const val ROOT_PATH = "/designs"
         private const val GET_MY_DESIGNS_PATH = "/mine"
         private const val GET_MY_DRAFT_DESIGNS_PATH = "/draft/mine"
+        private const val GET_MY_DRAFT_DESIGN_PATh = "/draft/mine/{id}"
         val PUBLIC_PATHS: List<String> = listOf()
     }
 }

@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesign
+import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
@@ -44,13 +45,29 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .getMyDraftDesigns(knitterId)
             .doOnError { ExceptionHelper.raiseException(it) }
             .map { draftDesign ->
-                MyDraftDesign.Response(
+                MyDraftDesigns.Response(
                     id = draftDesign.id!!,
                     name = draftDesign.name,
                     updatedAt = draftDesign.updatedAt!!,
                 )
             }
             .collect(Collectors.toList())
+            .flatMap { ResponseHelper.makeJsonResponse(it) }
+    }
+
+    fun getMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(req)
+        val draftDesignId = req.pathVariable("id").toLong()
+        return service
+            .getMyDraftDesign(draftDesignId, knitterId)
+            .doOnError { ExceptionHelper.raiseException(it) }
+            .map { draftDesign ->
+                MyDraftDesign.Response(
+                    id = draftDesign.id!!,
+                    value = draftDesign.value,
+                    updatedAt = draftDesign.updatedAt!!,
+                )
+            }
             .flatMap { ResponseHelper.makeJsonResponse(it) }
     }
 }
