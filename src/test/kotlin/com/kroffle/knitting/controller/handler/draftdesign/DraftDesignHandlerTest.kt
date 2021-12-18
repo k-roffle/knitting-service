@@ -1,8 +1,8 @@
-package com.kroffle.knitting.controller.router.design
+package com.kroffle.knitting.controller.handler.draftdesign
 
-import com.kroffle.knitting.controller.handler.draftdesign.DraftDesignHandler
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesigns
+import com.kroffle.knitting.controller.router.design.DesignsRouter
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.helper.MockData
 import com.kroffle.knitting.helper.MockFactory
