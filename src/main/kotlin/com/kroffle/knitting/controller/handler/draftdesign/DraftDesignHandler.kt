@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
+import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
@@ -68,6 +69,16 @@ class DraftDesignHandler(private val service: DraftDesignService) {
                     updatedAt = draftDesign.updatedAt!!,
                 )
             }
+            .flatMap { ResponseHelper.makeJsonResponse(it) }
+    }
+
+    fun deleteMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(req)
+        val draftDesignId = req.pathVariable("id").toLong()
+        return service
+            .deleteMyDraftDesign(draftDesignId, knitterId)
+            .doOnError { ExceptionHelper.raiseException(it) }
+            .map { deletedId -> DeleteDraftDesign.Response(id = deletedId) }
             .flatMap { ResponseHelper.makeJsonResponse(it) }
     }
 }

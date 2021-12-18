@@ -51,10 +51,18 @@ class DraftDesignService(
     fun getMyDraftDesign(draftDesignId: Long, knitterId: Long): Mono<DraftDesign> =
         draftDesignRepository.findByIdAndKnitterId(draftDesignId, knitterId)
 
+    fun deleteMyDraftDesign(draftDesignId: Long, knitterId: Long): Mono<Long> {
+        val draftDesign = draftDesignRepository
+            .findByIdAndKnitterId(draftDesignId, knitterId)
+        return draftDesign
+            .flatMap { draftDesignRepository.delete(it) }
+    }
+
     interface DraftDesignRepository {
         fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesign>
         fun findNewDraftDesignsByKnitterId(knitterId: Long): Flux<DraftDesign>
         fun save(draftDesign: DraftDesign): Mono<DraftDesign>
+        fun delete(draftDesign: DraftDesign): Mono<Long>
     }
 
     interface DesignRepository {

@@ -1,7 +1,9 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
+import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesigns
+import com.kroffle.knitting.controller.router.design.DesignRouter
 import com.kroffle.knitting.controller.router.design.DesignsRouter
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.helper.MockData
@@ -29,15 +31,18 @@ import java.time.ZoneOffset
 class DraftDesignHandlerTest : DescribeSpec() {
     init {
         val draftDesignService = mockk<DraftDesignService>()
-        val router = DesignsRouter(mockk(), DraftDesignHandler(draftDesignService))
-        val webClient = WebTestClientHelper
-            .createWebTestClient(router.designsRouterFunction())
+        val designsRouter = DesignsRouter(mockk(), DraftDesignHandler(draftDesignService))
+        val designRouter = DesignRouter(mockk(), DraftDesignHandler(draftDesignService))
+        val designsWebclient = WebTestClientHelper
+            .createWebTestClient(designsRouter.designsRouterFunction())
+        val designWebclient = WebTestClientHelper
+            .createWebTestClient(designRouter.designRouterFunction())
 
         afterContainer { clearAllMocks() }
 
         describe("내 작성중인 도안 리스트 조회 test") {
             val exchangeRequest = fun (): WebTestClient.ResponseSpec =
-                webClient
+                designsWebclient
                     .get()
                     .uri("/designs/draft/mine")
                     .addDefaultRequestHeader()
@@ -112,9 +117,9 @@ class DraftDesignHandlerTest : DescribeSpec() {
             }
         }
 
-        describe("내 작성중인 도안 조회 test") {
+        describe("내 작성중인 도안 상세 조회 test") {
             val exchangeRequest = fun (): WebTestClient.ResponseSpec =
-                webClient
+                designsWebclient
                     .get()
                     .uri("/designs/draft/mine/1")
                     .addDefaultRequestHeader()
@@ -166,6 +171,56 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
                         draftDesignService.getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                    }
+                }
+                it("NOT FOUND 에러가 발생되어야 함") {
+                    response.rawStatusCode shouldBe 404
+                }
+            }
+        }
+
+        describe("임시저장 삭제 test") {
+            val exchangeRequest = fun (): WebTestClient.ResponseSpec =
+                designWebclient
+                    .delete()
+                    .uri("/design/draft/mine/1")
+                    .addDefaultRequestHeader()
+                    .exchange()
+
+            context("작성 중인 도안이 있는 경우") {
+                every {
+                    draftDesignService.deleteMyDraftDesign(any(), any())
+                } returns Mono.just(1)
+
+                val response = exchangeRequest()
+                    .expectBody<TestResponse<DeleteDraftDesign.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 생성 요청해야 함") {
+                    verify(exactly = 1) {
+                        draftDesignService
+                            .deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                    }
+                }
+                it("삭제된 도안 id가 반환되어야 함") {
+                    val expectedResponse = DeleteDraftDesign.Response(id = 1)
+                    response.status.is2xxSuccessful shouldBe true
+                    response.responseBody?.payload shouldBe expectedResponse
+                }
+            }
+
+            context("작성 중인 도안이 없는 경우") {
+                every {
+                    draftDesignService.deleteMyDraftDesign(any(), any())
+                } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
+
+                val response = exchangeRequest()
+                    .expectBody<TestResponse<DeleteDraftDesign.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 생성 요청해야 함") {
+                    verify(exactly = 1) {
+                        draftDesignService.deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
                 it("NOT FOUND 에러가 발생되어야 함") {
