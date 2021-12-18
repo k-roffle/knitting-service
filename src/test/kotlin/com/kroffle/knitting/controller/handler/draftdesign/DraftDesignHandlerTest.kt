@@ -2,6 +2,7 @@ package com.kroffle.knitting.controller.handler.draftdesign
 
 import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesign
+import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesignToUpdate
 import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
@@ -242,6 +243,76 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
                         mockDraftDesignService.getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                    }
+                }
+                it("NOT FOUND 에러가 발생되어야 함") {
+                    response.rawStatusCode shouldBe 404
+                }
+            }
+        }
+
+        describe("내 수정중인 도안 상세 조회 test") {
+            val designId = 2L
+            val exchangeRequest = fun (): WebTestClient.ResponseSpec =
+                designsWebclient
+                    .get()
+                    .uri("/designs/$designId/draft/mine")
+                    .addDefaultRequestHeader()
+                    .exchange()
+
+            context("작성 중인 도안이 있는 경우") {
+                val updatedAt = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC)
+                val draftDesign = MockFactory.create(
+                    MockData.DraftDesign(
+                        id = 1,
+                        designId = designId,
+                        value = "{\"name\": \"작성 중\"}",
+                        updatedAt = updatedAt,
+                    )
+                )
+                every {
+                    mockDraftDesignService.getMyDraftDesignToUpdate(any(), any())
+                } returns Mono.just(draftDesign)
+
+                val response = exchangeRequest()
+                    .expectBody<TestResponse<GetMyDraftDesignToUpdate.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 조회 요청해야 함") {
+                    verify(exactly = 1) {
+                        mockDraftDesignService
+                            .getMyDraftDesignToUpdate(
+                                designId = 2,
+                                knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                            )
+                    }
+                }
+                it("수정 중인 도안이 반환되어야 함") {
+                    val expectedResponse = GetMyDraftDesignToUpdate.Response(
+                        id = 1,
+                        value = "{\"name\": \"작성 중\"}",
+                        updatedAt = updatedAt,
+                    )
+                    response.status.is2xxSuccessful shouldBe true
+                    response.responseBody?.payload shouldBe expectedResponse
+                }
+            }
+
+            context("작성 중인 도안이 없는 경우") {
+                every {
+                    mockDraftDesignService.getMyDraftDesignToUpdate(any(), any())
+                } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
+
+                val response = exchangeRequest()
+                    .expectBody<TestResponse<GetMyDraftDesignToUpdate.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 조회 요청해야 함") {
+                    verify(exactly = 1) {
+                        mockDraftDesignService.getMyDraftDesignToUpdate(
+                            designId = 2,
+                            knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                        )
                     }
                 }
                 it("NOT FOUND 에러가 발생되어야 함") {
