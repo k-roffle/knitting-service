@@ -30,14 +30,14 @@ class DraftDesignServiceTest : BehaviorSpec() {
 
             When("작성 중이던 도안리스트를 요청하면") {
                 every {
-                    mockDraftDesignRepository.findNewDraftDesignsByKnitterId(any())
+                    mockDraftDesignRepository.findDraftDesignsToCreateByKnitterId(any())
                 } returns Flux.fromIterable(listOf(mockDraftDesign))
 
                 val result = service.getMyDraftDesigns(1).collectList().block()
                 Then("작성 중이던 도안 목록을 조회해와야 한다") {
                     verify(exactly = 1) {
                         mockDraftDesignRepository
-                            .findNewDraftDesignsByKnitterId(1)
+                            .findDraftDesignsToCreateByKnitterId(1)
                     }
                 }
                 Then("작성 중이던 도안 리스트가 반환되어야 한다") {
@@ -92,13 +92,13 @@ class DraftDesignServiceTest : BehaviorSpec() {
         Given("내가 작성 중이던 도안이 존재하지 않고") {
             When("작성 중이던 도안리스트를 요청하면") {
                 every {
-                    mockDraftDesignRepository.findNewDraftDesignsByKnitterId(any())
+                    mockDraftDesignRepository.findDraftDesignsToCreateByKnitterId(any())
                 } returns Flux.empty()
 
                 val result = service.getMyDraftDesigns(1).collectList().block()
                 Then("작성 중이던 도안 목록을 조회해와야 한다") {
                     verify(exactly = 1) {
-                        mockDraftDesignRepository.findNewDraftDesignsByKnitterId(1)
+                        mockDraftDesignRepository.findDraftDesignsToCreateByKnitterId(1)
                     }
                 }
                 Then("빈 리스트가 반환되어야 한다") {

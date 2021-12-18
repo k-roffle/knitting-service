@@ -19,7 +19,7 @@ class DraftDesignRepositoryImpl(
             .switchIfEmpty(Mono.error(NotFoundEntity(DraftDesign::class.java)))
             .map { it.toDraftDesign() }
 
-    override fun findNewDraftDesignsByKnitterId(knitterId: Long): Flux<DraftDesign> =
+    override fun findDraftDesignsToCreateByKnitterId(knitterId: Long): Flux<DraftDesign> =
         draftDesignRepository
             .findByKnitterIdAndDesignId(knitterId, null)
             .map { it.toDraftDesign() }
