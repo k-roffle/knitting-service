@@ -325,5 +325,34 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 }
             }
         }
+
+        Given("수정 중인 내역이 있는 도안이 존재하고") {
+            val draftDesignId = 1L
+            val designId = 2L
+            val knitterId = 3L
+            val mockDraftDesign = MockFactory.create(
+                MockData.DraftDesign(
+                    id = draftDesignId,
+                    designId = designId,
+                    knitterId = knitterId,
+                )
+            )
+            When("수정 내역 상세를 조회하면") {
+                every {
+                    mockDraftDesignRepository.getDraftDesignToUpdate(any(), any())
+                } returns Mono.just(mockDraftDesign)
+
+                val result = service.getMyDraftDesignToUpdate(designId, knitterId).block()
+                Then("수정 중이던 도안 상세를 조회해와야 한다") {
+                    verify(exactly = 1) {
+                        mockDraftDesignRepository
+                            .getDraftDesignToUpdate(designId = 2, knitterId = 3)
+                    }
+                }
+                Then("수정 중이던 내용이 반환되어야 한다") {
+                    result shouldBe mockDraftDesign
+                }
+            }
+        }
     }
 }
