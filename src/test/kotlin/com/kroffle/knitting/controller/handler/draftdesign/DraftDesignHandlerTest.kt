@@ -34,9 +34,9 @@ import java.time.ZoneOffset
 @DisplayName("DraftDesignHandler Test")
 class DraftDesignHandlerTest : DescribeSpec() {
     init {
-        val draftDesignService = mockk<DraftDesignService>()
-        val designsRouter = DesignsRouter(mockk(), DraftDesignHandler(draftDesignService))
-        val designRouter = DesignRouter(mockk(), DraftDesignHandler(draftDesignService))
+        val mockDraftDesignService = mockk<DraftDesignService>()
+        val designsRouter = DesignsRouter(mockk(), DraftDesignHandler(mockDraftDesignService))
+        val designRouter = DesignRouter(mockk(), DraftDesignHandler(mockDraftDesignService))
         val designsWebclient = WebTestClientHelper
             .createWebTestClient(designsRouter.designsRouterFunction())
         val designWebclient = WebTestClientHelper
@@ -56,7 +56,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
             context("정상적인 도안 생성을 요청한 경우") {
                 val mockDraftDesign = MockFactory.create(MockData.DraftDesign(id = 1))
                 every {
-                    draftDesignService.saveDraft(any())
+                    mockDraftDesignService.saveDraft(any())
                 } returns Mono.just(mockDraftDesign)
                 val requestBody = """
                 {
@@ -71,7 +71,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService.saveDraft(
+                        mockDraftDesignService.saveDraft(
                             SaveDraftDesignData(
                                 id = 1,
                                 knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
@@ -138,7 +138,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     ),
                 )
                 every {
-                    draftDesignService.getMyDraftDesigns(any())
+                    mockDraftDesignService.getMyDraftDesigns(any())
                 } returns Flux.fromIterable(draftDesigns)
 
                 val response = exchangeRequest()
@@ -147,7 +147,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService.getMyDraftDesigns(WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                        mockDraftDesignService.getMyDraftDesigns(WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
                 it("작성중인 도안 리스트가 반환되어야 함") {
@@ -169,7 +169,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
             context("작성 중인 도안이 없는 경우") {
                 every {
-                    draftDesignService.getMyDraftDesigns(any())
+                    mockDraftDesignService.getMyDraftDesigns(any())
                 } returns Flux.empty()
 
                 val response = exchangeRequest()
@@ -178,7 +178,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService.getMyDraftDesigns(WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                        mockDraftDesignService.getMyDraftDesigns(WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
                 it("빈 리스트가 반환되어야 함") {
@@ -206,7 +206,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     )
                 )
                 every {
-                    draftDesignService.getMyDraftDesign(any(), any())
+                    mockDraftDesignService.getMyDraftDesign(any(), any())
                 } returns Mono.just(draftDesign)
 
                 val response = exchangeRequest()
@@ -215,7 +215,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService
+                        mockDraftDesignService
                             .getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
@@ -232,7 +232,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
             context("작성 중인 도안이 없는 경우") {
                 every {
-                    draftDesignService.getMyDraftDesign(any(), any())
+                    mockDraftDesignService.getMyDraftDesign(any(), any())
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
 
                 val response = exchangeRequest()
@@ -241,7 +241,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService.getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                        mockDraftDesignService.getMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
                 it("NOT FOUND 에러가 발생되어야 함") {
@@ -260,7 +260,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
             context("작성 중인 도안이 있는 경우") {
                 every {
-                    draftDesignService.deleteMyDraftDesign(any(), any())
+                    mockDraftDesignService.deleteMyDraftDesign(any(), any())
                 } returns Mono.just(1)
 
                 val response = exchangeRequest()
@@ -269,7 +269,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService
+                        mockDraftDesignService
                             .deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
@@ -282,7 +282,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
             context("작성 중인 도안이 없는 경우") {
                 every {
-                    draftDesignService.deleteMyDraftDesign(any(), any())
+                    mockDraftDesignService.deleteMyDraftDesign(any(), any())
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
 
                 val response = exchangeRequest()
@@ -291,7 +291,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
                 it("service 를 통해 생성 요청해야 함") {
                     verify(exactly = 1) {
-                        draftDesignService.deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
+                        mockDraftDesignService.deleteMyDraftDesign(1, WebTestClientHelper.AUTHORIZED_KNITTER_ID)
                     }
                 }
                 it("NOT FOUND 에러가 발생되어야 함") {
