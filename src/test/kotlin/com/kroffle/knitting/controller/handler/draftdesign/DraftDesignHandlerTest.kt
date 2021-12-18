@@ -1,8 +1,8 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
 import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
-import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesign
-import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesigns
+import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesign
+import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesigns
 import com.kroffle.knitting.controller.router.design.DesignRouter
 import com.kroffle.knitting.controller.router.design.DesignsRouter
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
@@ -71,7 +71,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 } returns Flux.fromIterable(draftDesigns)
 
                 val response = exchangeRequest()
-                    .expectBody<TestResponse<List<MyDraftDesigns.Response>>>()
+                    .expectBody<TestResponse<List<GetMyDraftDesigns.Response>>>()
                     .returnResult()
 
                 it("service 를 통해 생성 요청해야 함") {
@@ -82,12 +82,12 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 it("작성중인 도안 리스트가 반환되어야 함") {
                     response.status.is2xxSuccessful shouldBe true
                     response.responseBody?.payload shouldBe listOf(
-                        MyDraftDesigns.Response(
+                        GetMyDraftDesigns.Response(
                             id = 1,
                             name = "작성 중",
                             updatedAt = updatedAt,
                         ),
-                        MyDraftDesigns.Response(
+                        GetMyDraftDesigns.Response(
                             id = 2,
                             name = null,
                             updatedAt = updatedAt,
@@ -102,7 +102,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 } returns Flux.empty()
 
                 val response = exchangeRequest()
-                    .expectBody<TestResponse<List<MyDraftDesigns.Response>>>()
+                    .expectBody<TestResponse<List<GetMyDraftDesigns.Response>>>()
                     .returnResult()
 
                 it("service 를 통해 생성 요청해야 함") {
@@ -139,7 +139,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 } returns Mono.just(draftDesign)
 
                 val response = exchangeRequest()
-                    .expectBody<TestResponse<MyDraftDesign.Response>>()
+                    .expectBody<TestResponse<GetMyDraftDesign.Response>>()
                     .returnResult()
 
                 it("service 를 통해 생성 요청해야 함") {
@@ -149,7 +149,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     }
                 }
                 it("작성중인 도안이 반환되어야 함") {
-                    val expectedResponse = MyDraftDesign.Response(
+                    val expectedResponse = GetMyDraftDesign.Response(
                         id = 1,
                         value = "{\"name\": \"작성 중\"}",
                         updatedAt = updatedAt,
@@ -165,7 +165,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
 
                 val response = exchangeRequest()
-                    .expectBody<TestResponse<MyDraftDesign.Response>>()
+                    .expectBody<TestResponse<GetMyDraftDesign.Response>>()
                     .returnResult()
 
                 it("service 를 통해 생성 요청해야 함") {
