@@ -16,8 +16,8 @@ class MyselfHandler(
     private val knitterService: KnitterService,
     private val productSummaryService: ProductSummaryService,
 ) {
-    fun getMyProfile(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun getMyProfile(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
         return knitterService
             .getKnitter(knitterId)
             .doOnError(ExceptionHelper::raiseException)
@@ -25,8 +25,8 @@ class MyselfHandler(
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun getMySalesSummary(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
         return productSummaryService
             .countProductOnList(knitterId)
             .doOnError(ExceptionHelper::raiseException)

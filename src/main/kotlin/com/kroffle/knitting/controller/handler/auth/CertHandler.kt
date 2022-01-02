@@ -12,7 +12,7 @@ class CertHandler(
     @Value("\${cert.secret}")
     private val certSecret: String,
 ) {
-    fun applyHttps(req: ServerRequest): Mono<ServerResponse> = ServerResponse.ok()
+    fun applyHttps(request: ServerRequest): Mono<ServerResponse> = ServerResponse.ok()
         .contentType(MediaType.TEXT_PLAIN)
         .bodyValue(certSecret)
 }

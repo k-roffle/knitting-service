@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono
 
 @Component
 class GoogleLogInHandler(private val authService: AuthService) {
-    fun requestCode(req: ServerRequest): Mono<ServerResponse> {
+    fun requestCode(request: ServerRequest): Mono<ServerResponse> {
         return temporaryRedirect(authService.getAuthorizationUri()).build()
     }
 
-    fun authorized(req: ServerRequest): Mono<ServerResponse> {
-        val code = req.queryParam("code")
+    fun authorized(request: ServerRequest): Mono<ServerResponse> {
+        val code = request.queryParam("code")
         if (code.isEmpty || code.get().isBlank()) {
             ExceptionHelper.raiseException(NotFoundCode())
         }
@@ -30,8 +30,8 @@ class GoogleLogInHandler(private val authService: AuthService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun refreshToken(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
         val refreshToken = authService.refreshToken(knitterId)
         val response = GoogleLoginResponseMapper.toRefreshTokenResponse(refreshToken)
         return ResponseHelper.makeJsonResponse(response)

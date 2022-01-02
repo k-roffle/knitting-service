@@ -17,12 +17,12 @@ import java.util.stream.Collectors
 
 @Component
 class DraftDesignHandler(private val service: DraftDesignService) {
-    fun saveDraft(req: ServerRequest): Mono<ServerResponse> {
-        val body: Mono<SaveDraftDesign.Request> = req
+    fun saveDraft(request: ServerRequest): Mono<ServerResponse> {
+        val body: Mono<SaveDraftDesign.Request> = request
             .bodyToMono(SaveDraftDesign.Request::class.java)
             .onErrorResume { Mono.error(InvalidBodyException()) }
             .switchIfEmpty(Mono.error(EmptyBodyException()))
-        val knitterId = AuthHelper.getKnitterId(req)
+        val knitterId = AuthHelper.getKnitterId(request)
         return body
             .map { DraftDesignRequestMapper.toSaveDraftDesignData(it, knitterId) }
             .flatMap(service::saveDraft)
@@ -31,8 +31,8 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDraftDesigns(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun getMyDraftDesigns(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
         return service
             .getMyDraftDesigns(knitterId)
             .doOnError(ExceptionHelper::raiseException)
@@ -41,9 +41,9 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val draftDesignId = req.pathVariable("draftDesignId").toLong()
+    fun getMyDraftDesign(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val draftDesignId = request.pathVariable("draftDesignId").toLong()
         return service
             .getMyDraftDesign(draftDesignId, knitterId)
             .doOnError(ExceptionHelper::raiseException)
@@ -51,9 +51,9 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDraftDesignToUpdate(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val designId = req.pathVariable("designId").toLong()
+    fun getMyDraftDesignToUpdate(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val designId = request.pathVariable("designId").toLong()
         return service
             .getMyDraftDesignToUpdate(designId = designId, knitterId = knitterId)
             .doOnError(ExceptionHelper::raiseException)
@@ -61,9 +61,9 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun deleteMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val draftDesignId = req.pathVariable("draftDesignId").toLong()
+    fun deleteMyDraftDesign(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val draftDesignId = request.pathVariable("draftDesignId").toLong()
         return service
             .deleteMyDraftDesign(draftDesignId, knitterId)
             .doOnError(ExceptionHelper::raiseException)

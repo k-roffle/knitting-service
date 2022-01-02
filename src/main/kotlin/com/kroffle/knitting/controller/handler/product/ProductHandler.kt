@@ -20,9 +20,9 @@ import java.util.stream.Collectors.toList
 
 @Component
 class ProductHandler(private val productService: ProductService) {
-    fun editProductPackage(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val bodyMono: Mono<EditProductPackage.Request> = req
+    fun editProductPackage(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val bodyMono: Mono<EditProductPackage.Request> = request
             .bodyToMono(EditProductPackage.Request::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
 
@@ -36,9 +36,9 @@ class ProductHandler(private val productService: ProductService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun editProductContent(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val bodyMono: Mono<EditProductContent.Request> = req
+    fun editProductContent(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val bodyMono: Mono<EditProductContent.Request> = request
             .bodyToMono(EditProductContent.Request::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
 
@@ -52,9 +52,9 @@ class ProductHandler(private val productService: ProductService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun registerProduct(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val bodyMono: Mono<RegisterProduct.Request> = req
+    fun registerProduct(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val bodyMono: Mono<RegisterProduct.Request> = request
             .bodyToMono(RegisterProduct.Request::class.java)
             .switchIfEmpty(Mono.error(EmptyBodyException()))
 
@@ -68,9 +68,9 @@ class ProductHandler(private val productService: ProductService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyProduct(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val productId = req.pathVariable("productId").toLong()
+    fun getMyProduct(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val productId = request.pathVariable("productId").toLong()
 
         return productService
             .get(ProductRequestMapper.toGetMyProductData(productId, knitterId))
@@ -79,9 +79,9 @@ class ProductHandler(private val productService: ProductService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyProducts(req: ServerRequest): Mono<ServerResponse> {
-        val paging = PaginationHelper.getPagingFromRequest(req)
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun getMyProducts(request: ServerRequest): Mono<ServerResponse> {
+        val paging = PaginationHelper.getPagingFromRequest(request)
+        val knitterId = AuthHelper.getKnitterId(request)
 
         return productService
             .get(ProductRequestMapper.toGetMyProductsData(paging, knitterId))

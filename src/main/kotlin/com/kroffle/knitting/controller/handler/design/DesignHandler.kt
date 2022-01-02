@@ -18,12 +18,12 @@ import java.util.stream.Collectors.toList
 
 @Component
 class DesignHandler(private val service: DesignService) {
-    fun createDesign(req: ServerRequest): Mono<ServerResponse> {
-        val design: Mono<NewDesign.Request> = req
+    fun createDesign(request: ServerRequest): Mono<ServerResponse> {
+        val design: Mono<NewDesign.Request> = request
             .bodyToMono(NewDesign.Request::class.java)
             .onErrorResume { Mono.error(InvalidBodyException()) }
             .switchIfEmpty(Mono.error(EmptyBodyException()))
-        val knitterId = AuthHelper.getKnitterId(req)
+        val knitterId = AuthHelper.getKnitterId(request)
         return design
             .map { DesignRequestMapper.toCreateDesignData(it, knitterId) }
             .flatMap(service::create)
@@ -32,9 +32,9 @@ class DesignHandler(private val service: DesignService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
-        val paging = PaginationHelper.getPagingFromRequest(req)
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun getMyDesigns(request: ServerRequest): Mono<ServerResponse> {
+        val paging = PaginationHelper.getPagingFromRequest(request)
+        val knitterId = AuthHelper.getKnitterId(request)
         return service
             .getMyDesign(DesignRequestMapper.toMyDesignFilter(paging, knitterId))
             .doOnError(ExceptionHelper::raiseException)
