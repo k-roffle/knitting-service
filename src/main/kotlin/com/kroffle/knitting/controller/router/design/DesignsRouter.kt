@@ -19,10 +19,19 @@ class DesignsRouter(
         router {
             listOf(
                 GET(GET_MY_DESIGNS_PATH, designHandler::getMyDesigns),
+                POST(CREATE_DESIGN_PATH, designHandler::createDesign),
+            )
+        }
+    )
+
+    @Bean
+    fun draftDesignsRouterFunction() = nest(
+        path(ROOT_PATH),
+        router {
+            listOf(
                 GET(GET_MY_DRAFT_DESIGNS_PATH, draftDesignHandler::getMyDraftDesigns),
                 GET(GET_MY_DRAFT_DESIGN_PATH, draftDesignHandler::getMyDraftDesign),
                 GET(GET_MY_DRAFT_DESIGN_TO_UPDATE_PATH, draftDesignHandler::getMyDraftDesignToUpdate),
-                POST(CREATE_DESIGN_PATH, designHandler::createDesign),
                 POST(SAVE_DRAFT_PATH, draftDesignHandler::saveDraft),
                 DELETE(DELETE_MY_DRAFT_DESIGN_PATH, draftDesignHandler::deleteMyDraftDesign),
             )
