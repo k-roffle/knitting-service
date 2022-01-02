@@ -1,7 +1,8 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
-import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesign
-import com.kroffle.knitting.controller.handler.draftdesign.dto.MyDraftDesigns
+import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
+import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesign
+import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
@@ -45,7 +46,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .getMyDraftDesigns(knitterId)
             .doOnError { ExceptionHelper.raiseException(it) }
             .map { draftDesign ->
-                MyDraftDesigns.Response(
+                GetMyDraftDesigns.Response(
                     id = draftDesign.id!!,
                     name = draftDesign.name,
                     updatedAt = draftDesign.updatedAt!!,
@@ -62,12 +63,22 @@ class DraftDesignHandler(private val service: DraftDesignService) {
             .getMyDraftDesign(draftDesignId, knitterId)
             .doOnError { ExceptionHelper.raiseException(it) }
             .map { draftDesign ->
-                MyDraftDesign.Response(
+                GetMyDraftDesign.Response(
                     id = draftDesign.id!!,
                     value = draftDesign.value,
                     updatedAt = draftDesign.updatedAt!!,
                 )
             }
+            .flatMap { ResponseHelper.makeJsonResponse(it) }
+    }
+
+    fun deleteMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(req)
+        val draftDesignId = req.pathVariable("id").toLong()
+        return service
+            .deleteMyDraftDesign(draftDesignId, knitterId)
+            .doOnError { ExceptionHelper.raiseException(it) }
+            .map { deletedId -> DeleteDraftDesign.Response(id = deletedId) }
             .flatMap { ResponseHelper.makeJsonResponse(it) }
     }
 }

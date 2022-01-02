@@ -19,7 +19,8 @@ class DesignRouter(
         router {
             listOf(
                 POST(CREATE_DESIGN_PATH, designHandler::createDesign),
-                POST(SAVE_DRAFT_PATH, draftDesignHandler::saveDraft)
+                POST(SAVE_DRAFT_PATH, draftDesignHandler::saveDraft),
+                DELETE(DELETE_MY_DRAFT_DESIGN_PATH, draftDesignHandler::deleteMyDraftDesign),
             )
         }
     )
@@ -28,6 +29,7 @@ class DesignRouter(
         private const val ROOT_PATH = "/design"
         private const val CREATE_DESIGN_PATH = ""
         private const val SAVE_DRAFT_PATH = "/draft"
+        private const val DELETE_MY_DRAFT_DESIGN_PATH = "/draft/mine/{id}"
         val PUBLIC_PATHS = listOf<String>()
     }
 }

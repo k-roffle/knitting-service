@@ -3,7 +3,7 @@ package com.kroffle.knitting.controller.handler.draftdesign.dto
 import com.kroffle.knitting.controller.handler.helper.response.type.ListItemPayload
 import java.time.OffsetDateTime
 
-object MyDraftDesigns {
+object GetMyDraftDesigns {
     data class Response(
         val id: Long,
         val name: String?,

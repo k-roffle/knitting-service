@@ -7,6 +7,7 @@ import com.kroffle.knitting.usecase.repository.DraftDesignRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.switchIfEmpty
 
 @Repository
 class DraftDesignRepositoryImpl(
@@ -29,5 +30,8 @@ class DraftDesignRepositoryImpl(
             .map { it.toDraftDesign() }
 
     override fun delete(draftDesign: DraftDesign): Mono<Long> =
-        draftDesignRepository.delete(draftDesign.toDraftDesignEntity()).map { draftDesign.id }
+        draftDesignRepository
+            .delete(draftDesign.toDraftDesignEntity())
+            .flatMap { Mono.just(draftDesign.id!!) }
+            .switchIfEmpty { Mono.just(draftDesign.id!!) }
 }
