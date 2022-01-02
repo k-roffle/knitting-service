@@ -28,7 +28,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
         Given("내가 작성 중이던 도안이 존재하고") {
             val mockDraftDesign = MockFactory.create(MockData.DraftDesign(id = 1))
 
-            When("작성 중이던 도안리스트를 조회하면") {
+            When("작성 중이던 도안리스트를 요청하면") {
                 every {
                     mockDraftDesignRepository.findNewDraftDesignsByKnitterId(any())
                 } returns Flux.fromIterable(listOf(mockDraftDesign))
@@ -45,7 +45,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 }
             }
 
-            When("작성 중이던 도안 상세를 조회하면") {
+            When("작성 중이던 도안 상세를 요청하면") {
                 every {
                     mockDraftDesignRepository.findByIdAndKnitterId(any(), any())
                 } returns Mono.just(mockDraftDesign)
@@ -61,7 +61,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 }
             }
 
-            When("작성 중이던 도안을 삭제하면") {
+            When("작성 중이던 도안을 삭제 요청하면") {
                 every {
                     mockDraftDesignRepository
                         .findByIdAndKnitterId(any(), any())
@@ -90,7 +90,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
         }
 
         Given("내가 작성 중이던 도안이 존재하지 않고") {
-            When("작성 중이던 도안리스트를 조회하면") {
+            When("작성 중이던 도안리스트를 요청하면") {
                 every {
                     mockDraftDesignRepository.findNewDraftDesignsByKnitterId(any())
                 } returns Flux.empty()
@@ -106,7 +106,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 }
             }
 
-            When("작성 중이던 도안 상세를 조회하면") {
+            When("작성 중이던 도안 상세를 요청하면") {
                 every {
                     mockDraftDesignRepository.findByIdAndKnitterId(any(), any())
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
@@ -123,7 +123,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 }
             }
 
-            When("작성 중이던 도안을 삭제하면") {
+            When("작성 중이던 도안을 삭제 요청하면") {
                 every {
                     mockDraftDesignRepository.findByIdAndKnitterId(any(), any())
                 } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
