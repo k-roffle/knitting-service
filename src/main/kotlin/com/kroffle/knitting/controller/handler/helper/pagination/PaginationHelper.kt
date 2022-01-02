@@ -22,9 +22,9 @@ class PaginationHelper {
             else Integer.parseInt(count)
         }
 
-        fun getPagingFromRequest(req: ServerRequest): Paging {
+        fun getPagingFromRequest(request: ServerRequest): Paging {
             try {
-                return Paging(after = getAfter(req), count = getCount(req))
+                return Paging(after = getAfter(request), count = getCount(request))
             } catch (error: IllegalArgumentException) {
                 throw InvalidPagingParameter()
             }

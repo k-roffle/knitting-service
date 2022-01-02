@@ -1,17 +1,14 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
-import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
-import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesign
-import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesignToUpdate
-import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
+import com.kroffle.knitting.controller.handler.draftdesign.mapper.DraftDesignRequestMapper
+import com.kroffle.knitting.controller.handler.draftdesign.mapper.DraftDesignResponseMapper
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.usecase.draftdesign.DraftDesignService
-import com.kroffle.knitting.usecase.draftdesign.dto.SaveDraftDesignData
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -20,84 +17,57 @@ import java.util.stream.Collectors
 
 @Component
 class DraftDesignHandler(private val service: DraftDesignService) {
-    fun saveDraft(req: ServerRequest): Mono<ServerResponse> {
-        val body: Mono<SaveDraftDesign.Request> = req
+    fun saveDraft(request: ServerRequest): Mono<ServerResponse> {
+        val body: Mono<SaveDraftDesign.Request> = request
             .bodyToMono(SaveDraftDesign.Request::class.java)
             .onErrorResume { Mono.error(InvalidBodyException()) }
             .switchIfEmpty(Mono.error(EmptyBodyException()))
-        val knitterId = AuthHelper.getKnitterId(req)
+        val knitterId = AuthHelper.getKnitterId(request)
         return body
-            .flatMap {
-                service
-                    .saveDraft(
-                        SaveDraftDesignData(
-                            id = it.id,
-                            knitterId = knitterId,
-                            designId = it.designId,
-                            value = it.value,
-                        )
-                    )
-            }
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { SaveDraftDesign.Response(it.id!!) }
-            .flatMap { ResponseHelper.makeJsonResponse(it) }
+            .map { DraftDesignRequestMapper.toSaveDraftDesignData(it, knitterId) }
+            .flatMap(service::saveDraft)
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DraftDesignResponseMapper::toSaveDraftDesignResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDraftDesigns(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
+    fun getMyDraftDesigns(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
         return service
             .getMyDraftDesigns(knitterId)
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { draftDesign ->
-                GetMyDraftDesigns.Response(
-                    id = draftDesign.id!!,
-                    name = draftDesign.name,
-                    updatedAt = draftDesign.updatedAt!!,
-                )
-            }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DraftDesignResponseMapper::toGetMyDraftDesignsResponse)
             .collect(Collectors.toList())
-            .flatMap { ResponseHelper.makeJsonResponse(it) }
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val draftDesignId = req.pathVariable("draftDesignId").toLong()
+    fun getMyDraftDesign(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val draftDesignId = request.pathVariable("draftDesignId").toLong()
         return service
             .getMyDraftDesign(draftDesignId, knitterId)
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { draftDesign ->
-                GetMyDraftDesign.Response(
-                    id = draftDesign.id!!,
-                    value = draftDesign.value,
-                    updatedAt = draftDesign.updatedAt!!,
-                )
-            }
-            .flatMap { ResponseHelper.makeJsonResponse(it) }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DraftDesignResponseMapper::toGetMyDraftDesignResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun getMyDraftDesignToUpdate(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val designId = req.pathVariable("designId").toLong()
+    fun getMyDraftDesignToUpdate(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val designId = request.pathVariable("designId").toLong()
         return service
             .getMyDraftDesignToUpdate(designId = designId, knitterId = knitterId)
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { draftDesign ->
-                GetMyDraftDesignToUpdate.Response(
-                    id = draftDesign.id!!,
-                    value = draftDesign.value,
-                    updatedAt = draftDesign.updatedAt!!,
-                )
-            }
-            .flatMap { ResponseHelper.makeJsonResponse(it) }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DraftDesignResponseMapper::toGetMyDraftDesignToUpdateResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
-    fun deleteMyDraftDesign(req: ServerRequest): Mono<ServerResponse> {
-        val knitterId = AuthHelper.getKnitterId(req)
-        val draftDesignId = req.pathVariable("draftDesignId").toLong()
+    fun deleteMyDraftDesign(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val draftDesignId = request.pathVariable("draftDesignId").toLong()
         return service
             .deleteMyDraftDesign(draftDesignId, knitterId)
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { deletedId -> DeleteDraftDesign.Response(id = deletedId) }
-            .flatMap { ResponseHelper.makeJsonResponse(it) }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DraftDesignResponseMapper::toDeleteDraftDesignResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 }
