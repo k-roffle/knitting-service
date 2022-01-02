@@ -5,6 +5,7 @@ import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
+import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
@@ -19,9 +20,9 @@ import java.util.stream.Collectors
 @Component
 class DraftDesignHandler(private val service: DraftDesignService) {
     fun saveDraft(req: ServerRequest): Mono<ServerResponse> {
-        // TODO: Add unit test
         val body: Mono<SaveDraftDesign.Request> = req
             .bodyToMono(SaveDraftDesign.Request::class.java)
+            .onErrorResume { Mono.error(InvalidBodyException()) }
             .switchIfEmpty(Mono.error(EmptyBodyException()))
         val knitterId = AuthHelper.getKnitterId(req)
         return body
@@ -36,6 +37,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
                         )
                     )
             }
+            .doOnError { ExceptionHelper.raiseException(it) }
             .map { SaveDraftDesign.Response(it.id!!) }
             .flatMap { ResponseHelper.makeJsonResponse(it) }
     }

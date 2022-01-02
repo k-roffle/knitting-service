@@ -1,9 +1,9 @@
-package com.kroffle.knitting.controller.router.design
+package com.kroffle.knitting.controller.handler.design
 
-import com.kroffle.knitting.controller.handler.design.DesignHandler
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
+import com.kroffle.knitting.controller.router.design.DesignRouter
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
