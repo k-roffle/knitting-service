@@ -1,8 +1,7 @@
 package com.kroffle.knitting.controller.handler.auth
 
-import com.kroffle.knitting.controller.handler.auth.dto.Authorized
-import com.kroffle.knitting.controller.handler.auth.dto.RefreshToken
 import com.kroffle.knitting.controller.handler.auth.exception.NotFoundCode
+import com.kroffle.knitting.controller.handler.auth.mapper.GoogleLoginResponseMapper
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
@@ -26,18 +25,15 @@ class GoogleLogInHandler(private val authService: AuthService) {
         }
         return authService
             .authorize(code.get())
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { Authorized.Response(it) }
-            .flatMap {
-                ResponseHelper.makeJsonResponse(it)
-            }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(GoogleLoginResponseMapper::toAuthorizedResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
     fun refreshToken(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
-        return ResponseHelper
-            .makeJsonResponse(
-                RefreshToken.Response(authService.refreshToken(knitterId))
-            )
+        val refreshToken = authService.refreshToken(knitterId)
+        val response = GoogleLoginResponseMapper.toRefreshTokenResponse(refreshToken)
+        return ResponseHelper.makeJsonResponse(response)
     }
 }

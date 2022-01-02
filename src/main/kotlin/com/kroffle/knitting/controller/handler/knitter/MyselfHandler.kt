@@ -3,8 +3,7 @@ package com.kroffle.knitting.controller.handler.knitter
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
-import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
-import com.kroffle.knitting.controller.handler.knitter.dto.SalesSummary
+import com.kroffle.knitting.controller.handler.knitter.mapper.MyselfResponseMapper
 import com.kroffle.knitting.usecase.knitter.KnitterService
 import com.kroffle.knitting.usecase.summary.ProductSummaryService
 import org.springframework.stereotype.Component
@@ -21,32 +20,17 @@ class MyselfHandler(
         val knitterId = AuthHelper.getKnitterId(req)
         return knitterService
             .getKnitter(knitterId)
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { knitter ->
-                MyProfile.Response(
-                    email = knitter.email,
-                    name = knitter.name,
-                    profileImageUrl = knitter.profileImageUrl,
-                )
-            }
-            .flatMap {
-                ResponseHelper.makeJsonResponse(it)
-            }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(MyselfResponseMapper::toMyProfileResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
     fun getMySalesSummary(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
         return productSummaryService
             .countProductOnList(knitterId)
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .flatMap {
-                ResponseHelper
-                    .makeJsonResponse(
-                        SalesSummary.Response(
-                            numberOfProductsOnSales = it,
-                            numberOfProductsSold = 0,
-                        )
-                    )
-            }
+            .doOnError(ExceptionHelper::raiseException)
+            .map(MyselfResponseMapper::toSalesSummaryResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 }

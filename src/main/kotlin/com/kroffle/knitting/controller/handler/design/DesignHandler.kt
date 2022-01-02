@@ -1,24 +1,15 @@
 package com.kroffle.knitting.controller.handler.design
 
-import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.design.mapper.DesignRequestMapper
+import com.kroffle.knitting.controller.handler.design.mapper.DesignResponseMapper
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
-import com.kroffle.knitting.domain.design.value.Gauge
-import com.kroffle.knitting.domain.design.value.Length
-import com.kroffle.knitting.domain.design.value.Pattern
-import com.kroffle.knitting.domain.design.value.Size
-import com.kroffle.knitting.domain.design.value.Technique
-import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.usecase.design.DesignService
-import com.kroffle.knitting.usecase.design.dto.CreateDesignData
-import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
-import com.kroffle.knitting.usecase.helper.pagination.type.Sort
-import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -34,79 +25,21 @@ class DesignHandler(private val service: DesignService) {
             .switchIfEmpty(Mono.error(EmptyBodyException()))
         val knitterId = AuthHelper.getKnitterId(req)
         return design
-            .flatMap {
-                service.create(
-                    CreateDesignData(
-                        knitterId = knitterId,
-                        name = it.name,
-                        designType = it.designType,
-                        patternType = it.patternType,
-                        gauge = Gauge(it.stitches, it.rows),
-                        size = Size(
-                            totalLength = Length(
-                                value = it.size.totalLength,
-                                unit = it.size.sizeUnit,
-                            ),
-                            sleeveLength = Length(
-                                value = it.size.sleeveLength,
-                                unit = it.size.sizeUnit,
-                            ),
-                            shoulderWidth = Length(
-                                value = it.size.shoulderWidth,
-                                unit = it.size.sizeUnit,
-                            ),
-                            bottomWidth = Length(
-                                value = it.size.bottomWidth,
-                                unit = it.size.sizeUnit,
-                            ),
-                            armholeDepth = Length(
-                                value = it.size.armholeDepth,
-                                unit = it.size.sizeUnit,
-                            ),
-                        ),
-                        needle = it.needle,
-                        yarn = it.yarn,
-                        extra = it.extra,
-                        price = Money(it.price),
-                        pattern = Pattern(it.pattern),
-                        description = it.description,
-                        targetLevel = it.targetLevel,
-                        coverImageUrl = it.coverImageUrl,
-                        techniques = it.techniques.map { technique -> Technique(technique) },
-                        draftId = it.draftId,
-                    )
-                )
-            }
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { NewDesign.Response(id = it.id!!) }
-            .flatMap { ResponseHelper.makeJsonResponse(it) }
+            .map { DesignRequestMapper.toCreateDesignData(it, knitterId) }
+            .flatMap(service::create)
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DesignResponseMapper::toNewDesignResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 
     fun getMyDesigns(req: ServerRequest): Mono<ServerResponse> {
         val paging = PaginationHelper.getPagingFromRequest(req)
         val knitterId = AuthHelper.getKnitterId(req)
         return service
-            .getMyDesign(
-                MyDesignFilter(
-                    knitterId,
-                    paging,
-                    Sort("id", SortDirection.DESC),
-                )
-            )
-            .doOnError { ExceptionHelper.raiseException(it) }
-            .map { design ->
-                MyDesign.Response(
-                    id = design.id!!,
-                    name = design.name,
-                    yarn = design.yarn,
-                    coverImageUrl = design.coverImageUrl,
-                    tags = listOf(design.designType.tag, design.patternType.tag),
-                    createdAt = design.createdAt!!,
-                )
-            }
+            .getMyDesign(DesignRequestMapper.toMyDesignFilter(paging, knitterId))
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DesignResponseMapper::toMyDesignResponse)
             .collect(toList())
-            .flatMap {
-                ResponseHelper.makeJsonResponse(it)
-            }
+            .flatMap(ResponseHelper::makeJsonResponse)
     }
 }
