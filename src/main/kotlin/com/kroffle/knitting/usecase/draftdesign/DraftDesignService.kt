@@ -28,7 +28,7 @@ class DraftDesignService(
             )
         } else {
             draftDesignRepository
-                .findByIdAndKnitterId(data.id, data.knitterId)
+                .getDraftDesign(data.id, data.knitterId)
                 .map { it.merge(data.value) }
                 .flatMap {
                     draftDesignRepository.save(it)
@@ -46,21 +46,31 @@ class DraftDesignService(
     }
 
     fun getMyDraftDesigns(knitterId: Long): Flux<DraftDesign> =
-        draftDesignRepository.findNewDraftDesignsByKnitterId(knitterId)
+        draftDesignRepository.findDraftDesignsToCreate(knitterId)
 
     fun getMyDraftDesign(draftDesignId: Long, knitterId: Long): Mono<DraftDesign> =
-        draftDesignRepository.findByIdAndKnitterId(draftDesignId, knitterId)
+        draftDesignRepository.getDraftDesign(
+            id = draftDesignId,
+            knitterId = knitterId,
+        )
+
+    fun getMyDraftDesignToUpdate(designId: Long, knitterId: Long): Mono<DraftDesign> =
+        draftDesignRepository.getDraftDesignToUpdate(
+            designId = designId,
+            knitterId = knitterId,
+        )
 
     fun deleteMyDraftDesign(draftDesignId: Long, knitterId: Long): Mono<Long> {
         val draftDesign = draftDesignRepository
-            .findByIdAndKnitterId(draftDesignId, knitterId)
+            .getDraftDesign(draftDesignId, knitterId)
         return draftDesign
             .flatMap { draftDesignRepository.delete(it) }
     }
 
     interface DraftDesignRepository {
-        fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesign>
-        fun findNewDraftDesignsByKnitterId(knitterId: Long): Flux<DraftDesign>
+        fun getDraftDesign(id: Long, knitterId: Long): Mono<DraftDesign>
+        fun findDraftDesignsToCreate(knitterId: Long): Flux<DraftDesign>
+        fun getDraftDesignToUpdate(designId: Long, knitterId: Long): Mono<DraftDesign>
         fun save(draftDesign: DraftDesign): Mono<DraftDesign>
         fun delete(draftDesign: DraftDesign): Mono<Long>
     }

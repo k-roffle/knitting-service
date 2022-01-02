@@ -28,7 +28,7 @@ class ProductRouter(private val handler: ProductHandler) {
         private const val ROOT_PATH = "/product"
         private const val DRAFT_PRODUCT_PACKAGE_PATH = "/package"
         private const val DRAFT_PRODUCT_CONTENT_PATH = "/content"
-        private const val GET_MY_PRODUCT_PATH = "/mine/{id}"
+        private const val GET_MY_PRODUCT_PATH = "/mine/{productId}"
         private const val GET_MY_PRODUCTS_PATH = "/mine"
         val PUBLIC_PATHS = listOf<String>()
     }

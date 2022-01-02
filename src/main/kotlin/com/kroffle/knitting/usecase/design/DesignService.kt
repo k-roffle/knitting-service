@@ -44,7 +44,7 @@ class DesignService(
             createDesign(data)
                 .flatMap { design ->
                     draftDesignRepository
-                        .findByIdAndKnitterId(
+                        .getDraftDesign(
                             id = data.draftId,
                             knitterId = data.knitterId,
                         )
@@ -71,7 +71,7 @@ class DesignService(
     }
 
     interface DraftDesignRepository {
-        fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesign>
+        fun getDraftDesign(id: Long, knitterId: Long): Mono<DraftDesign>
         fun delete(draftDesign: DraftDesign): Mono<Long>
     }
 }

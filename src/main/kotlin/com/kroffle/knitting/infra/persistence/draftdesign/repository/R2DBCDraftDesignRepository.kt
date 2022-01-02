@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono
 interface R2DBCDraftDesignRepository : ReactiveCrudRepository<DraftDesignEntity, Long> {
     fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesignEntity>
     fun findByKnitterIdAndDesignId(knitterId: Long, designId: Long?): Flux<DraftDesignEntity>
+    fun getByKnitterIdAndDesignId(knitterId: Long, designId: Long): Mono<DraftDesignEntity>
 }

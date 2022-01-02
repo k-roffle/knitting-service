@@ -119,7 +119,7 @@ class ProductHandler(private val productService: ProductService) {
 
     fun getMyProduct(req: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(req)
-        val productId = req.pathVariable("id").toLong()
+        val productId = req.pathVariable("productId").toLong()
         val product: Mono<Product> =
             productService.get(
                 GetMyProductData(
