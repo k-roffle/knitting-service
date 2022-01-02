@@ -48,6 +48,9 @@ class DraftDesignService(
     fun getMyDraftDesigns(knitterId: Long): Flux<DraftDesign> =
         draftDesignRepository.findNewDraftDesignsByKnitterId(knitterId)
 
+    fun getMyDraftDesign(draftDesignId: Long, knitterId: Long): Mono<DraftDesign> =
+        draftDesignRepository.findByIdAndKnitterId(draftDesignId, knitterId)
+
     interface DraftDesignRepository {
         fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<DraftDesign>
         fun findNewDraftDesignsByKnitterId(knitterId: Long): Flux<DraftDesign>
