@@ -3,7 +3,7 @@ package com.kroffle.knitting.controller.handler.design
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
-import com.kroffle.knitting.controller.router.design.DesignRouter
+import com.kroffle.knitting.controller.router.design.DesignsRouter
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
@@ -28,18 +28,18 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
 
-@DisplayName("DesignRouter Test")
+@DisplayName("DesignHandler Test")
 class DesignHandlerTest : DescribeSpec() {
     init {
         val service = mockk<DesignService>()
-        val router = DesignRouter(DesignHandler(service), mockk())
+        val router = DesignsRouter(DesignHandler(service), mockk())
         val webClient = WebTestClientHelper
-            .createWebTestClient(router.designRouterFunction())
+            .createWebTestClient(router.designsRouterFunction())
 
         val exchangeRequest = fun (requestBody: String?): WebTestClient.ResponseSpec {
             val client = webClient
                 .post()
-                .uri("/design")
+                .uri("/designs")
                 .addDefaultRequestHeader()
             return if (requestBody == null) {
                 client
