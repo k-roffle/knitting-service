@@ -23,8 +23,8 @@ class DesignsRouter(private val designHandler: DesignHandler, private val draftD
 
     companion object {
         private const val ROOT_PATH = "/designs"
-        private const val GET_MY_DESIGNS_PATH = "/my"
-        private const val GET_MY_DRAFT_DESIGNS_PATH = "/draft/my"
+        private const val GET_MY_DESIGNS_PATH = "/mine"
+        private const val GET_MY_DRAFT_DESIGNS_PATH = "/draft/mine"
         val PUBLIC_PATHS: List<String> = listOf()
     }
 }

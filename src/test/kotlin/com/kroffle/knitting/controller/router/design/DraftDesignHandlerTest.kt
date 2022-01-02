@@ -35,7 +35,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
             val exchangeRequest = fun (): WebTestClient.ResponseSpec =
                 webClient
                     .get()
-                    .uri("/designs/draft/my")
+                    .uri("/designs/draft/mine")
                     .addDefaultRequestHeader()
                     .exchange()
 
