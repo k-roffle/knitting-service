@@ -10,7 +10,6 @@ import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import com.kroffle.knitting.controller.router.auth.CertRouter.Companion.PUBLIC_PATHS as CertRouterPublicPaths
 import com.kroffle.knitting.controller.router.auth.LogInRouter.Companion.PUBLIC_PATHS as LogInRouterPublicPaths
-import com.kroffle.knitting.controller.router.design.DesignRouter.Companion.PUBLIC_PATHS as DesignRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignsRouter.Companion.PUBLIC_PATHS as DesignsRouterPublicPaths
 import com.kroffle.knitting.controller.router.knitter.MyselfRouter.Companion.PUBLIC_PATHS as MyselfRouterPublicPaths
 import com.kroffle.knitting.controller.router.product.ProductRouter.Companion.PUBLIC_PATHS as ProductRouterPublicPaths
@@ -58,7 +57,6 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
             LogInRouterPublicPaths +
                 CertRouterPublicPaths +
                 MyselfRouterPublicPaths +
-                DesignRouterPublicPaths +
                 DesignsRouterPublicPaths +
                 ProductRouterPublicPaths +
                 ACTUATOR_PATHS

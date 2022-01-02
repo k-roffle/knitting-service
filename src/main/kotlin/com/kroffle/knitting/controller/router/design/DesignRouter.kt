@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.RequestPredicates.path
 import org.springframework.web.reactive.function.server.RouterFunctions.nest
 import org.springframework.web.reactive.function.server.router
 
+@Deprecated("remove after client doesn't use")
 @Configuration
 class DesignRouter(
     private val designHandler: DesignHandler,
@@ -30,6 +31,5 @@ class DesignRouter(
         private const val CREATE_DESIGN_PATH = ""
         private const val SAVE_DRAFT_PATH = "/draft"
         private const val DELETE_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
-        val PUBLIC_PATHS = listOf<String>()
     }
 }

@@ -7,7 +7,6 @@ import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
-import com.kroffle.knitting.controller.router.design.DesignRouter
 import com.kroffle.knitting.controller.router.design.DesignsRouter
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.helper.MockData
@@ -37,19 +36,16 @@ class DraftDesignHandlerTest : DescribeSpec() {
     init {
         val mockDraftDesignService = mockk<DraftDesignService>()
         val designsRouter = DesignsRouter(mockk(), DraftDesignHandler(mockDraftDesignService))
-        val designRouter = DesignRouter(mockk(), DraftDesignHandler(mockDraftDesignService))
         val designsWebclient = WebTestClientHelper
             .createWebTestClient(designsRouter.designsRouterFunction())
-        val designWebclient = WebTestClientHelper
-            .createWebTestClient(designRouter.designRouterFunction())
 
         afterContainer { clearAllMocks() }
 
         describe("임시저장 저장 test") {
             val exchangeRequest = fun (requestBody: String): WebTestClient.ResponseSpec =
-                designWebclient
+                designsWebclient
                     .post()
-                    .uri("/design/draft")
+                    .uri("/designs/draft")
                     .addDefaultRequestHeader()
                     .bodyValue(requestBody)
                     .exchange()
@@ -99,9 +95,9 @@ class DraftDesignHandlerTest : DescribeSpec() {
             }
 
             context("request body 가 없는 경우") {
-                val response = designWebclient
+                val response = designsWebclient
                     .post()
-                    .uri("/design/draft")
+                    .uri("/designs/draft")
                     .addDefaultRequestHeader()
                     .exchange()
                     .expectBody<EmptyBodyException>()
@@ -323,9 +319,9 @@ class DraftDesignHandlerTest : DescribeSpec() {
 
         describe("임시저장 삭제 test") {
             val exchangeRequest = fun (): WebTestClient.ResponseSpec =
-                designWebclient
+                designsWebclient
                     .delete()
-                    .uri("/design/draft/mine/1")
+                    .uri("/designs/draft/mine/1")
                     .addDefaultRequestHeader()
                     .exchange()
 

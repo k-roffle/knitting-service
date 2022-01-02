@@ -9,7 +9,10 @@ import org.springframework.web.reactive.function.server.RouterFunctions.nest
 import org.springframework.web.reactive.function.server.router
 
 @Configuration
-class DesignsRouter(private val designHandler: DesignHandler, private val draftDesignHandler: DraftDesignHandler) {
+class DesignsRouter(
+    private val designHandler: DesignHandler,
+    private val draftDesignHandler: DraftDesignHandler,
+) {
     @Bean
     fun designsRouterFunction() = nest(
         path(ROOT_PATH),
@@ -19,6 +22,9 @@ class DesignsRouter(private val designHandler: DesignHandler, private val draftD
                 GET(GET_MY_DRAFT_DESIGNS_PATH, draftDesignHandler::getMyDraftDesigns),
                 GET(GET_MY_DRAFT_DESIGN_PATH, draftDesignHandler::getMyDraftDesign),
                 GET(GET_MY_DRAFT_DESIGN_TO_UPDATE_PATH, draftDesignHandler::getMyDraftDesignToUpdate),
+                POST(CREATE_DESIGN_PATH, designHandler::createDesign),
+                POST(SAVE_DRAFT_PATH, draftDesignHandler::saveDraft),
+                DELETE(DELETE_MY_DRAFT_DESIGN_PATH, draftDesignHandler::deleteMyDraftDesign),
             )
         }
     )
@@ -29,6 +35,9 @@ class DesignsRouter(private val designHandler: DesignHandler, private val draftD
         private const val GET_MY_DRAFT_DESIGNS_PATH = "/draft/mine"
         private const val GET_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
         private const val GET_MY_DRAFT_DESIGN_TO_UPDATE_PATH = "/{designId}/draft/mine"
+        private const val CREATE_DESIGN_PATH = ""
+        private const val SAVE_DRAFT_PATH = "/draft"
+        private const val DELETE_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
         val PUBLIC_PATHS: List<String> = listOf()
     }
 }
