@@ -4,6 +4,7 @@ import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
+import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
 import com.kroffle.knitting.usecase.helper.pagination.type.Sort
 import org.springframework.stereotype.Service
@@ -39,6 +40,29 @@ class DesignService(
                 )
         }
 
+    private fun updateDesign(data: UpdateDesignData): Mono<Design> =
+        with(data) {
+            designRepository
+                .getDesign(data.id, data.knitterId)
+                .flatMap { design ->
+                    designRepository.updateDesign(
+                        design.update(
+                            designType = designType,
+                            patternType = patternType,
+                            gauge = gauge,
+                            size = size,
+                            needle = needle,
+                            yarn = yarn,
+                            extra = extra,
+                            pattern = pattern,
+                            description = description,
+                            targetLevel = targetLevel,
+                            techniques = techniques,
+                        )
+                    )
+                }
+        }
+
     private fun deleteMyDraftDesign(draftId: Long?, knitterId: Long): Mono<Long> {
         if (draftId == null) return Mono.empty()
         return draftDesignRepository
@@ -60,13 +84,24 @@ class DesignService(
                     .defaultIfEmpty(design)
             }
 
+    fun update(data: UpdateDesignData): Mono<Design> {
+        return updateDesign(data)
+            .flatMap { design ->
+                deleteMyDraftDesign(data.draftId, data.knitterId)
+                    .map { design }
+                    .defaultIfEmpty(design)
+            }
+    }
+
     fun getMyDesign(filter: MyDesignFilter): Flux<Design> =
         with(filter) {
             designRepository.getDesignsByKnitterId(knitterId, paging, sort)
         }
 
     interface DesignRepository {
+        fun getDesign(id: Long, knitterId: Long): Mono<Design>
         fun createDesign(design: Design): Mono<Design>
+        fun updateDesign(design: Design): Mono<Design>
         fun getDesignsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Design>
     }
 
