@@ -16,54 +16,54 @@ class DesignService(
     private val draftDesignRepository: DraftDesignRepository,
 ) {
     private fun createDesign(data: CreateDesignData): Mono<Design> =
-        designRepository
-            .createDesign(
-                Design.new(
-                    knitterId = data.knitterId,
-                    name = data.name,
-                    designType = data.designType,
-                    patternType = data.patternType,
-                    gauge = data.gauge,
-                    size = data.size,
-                    needle = data.needle,
-                    yarn = data.yarn,
-                    extra = data.extra,
-                    price = data.price,
-                    pattern = data.pattern,
-                    description = data.description,
-                    targetLevel = data.targetLevel,
-                    coverImageUrl = data.coverImageUrl,
-                    techniques = data.techniques,
+        with(data) {
+            designRepository
+                .createDesign(
+                    Design.new(
+                        knitterId = knitterId,
+                        name = name,
+                        designType = designType,
+                        patternType = patternType,
+                        gauge = gauge,
+                        size = size,
+                        needle = needle,
+                        yarn = yarn,
+                        extra = extra,
+                        price = price,
+                        pattern = pattern,
+                        description = description,
+                        targetLevel = targetLevel,
+                        coverImageUrl = coverImageUrl,
+                        techniques = techniques,
+                    )
                 )
-            )
-
-    fun create(data: CreateDesignData): Mono<Design> {
-        return if (data.draftId == null) {
-            createDesign(data)
-        } else {
-            createDesign(data)
-                .flatMap { design ->
-                    draftDesignRepository
-                        .getDraftDesign(
-                            id = data.draftId,
-                            knitterId = data.knitterId,
-                        )
-                        .flatMap {
-                            draftDesignRepository
-                                .delete(it)
-                                .map { design }
-                        }
-                }
         }
+
+    private fun deleteMyDraftDesign(draftId: Long?, knitterId: Long): Mono<Long> {
+        if (draftId == null) return Mono.empty()
+        return draftDesignRepository
+            .getDraftDesign(
+                id = draftId,
+                knitterId = knitterId,
+            )
+            .flatMap {
+                draftDesignRepository
+                    .delete(it)
+            }
     }
 
+    fun create(data: CreateDesignData): Mono<Design> =
+        createDesign(data)
+            .flatMap { design ->
+                deleteMyDraftDesign(data.draftId, data.knitterId)
+                    .map { design }
+                    .defaultIfEmpty(design)
+            }
+
     fun getMyDesign(filter: MyDesignFilter): Flux<Design> =
-        designRepository
-            .getDesignsByKnitterId(
-                filter.knitterId,
-                filter.paging,
-                filter.sort,
-            )
+        with(filter) {
+            designRepository.getDesignsByKnitterId(knitterId, paging, sort)
+        }
 
     interface DesignRepository {
         fun createDesign(design: Design): Mono<Design>
