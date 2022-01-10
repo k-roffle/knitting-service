@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.handler.design.mapper
 
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.design.dto.SizeDto
 import com.kroffle.knitting.domain.design.value.Gauge
 import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
@@ -25,28 +26,7 @@ object DesignRequestMapper {
                     stitches = stitches,
                     rows = rows,
                 ),
-                size = Size(
-                    totalLength = Length(
-                        value = size.totalLength,
-                        unit = size.sizeUnit,
-                    ),
-                    sleeveLength = Length(
-                        value = size.sleeveLength,
-                        unit = size.sizeUnit,
-                    ),
-                    shoulderWidth = Length(
-                        value = size.shoulderWidth,
-                        unit = size.sizeUnit,
-                    ),
-                    bottomWidth = Length(
-                        value = size.bottomWidth,
-                        unit = size.sizeUnit,
-                    ),
-                    armholeDepth = Length(
-                        value = size.armholeDepth,
-                        unit = size.sizeUnit,
-                    ),
-                ),
+                size = toDomainFromDto(size),
                 needle = needle,
                 yarn = yarn,
                 extra = extra,
@@ -66,4 +46,15 @@ object DesignRequestMapper {
             paging,
             Sort("id", SortDirection.DESC),
         )
+
+    private fun toDomainFromDto(size: SizeDto): Size =
+        with(size) {
+            Size(
+                totalLength = Length(value = totalLength, unit = sizeUnit),
+                sleeveLength = Length(value = sleeveLength, unit = sizeUnit),
+                shoulderWidth = Length(value = shoulderWidth, unit = sizeUnit),
+                bottomWidth = Length(value = bottomWidth, unit = sizeUnit),
+                armholeDepth = Length(value = armholeDepth, unit = sizeUnit),
+            )
+        }
 }
