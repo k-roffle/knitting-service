@@ -1,10 +1,12 @@
 package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.design.dto.UpdateDesign
 import com.kroffle.knitting.controller.handler.design.mapper.DesignRequestMapper
 import com.kroffle.knitting.controller.handler.design.mapper.DesignResponseMapper
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
+import com.kroffle.knitting.controller.handler.helper.extension.ServerRequestExtension.getLongPathVariable
 import com.kroffle.knitting.controller.handler.helper.extension.ServerRequestExtension.safetyBodyToMono
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
@@ -25,6 +27,18 @@ class DesignHandler(private val service: DesignService) {
             .flatMap(service::create)
             .doOnError(ExceptionHelper::raiseException)
             .map(DesignResponseMapper::toNewDesignResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
+    }
+
+    fun updateDesign(request: ServerRequest): Mono<ServerResponse> {
+        val design = request.safetyBodyToMono(UpdateDesign.Request::class.java)
+        val designId = request.getLongPathVariable("designId")
+        val knitterId = AuthHelper.getKnitterId(request)
+        return design
+            .map { DesignRequestMapper.toUpdateDesignData(it, designId, knitterId) }
+            .flatMap(service::update)
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DesignResponseMapper::toUpdateDesignResponse)
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 

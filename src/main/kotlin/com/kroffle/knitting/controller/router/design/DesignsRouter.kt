@@ -20,6 +20,7 @@ class DesignsRouter(
             listOf(
                 GET(GET_MY_DESIGNS_PATH, designHandler::getMyDesigns),
                 POST(CREATE_DESIGN_PATH, designHandler::createDesign),
+                PUT(UPDATE_DESIGN_PATH, designHandler::updateDesign),
             )
         }
     )
@@ -40,13 +41,17 @@ class DesignsRouter(
 
     companion object {
         private const val ROOT_PATH = "/designs"
+        // path of design router
         private const val GET_MY_DESIGNS_PATH = "/mine"
+        private const val CREATE_DESIGN_PATH = ""
+        private const val UPDATE_DESIGN_PATH = "/{designId}"
+        // path of draft design router
         private const val GET_MY_DRAFT_DESIGNS_PATH = "/draft/mine"
         private const val GET_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
         private const val GET_MY_DRAFT_DESIGN_TO_UPDATE_PATH = "/{designId}/draft/mine"
-        private const val CREATE_DESIGN_PATH = ""
         private const val SAVE_DRAFT_PATH = "/draft"
         private const val DELETE_MY_DRAFT_DESIGN_PATH = "/draft/mine/{draftDesignId}"
+
         val PUBLIC_PATHS: List<String> = listOf()
     }
 }
