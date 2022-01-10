@@ -30,7 +30,7 @@ class DesignRepositoryImpl(
             .flatMap { getDesignAggregate(it) }
             .switchIfEmpty(Mono.error(NotFoundEntity(DesignEntity::class.java)))
 
-    override fun createDesign(design: Design): Mono<Design> =
+    private fun saveDesign(design: Design): Mono<Design> =
         designRepository
             .save(design.toDesignEntity())
             .flatMap { designEntity ->
@@ -57,6 +57,10 @@ class DesignRepositoryImpl(
                         designEntity.toDesign(techniques = it.t1, size = it.t2)
                     }
             }
+
+    override fun createDesign(design: Design): Mono<Design> = saveDesign(design)
+
+    override fun updateDesign(design: Design): Mono<Design> = saveDesign(design)
 
     private fun getDesignAggregates(designs: Flux<DesignEntity>): Flux<Design> {
         val designIds: Mono<List<Long>> =
