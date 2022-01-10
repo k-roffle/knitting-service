@@ -247,7 +247,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 val saveArgument = slot<DraftDesign>()
 
                 every {
-                    mockDesignRepository.findByIdAndKnitterId(any(), any())
+                    mockDesignRepository.getDesign(any(), any())
                 } returns Mono.just(mockDesign)
 
                 every {
@@ -257,7 +257,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 val result = service.saveDraft(data).block()
                 Then("존재하는 도안인지 검증해야 한다") {
                     verify(exactly = 1) {
-                        mockDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDesignRepository.getDesign(1, 1)
                     }
                 }
                 Then("새로운 임시저장 내역을 생성해야 한다") {
@@ -288,7 +288,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 val saveArgument = slot<DraftDesign>()
 
                 every {
-                    mockDesignRepository.findByIdAndKnitterId(any(), any())
+                    mockDesignRepository.getDesign(any(), any())
                 } returns Mono.just(mockDesign)
 
                 every {
@@ -303,7 +303,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 val result = service.saveDraft(data).block()
                 Then("존재하는 도안인지 검증해야 한다") {
                     verify(exactly = 1) {
-                        mockDesignRepository.findByIdAndKnitterId(1, 1)
+                        mockDesignRepository.getDesign(1, 1)
                     }
                 }
                 Then("기존 임시저장 내역을 조회해야 한다") {
