@@ -27,6 +27,7 @@ class DesignEntity(
     private val description: String,
     private val targetLevel: String,
     private val coverImageUrl: String,
+    private val updatedAt: OffsetDateTime = OffsetDateTime.now(),
     private val createdAt: OffsetDateTime = OffsetDateTime.now(),
 ) {
     fun getNotNullId(): Long = id!!
@@ -49,6 +50,7 @@ class DesignEntity(
             targetLevel = Design.LevelType.valueOf(this.targetLevel),
             coverImageUrl = this.coverImageUrl,
             techniques = techniques,
+            updatedAt = this.updatedAt,
             createdAt = this.createdAt,
         )
 }
@@ -70,5 +72,6 @@ fun Design.toDesignEntity() =
         description = this.description,
         targetLevel = this.targetLevel.name,
         coverImageUrl = this.coverImageUrl,
+        updatedAt = this.updatedAt ?: OffsetDateTime.now(),
         createdAt = this.createdAt ?: OffsetDateTime.now(),
     )

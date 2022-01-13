@@ -98,6 +98,7 @@ class DesignsRouterTest {
                         targetLevel = Design.LevelType.HARD,
                         coverImageUrl = "http://test.kroffle.com/image.jpg",
                         techniques = listOf(Technique("안뜨기"), Technique("겉뜨기")),
+                        updatedAt = today,
                         createdAt = today,
                     )
                 )

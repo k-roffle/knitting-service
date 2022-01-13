@@ -24,6 +24,7 @@ data class Design(
     val targetLevel: LevelType,
     val coverImageUrl: String,
     val techniques: List<Technique>,
+    val updatedAt: OffsetDateTime?,
     val createdAt: OffsetDateTime?,
 ) {
     enum class DesignType(val code: Int, val tag: String) {
@@ -67,6 +68,7 @@ data class Design(
         description = description,
         targetLevel = targetLevel,
         techniques = techniques,
+        updatedAt = OffsetDateTime.now(),
     )
 
     companion object {
@@ -103,6 +105,7 @@ data class Design(
             targetLevel = targetLevel,
             coverImageUrl = coverImageUrl,
             techniques = techniques,
+            updatedAt = null,
             createdAt = null,
         )
     }
