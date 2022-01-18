@@ -2,12 +2,18 @@ package com.kroffle.knitting.controller.handler.design.mapper
 
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.design.dto.UpdateDesign
 import com.kroffle.knitting.domain.design.entity.Design
 
 object DesignResponseMapper {
     fun toNewDesignResponse(design: Design): NewDesign.Response =
         with(design) {
             NewDesign.Response(id = id!!)
+        }
+
+    fun toUpdateDesignResponse(design: Design): UpdateDesign.Response =
+        with(design) {
+            UpdateDesign.Response(id = id!!)
         }
 
     fun toMyDesignResponse(design: Design): MyDesign.Response =

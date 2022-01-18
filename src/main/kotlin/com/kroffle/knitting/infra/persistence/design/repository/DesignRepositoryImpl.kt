@@ -24,7 +24,13 @@ class DesignRepositoryImpl(
     private val techniqueRepository: R2DBCTechniqueRepository,
     private val sizeRepository: R2DBCSizeRepository,
 ) : DesignRepository {
-    override fun createDesign(design: Design): Mono<Design> =
+    override fun getDesign(id: Long, knitterId: Long): Mono<Design> =
+        designRepository
+            .findByIdAndKnitterId(id, knitterId)
+            .flatMap { getDesignAggregate(it) }
+            .switchIfEmpty(Mono.error(NotFoundEntity(DesignEntity::class.java)))
+
+    private fun saveDesign(design: Design): Mono<Design> =
         designRepository
             .save(design.toDesignEntity())
             .flatMap { designEntity ->
@@ -51,6 +57,10 @@ class DesignRepositoryImpl(
                         designEntity.toDesign(techniques = it.t1, size = it.t2)
                     }
             }
+
+    override fun createDesign(design: Design): Mono<Design> = saveDesign(design)
+
+    override fun updateDesign(design: Design): Mono<Design> = saveDesign(design)
 
     private fun getDesignAggregates(designs: Flux<DesignEntity>): Flux<Design> {
         val designIds: Mono<List<Long>> =
@@ -129,10 +139,4 @@ class DesignRepositoryImpl(
         }
         return getDesignAggregates(designs)
     }
-
-    override fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<Design> =
-        designRepository
-            .findByIdAndKnitterId(id, knitterId)
-            .flatMap { getDesignAggregate(it) }
-            .switchIfEmpty(Mono.error(NotFoundEntity(DesignEntity::class.java)))
 }

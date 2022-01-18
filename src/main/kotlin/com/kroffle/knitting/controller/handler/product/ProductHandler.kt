@@ -1,8 +1,9 @@
 package com.kroffle.knitting.controller.handler.product
 
-import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
+import com.kroffle.knitting.controller.handler.helper.extension.ServerRequestExtension.getLongPathVariable
+import com.kroffle.knitting.controller.handler.helper.extension.ServerRequestExtension.safetyBodyToMono
 import com.kroffle.knitting.controller.handler.helper.pagination.PaginationHelper
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.product.dto.EditProductContent
@@ -22,9 +23,7 @@ import java.util.stream.Collectors.toList
 class ProductHandler(private val productService: ProductService) {
     fun editProductPackage(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val bodyMono: Mono<EditProductPackage.Request> = request
-            .bodyToMono(EditProductPackage.Request::class.java)
-            .switchIfEmpty(Mono.error(EmptyBodyException()))
+        val bodyMono = request.safetyBodyToMono(EditProductPackage.Request::class.java)
 
         val product: Mono<Product> = bodyMono
             .map { ProductRequestMapper.toEditProductPackageData(it, knitterId) }
@@ -38,9 +37,7 @@ class ProductHandler(private val productService: ProductService) {
 
     fun editProductContent(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val bodyMono: Mono<EditProductContent.Request> = request
-            .bodyToMono(EditProductContent.Request::class.java)
-            .switchIfEmpty(Mono.error(EmptyBodyException()))
+        val bodyMono = request.safetyBodyToMono(EditProductContent.Request::class.java)
 
         val product: Mono<Product> = bodyMono
             .map { ProductRequestMapper.toEditProductContentData(it, knitterId) }
@@ -54,9 +51,7 @@ class ProductHandler(private val productService: ProductService) {
 
     fun registerProduct(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val bodyMono: Mono<RegisterProduct.Request> = request
-            .bodyToMono(RegisterProduct.Request::class.java)
-            .switchIfEmpty(Mono.error(EmptyBodyException()))
+        val bodyMono = request.safetyBodyToMono(RegisterProduct.Request::class.java)
 
         val product: Mono<Product> = bodyMono
             .map { ProductRequestMapper.toRegisterProductData(it, knitterId) }
@@ -70,7 +65,7 @@ class ProductHandler(private val productService: ProductService) {
 
     fun getMyProduct(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val productId = request.pathVariable("productId").toLong()
+        val productId = request.getLongPathVariable("productId")
 
         return productService
             .get(ProductRequestMapper.toGetMyProductData(productId, knitterId))

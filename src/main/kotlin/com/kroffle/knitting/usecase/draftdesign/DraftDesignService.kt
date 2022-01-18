@@ -13,8 +13,7 @@ class DraftDesignService(
     private val designRepository: DesignRepository,
 ) {
     private fun verifyDesignId(designId: Long, knitterId: Long): Mono<Design> {
-        return designRepository
-            .findByIdAndKnitterId(designId, knitterId)
+        return designRepository.getDesign(designId, knitterId)
     }
 
     private fun saveDraftDesign(data: SaveDraftDesignData): Mono<DraftDesign> {
@@ -76,6 +75,6 @@ class DraftDesignService(
     }
 
     interface DesignRepository {
-        fun findByIdAndKnitterId(id: Long, knitterId: Long): Mono<Design>
+        fun getDesign(id: Long, knitterId: Long): Mono<Design>
     }
 }

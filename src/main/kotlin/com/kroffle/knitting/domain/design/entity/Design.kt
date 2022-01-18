@@ -43,6 +43,32 @@ data class Design(
         HARD
     }
 
+    fun update(
+        designType: DesignType,
+        patternType: PatternType,
+        gauge: Gauge,
+        size: Size,
+        needle: String,
+        yarn: String,
+        extra: String?,
+        pattern: Pattern,
+        description: String,
+        targetLevel: LevelType,
+        techniques: List<Technique>,
+    ) = this.copy(
+        designType = designType,
+        patternType = patternType,
+        gauge = gauge,
+        size = size,
+        needle = needle,
+        yarn = yarn,
+        extra = extra,
+        pattern = pattern,
+        description = description,
+        targetLevel = targetLevel,
+        techniques = techniques,
+    )
+
     companion object {
         fun new(
             knitterId: Long,

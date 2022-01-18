@@ -3,10 +3,10 @@ package com.kroffle.knitting.controller.handler.draftdesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.SaveDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.mapper.DraftDesignRequestMapper
 import com.kroffle.knitting.controller.handler.draftdesign.mapper.DraftDesignResponseMapper
-import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
-import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
 import com.kroffle.knitting.controller.handler.helper.auth.AuthHelper
 import com.kroffle.knitting.controller.handler.helper.exception.ExceptionHelper
+import com.kroffle.knitting.controller.handler.helper.extension.ServerRequestExtension.getLongPathVariable
+import com.kroffle.knitting.controller.handler.helper.extension.ServerRequestExtension.safetyBodyToMono
 import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.usecase.draftdesign.DraftDesignService
 import org.springframework.stereotype.Component
@@ -18,10 +18,7 @@ import java.util.stream.Collectors
 @Component
 class DraftDesignHandler(private val service: DraftDesignService) {
     fun saveDraft(request: ServerRequest): Mono<ServerResponse> {
-        val body: Mono<SaveDraftDesign.Request> = request
-            .bodyToMono(SaveDraftDesign.Request::class.java)
-            .onErrorResume { Mono.error(InvalidBodyException()) }
-            .switchIfEmpty(Mono.error(EmptyBodyException()))
+        val body = request.safetyBodyToMono(SaveDraftDesign.Request::class.java)
         val knitterId = AuthHelper.getKnitterId(request)
         return body
             .map { DraftDesignRequestMapper.toSaveDraftDesignData(it, knitterId) }
@@ -43,7 +40,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
 
     fun getMyDraftDesign(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val draftDesignId = request.pathVariable("draftDesignId").toLong()
+        val draftDesignId = request.getLongPathVariable("draftDesignId")
         return service
             .getMyDraftDesign(draftDesignId, knitterId)
             .doOnError(ExceptionHelper::raiseException)
@@ -53,7 +50,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
 
     fun getMyDraftDesignToUpdate(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val designId = request.pathVariable("designId").toLong()
+        val designId = request.getLongPathVariable("designId")
         return service
             .getMyDraftDesignToUpdate(designId = designId, knitterId = knitterId)
             .doOnError(ExceptionHelper::raiseException)
@@ -63,7 +60,7 @@ class DraftDesignHandler(private val service: DraftDesignService) {
 
     fun deleteMyDraftDesign(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
-        val draftDesignId = request.pathVariable("draftDesignId").toLong()
+        val draftDesignId = request.getLongPathVariable("draftDesignId")
         return service
             .deleteMyDraftDesign(draftDesignId, knitterId)
             .doOnError(ExceptionHelper::raiseException)

@@ -37,7 +37,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
         val mockDraftDesignService = mockk<DraftDesignService>()
         val designsRouter = DesignsRouter(mockk(), DraftDesignHandler(mockDraftDesignService))
         val designsWebclient = WebTestClientHelper
-            .createWebTestClient(designsRouter.designsRouterFunction())
+            .createWebTestClient(designsRouter.draftDesignsRouterFunction())
 
         afterContainer { clearAllMocks() }
 

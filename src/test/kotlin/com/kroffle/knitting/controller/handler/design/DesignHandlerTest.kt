@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.design.dto.UpdateDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
 import com.kroffle.knitting.controller.router.design.DesignsRouter
@@ -18,6 +19,7 @@ import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
+import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -36,18 +38,19 @@ class DesignHandlerTest : DescribeSpec() {
         val webClient = WebTestClientHelper
             .createWebTestClient(router.designsRouterFunction())
 
-        val exchangeRequest = fun (requestBody: String?): WebTestClient.ResponseSpec {
-            val client = webClient
-                .post()
-                .uri("/designs")
-                .addDefaultRequestHeader()
-            return if (requestBody == null) {
-                client
-            } else {
-                client.bodyValue(requestBody)
-            }.exchange()
-        }
         describe("create design test") {
+            val exchangeRequest = fun (requestBody: String?): WebTestClient.ResponseSpec {
+                val client = webClient
+                    .post()
+                    .uri("/designs")
+                    .addDefaultRequestHeader()
+                return if (requestBody == null) {
+                    client
+                } else {
+                    client.bodyValue(requestBody)
+                }.exchange()
+            }
+
             context("정상적인 도안 생성을 요청한 경우") {
                 every {
                     service.create(any())
@@ -133,6 +136,109 @@ class DesignHandlerTest : DescribeSpec() {
 
             context("request body 가 없는 경우") {
                 val response = exchangeRequest(null)
+                    .expectBody<EmptyBodyException>()
+                    .returnResult()
+
+                it("400 에러가 발생해야 함") {
+                    response.rawStatusCode shouldBe 400
+                }
+            }
+        }
+
+        describe("update design test") {
+            val exchangeRequest = fun (designId: Long, requestBody: String?): WebTestClient.ResponseSpec {
+                val client = webClient
+                    .put()
+                    .uri("/designs/$designId")
+                    .addDefaultRequestHeader()
+                return if (requestBody == null) {
+                    client
+                } else {
+                    client.bodyValue(requestBody)
+                }.exchange()
+            }
+
+            context("정상적인 도안 생성을 요청한 경우") {
+                val designId: Long = 1
+                every {
+                    service.update(any())
+                } returns Mono.just(MockFactory.create(MockData.Design(id = designId)))
+                val requestBody = """{
+                    "design_type": "Sweater",
+                    "pattern_type": "Text",
+                    "stitches": 17.0,
+                    "rows": 20.5,
+                    "size": {
+                        "total_length": 10.0,
+                        "sleeve_length": 20.0,
+                        "shoulder_width": 30.0,
+                        "bottom_width": 40.0,
+                        "armhole_depth": 50.0
+                    },
+                    "needle": "5.0mm 둘레바늘 80cm",
+                    "yarn": "캐시미어 블랙 400g + 200g (수정)",
+                    "extra": "extra",
+                    "description": "캐시미어로 만드는 뽀송뽀송 탑다운 니트",
+                    "target_level": "NORMAL",
+                    "pattern": "우아아앙",
+                    "techniques": ["겉뜨기"],
+                    "draft_id": null
+                }""".trimMargin()
+
+                val response = exchangeRequest(designId, requestBody)
+                    .expectBody<TestResponse<UpdateDesign.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 생성 요청해야 함") {
+                    verify(exactly = 1) {
+                        service.update(
+                            UpdateDesignData(
+                                id = designId,
+                                knitterId = 1,
+                                designType = Design.DesignType.Sweater,
+                                patternType = Design.PatternType.Text,
+                                gauge = Gauge(17.0, 20.5),
+                                size = Size(
+                                    totalLength = Length(10.0),
+                                    sleeveLength = Length(20.0),
+                                    shoulderWidth = Length(30.0),
+                                    bottomWidth = Length(40.0),
+                                    armholeDepth = Length(50.0),
+                                ),
+                                needle = "5.0mm 둘레바늘 80cm",
+                                yarn = "캐시미어 블랙 400g + 200g (수정)",
+                                extra = "extra",
+                                description = "캐시미어로 만드는 뽀송뽀송 탑다운 니트",
+                                targetLevel = Design.LevelType.NORMAL,
+                                pattern = Pattern("우아아앙"),
+                                techniques = listOf(Technique("겉뜨기")),
+                                draftId = null,
+                            )
+                        )
+                    }
+                }
+                it("생성된 도안 id가 반환되어야 함") {
+                    response.status.is2xxSuccessful shouldBe true
+                    response.responseBody?.payload shouldBe UpdateDesign.Response(designId)
+                }
+            }
+
+            context("request body 에 필드가 부족한 경우") {
+                val requestBody = """{
+                    "name": "도안 이름"
+                }""".trimMargin()
+
+                val response = exchangeRequest(1, requestBody)
+                    .expectBody<InvalidBodyException>()
+                    .returnResult()
+
+                it("400 에러가 발생해야 함") {
+                    response.rawStatusCode shouldBe 400
+                }
+            }
+
+            context("request body 가 없는 경우") {
+                val response = exchangeRequest(1, null)
                     .expectBody<EmptyBodyException>()
                     .returnResult()
 
