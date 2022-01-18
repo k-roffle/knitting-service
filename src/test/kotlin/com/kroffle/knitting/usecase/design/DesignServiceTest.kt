@@ -9,6 +9,7 @@ import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.helper.MockData
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.WebTestClientHelper
+import com.kroffle.knitting.helper.mocker.TimeMocker.mockOffsetDateTime
 import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
@@ -29,6 +30,10 @@ class DesignServiceTest : BehaviorSpec() {
         val designRepository = mockk<DesignRepository>()
         val draftDesignRepository = mockk<DraftDesignRepository>()
         val service = DesignService(designRepository, draftDesignRepository)
+
+        beforeContainer {
+            mockOffsetDateTime()
+        }
 
         afterContainer {
             clearAllMocks()
@@ -71,8 +76,9 @@ class DesignServiceTest : BehaviorSpec() {
                 }
 
                 Then("도안 생성을 요청해야 한다") {
+                    val expectedParam = createDesignFromData(createData)
                     verify(exactly = 1) {
-                        designRepository.createDesign(createDesignFromData(createData))
+                        designRepository.createDesign(expectedParam)
                     }
                 }
                 Then("생성된 도안을 반환해야 한다") {
@@ -120,8 +126,8 @@ class DesignServiceTest : BehaviorSpec() {
                 }
 
                 Then("도안 수정을 요청해야 한다") {
+                    val expectedParam = createDesignFromData(mockDesign, updateData)
                     verify(exactly = 1) {
-                        val expectedParam = createDesignFromData(mockDesign, updateData)
                         designRepository.updateDesign(expectedParam)
                     }
                 }
@@ -168,8 +174,8 @@ class DesignServiceTest : BehaviorSpec() {
                 val result = service.update(updateData).block()
 
                 Then("도안 생성을 요청해야 한다") {
+                    val expectedParam = createDesignFromData(mockDesign, updateData)
                     verify(exactly = 1) {
-                        val expectedParam = createDesignFromData(mockDesign, updateData)
                         designRepository.updateDesign(expectedParam)
                     }
                 }
@@ -263,6 +269,7 @@ class DesignServiceTest : BehaviorSpec() {
                 targetLevel = targetLevel,
                 coverImageUrl = coverImageUrl,
                 techniques = techniques,
+                updatedAt = null,
                 createdAt = null,
             )
         }

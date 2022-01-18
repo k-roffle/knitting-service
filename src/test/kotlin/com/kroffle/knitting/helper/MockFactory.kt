@@ -45,6 +45,7 @@ class MockFactory {
                     targetLevel = targetLevel,
                     coverImageUrl = coverImageUrl,
                     techniques = techniques,
+                    updatedAt = updatedAt,
                     createdAt = createdAt,
                 )
             }

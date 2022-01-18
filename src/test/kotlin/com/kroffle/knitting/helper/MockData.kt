@@ -56,6 +56,7 @@ object MockData {
         val targetLevel: LevelType = LevelType.EASY,
         val coverImageUrl: String = "https://mock.wordway.com/image.png",
         val techniques: List<Technique> = listOf(),
+        val updatedAt: OffsetDateTime? = OffsetDateTime.now(),
         val createdAt: OffsetDateTime? = OffsetDateTime.now(),
     )
     data class DraftDesign(
