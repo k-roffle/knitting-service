@@ -42,6 +42,17 @@ class DesignHandler(private val service: DesignService) {
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 
+    fun getMyDesign(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        val designId = request.getLongPathVariable("designId")
+
+        return service
+            .getMyDesign(DesignRequestMapper.toGetMyDesignData(designId, knitterId))
+            .doOnError(ExceptionHelper::raiseException)
+            .map(DesignResponseMapper::toMyDesignResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
+    }
+
     fun getMyDesigns(request: ServerRequest): Mono<ServerResponse> {
         val paging = PaginationHelper.getPagingFromRequest(request)
         val knitterId = AuthHelper.getKnitterId(request)

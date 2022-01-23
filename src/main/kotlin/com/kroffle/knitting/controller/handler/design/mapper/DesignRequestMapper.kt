@@ -10,6 +10,7 @@ import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
 import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
+import com.kroffle.knitting.usecase.design.dto.GetMyDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
@@ -70,6 +71,12 @@ object DesignRequestMapper {
             knitterId,
             paging,
             Sort("id", SortDirection.DESC),
+        )
+
+    fun toGetMyDesignData(designId: Long, knitterId: Long) =
+        GetMyDesignData(
+            id = designId,
+            knitterId = knitterId,
         )
 
     private fun toDomainFromDto(size: SizeDto): Size =

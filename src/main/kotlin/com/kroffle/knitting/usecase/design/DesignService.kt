@@ -3,6 +3,7 @@ package com.kroffle.knitting.usecase.design
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
+import com.kroffle.knitting.usecase.design.dto.GetMyDesignData
 import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
 import com.kroffle.knitting.usecase.helper.pagination.type.Paging
@@ -92,6 +93,11 @@ class DesignService(
                     .defaultIfEmpty(design)
             }
     }
+
+    fun getMyDesign(data: GetMyDesignData): Mono<Design> =
+        with(data) {
+            designRepository.getDesign(id, knitterId)
+        }
 
     fun getMyDesigns(filter: MyDesignFilter): Flux<Design> =
         with(filter) {
