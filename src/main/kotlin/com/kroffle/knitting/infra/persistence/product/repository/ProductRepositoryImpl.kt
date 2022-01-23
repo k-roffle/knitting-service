@@ -76,7 +76,7 @@ class ProductRepositoryImpl(
             }
     }
 
-    override fun save(product: Product): Mono<Product> {
+    private fun save(product: Product): Mono<Product> {
         return productRepository
             .save(product.toProductEntity())
             .flatMap { productEntity ->
@@ -105,10 +105,9 @@ class ProductRepositoryImpl(
             }
     }
 
-    override fun getProductByIdAndKnitterId(id: Long, knitterId: Long): Mono<Product> =
-        findById(id)
-            .filter { it.knitterId == knitterId }
-            .switchIfEmpty(Mono.error(NotFoundEntity(ProductEntity::class.java)))
+    override fun createProduct(product: Product): Mono<Product> = save(product)
+
+    override fun updateProduct(product: Product): Mono<Product> = save(product)
 
     override fun getProductsByKnitterId(knitterId: Long, paging: Paging, sort: Sort): Flux<Product> {
         val pageRequest = PaginationHelper.makePageRequest(paging, sort)
@@ -135,9 +134,13 @@ class ProductRepositoryImpl(
     }
 
     override fun findRegisteredProduct(knitterId: Long): Flux<Product> {
-        val products: Flux<ProductEntity> =
-            productRepository
-                .findAllByKnitterIdAndInputStatus(knitterId, Product.InputStatus.REGISTERED)
+        val products: Flux<ProductEntity> = productRepository.findAll()
         return getProductAggregates(products)
+    }
+
+    override fun getProduct(id: Long, knitterId: Long): Mono<Product> {
+        return findById(id)
+            .filter { it.knitterId == knitterId }
+            .switchIfEmpty(Mono.error(NotFoundEntity(ProductEntity::class.java)))
     }
 }

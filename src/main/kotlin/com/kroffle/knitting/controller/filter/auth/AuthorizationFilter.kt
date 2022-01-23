@@ -12,7 +12,7 @@ import com.kroffle.knitting.controller.router.auth.CertRouter.Companion.PUBLIC_P
 import com.kroffle.knitting.controller.router.auth.LogInRouter.Companion.PUBLIC_PATHS as LogInRouterPublicPaths
 import com.kroffle.knitting.controller.router.design.DesignsRouter.Companion.PUBLIC_PATHS as DesignsRouterPublicPaths
 import com.kroffle.knitting.controller.router.knitter.MyselfRouter.Companion.PUBLIC_PATHS as MyselfRouterPublicPaths
-import com.kroffle.knitting.controller.router.product.ProductRouter.Companion.PUBLIC_PATHS as ProductRouterPublicPaths
+import com.kroffle.knitting.controller.router.product.ProductsRouter.Companion.PUBLIC_PATHS as ProductsRouterPublicPaths
 
 @Component
 class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
@@ -58,7 +58,7 @@ class AuthorizationFilter(private val tokenDecoder: TokenDecoder) : WebFilter {
                 CertRouterPublicPaths +
                 MyselfRouterPublicPaths +
                 DesignsRouterPublicPaths +
-                ProductRouterPublicPaths +
+                ProductsRouterPublicPaths +
                 ACTUATOR_PATHS
             )
     }
