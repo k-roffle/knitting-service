@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.handler.design
 
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.controller.handler.design.dto.MyDesigns
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.controller.handler.design.dto.SizeDto
 import com.kroffle.knitting.controller.handler.design.dto.UpdateDesign
@@ -24,7 +25,11 @@ import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
 import com.kroffle.knitting.usecase.design.dto.GetMyDesignData
+import com.kroffle.knitting.usecase.design.dto.MyDesignFilter
 import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
+import com.kroffle.knitting.usecase.helper.pagination.type.Paging
+import com.kroffle.knitting.usecase.helper.pagination.type.Sort
+import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -34,7 +39,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @DisplayName("DesignHandler Test")
 class DesignHandlerTest : DescribeSpec() {
@@ -48,7 +56,7 @@ class DesignHandlerTest : DescribeSpec() {
             clearAllMocks()
         }
 
-        describe("get design test") {
+        describe("get my design test") {
             val exchangeRequest = fun (designId: Long): WebTestClient.ResponseSpec {
                 return webClient
                     .get()
@@ -133,6 +141,114 @@ class DesignHandlerTest : DescribeSpec() {
                 }
             }
         }
+
+        describe("get my designs test") {
+            val exchangeRequest = fun (queryParam: String?): WebTestClient.ResponseSpec {
+                return webClient
+                    .get()
+                    .uri("/designs/mine?$queryParam")
+                    .addDefaultRequestHeader()
+                    .exchange()
+            }
+            context("내가 만든 도안이 존재하는 경우") {
+                context("첫 번째 페이지를 요청하면") {
+                    val now = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC)
+                    val designs = listOf(
+                        MockFactory.create(
+                            MockData.Design(
+                                id = 1,
+                                knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                                createdAt = now,
+                            )
+                        ),
+                    )
+                    every {
+                        service.getMyDesigns(any())
+                    } returns Flux.fromIterable(designs)
+
+                    val response = exchangeRequest(null)
+                        .expectBody<TestResponse<List<MyDesigns.Response>>>()
+                        .returnResult()
+
+                    it("service 를 통해 조회해와야 함") {
+                        verify(exactly = 1) {
+                            service.getMyDesigns(
+                                MyDesignFilter(
+                                    paging = Paging(after = null, count = 10),
+                                    knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                                    sort = Sort("id", SortDirection.DESC),
+                                )
+                            )
+                        }
+                    }
+
+                    it("도안 데이터가 반환되어야 함") {
+                        response.status.is2xxSuccessful shouldBe true
+                        val payload = response.responseBody?.payload!!
+                        payload.size shouldBe 1
+                        payload.first() shouldBe MyDesigns.Response(
+                            id = 1,
+                            name = "도안 이름",
+                            yarn = "캐시미어 100g",
+                            coverImageUrl = "https://mock.wordway.com/image.png",
+                            tags = listOf("니트", "이미지도안"),
+                            createdAt = now,
+                        )
+                    }
+                }
+
+                context("더 불러오기 요청을 하면") {
+                    val designs = listOf(MockFactory.create(MockData.Design(id = 1)))
+                    every {
+                        service.getMyDesigns(any())
+                    } returns Flux.fromIterable(designs)
+
+                    exchangeRequest("after=2&count=20")
+                        .expectBody<TestResponse<List<MyDesigns.Response>>>()
+                        .returnResult()
+
+                    it("페이지 정보가 적절히 넘어가야 함") {
+                        verify(exactly = 1) {
+                            service.getMyDesigns(
+                                MyDesignFilter(
+                                    paging = Paging(after = "2", count = 20),
+                                    knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                                    sort = Sort("id", SortDirection.DESC),
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
+            context("내가 만든 도안이 존재하지 않는 경우") {
+                every {
+                    service.getMyDesigns(any())
+                } returns Flux.empty()
+
+                val response = exchangeRequest(null)
+                    .expectBody<TestResponse<List<MyDesigns.Response>>>()
+                    .returnResult()
+
+                it("service 를 통해 조회해와야 함") {
+                    verify(exactly = 1) {
+                        service.getMyDesigns(
+                            MyDesignFilter(
+                                paging = Paging(after = null, count = 10),
+                                knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                                sort = Sort("id", SortDirection.DESC),
+                            )
+                        )
+                    }
+                }
+
+                it("빈 리스트가 반환되어야 함") {
+                    response.status.is2xxSuccessful shouldBe true
+                    response.responseBody?.payload?.size shouldBe 0
+                }
+            }
+        }
+
         describe("create design test") {
             val exchangeRequest = fun (requestBody: String?): WebTestClient.ResponseSpec {
                 val client = webClient
