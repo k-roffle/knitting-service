@@ -18,7 +18,7 @@ class DraftDesignService(
 
     private fun saveDraftDesign(data: SaveDraftDesignData): Mono<DraftDesign> {
         return if (data.id == null) {
-            draftDesignRepository.save(
+            draftDesignRepository.create(
                 DraftDesign.new(
                     knitterId = data.knitterId,
                     designId = data.designId,
@@ -30,7 +30,7 @@ class DraftDesignService(
                 .getDraftDesign(data.id, data.knitterId)
                 .map { it.merge(data.value) }
                 .flatMap {
-                    draftDesignRepository.save(it)
+                    draftDesignRepository.update(it)
                 }
         }
     }
@@ -70,7 +70,8 @@ class DraftDesignService(
         fun getDraftDesign(id: Long, knitterId: Long): Mono<DraftDesign>
         fun findDraftDesignsToCreate(knitterId: Long): Flux<DraftDesign>
         fun getDraftDesignToUpdate(designId: Long, knitterId: Long): Mono<DraftDesign>
-        fun save(draftDesign: DraftDesign): Mono<DraftDesign>
+        fun update(draftDesign: DraftDesign): Mono<DraftDesign>
+        fun create(draftDesign: DraftDesign): Mono<DraftDesign>
         fun delete(draftDesign: DraftDesign): Mono<Long>
     }
 
