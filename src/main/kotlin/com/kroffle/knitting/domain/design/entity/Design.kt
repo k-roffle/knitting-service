@@ -27,23 +27,6 @@ data class Design(
     val updatedAt: OffsetDateTime?,
     val createdAt: OffsetDateTime?,
 ) {
-    enum class DesignType(val code: Int, val tag: String) {
-        Sweater(1, "니트"),
-    }
-
-    enum class PatternType(val code: Int, val tag: String) {
-        Text(1, "서술형도안"),
-        Image(2, "이미지도안"),
-        Video(3, "영상도안"),
-    }
-
-    enum class LevelType {
-        PERSON_BY_PERSON,
-        EASY,
-        NORMAL,
-        HARD
-    }
-
     fun update(
         designType: DesignType,
         patternType: PatternType,
@@ -70,6 +53,23 @@ data class Design(
         techniques = techniques,
         updatedAt = OffsetDateTime.now(),
     )
+
+    enum class DesignType(val code: Int, val tag: String) {
+        Sweater(1, "니트"),
+    }
+
+    enum class PatternType(val code: Int, val tag: String) {
+        Text(1, "서술형도안"),
+        Image(2, "이미지도안"),
+        Video(3, "영상도안"),
+    }
+
+    enum class LevelType {
+        PERSON_BY_PERSON,
+        EASY,
+        NORMAL,
+        HARD
+    }
 
     companion object {
         fun new(
