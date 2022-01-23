@@ -23,6 +23,5 @@ fun Product.like(other: Product): Boolean {
         specifiedSalesStartDate == other.specifiedSalesStartDate &&
         specifiedSalesEndDate == other.specifiedSalesEndDate &&
         content == other.content &&
-        inputStatus == other.inputStatus &&
         createdAt == other.createdAt
 }

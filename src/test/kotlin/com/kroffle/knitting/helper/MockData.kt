@@ -8,7 +8,6 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
-import com.kroffle.knitting.domain.product.entity.Product.InputStatus
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
@@ -26,8 +25,7 @@ object MockData {
         val specifiedSalesStartDate: LocalDate? = null,
         val specifiedSalesEndDate: LocalDate? = null,
         val tags: List<ProductTag> = listOf(),
-        val content: String? = null,
-        val inputStatus: InputStatus = InputStatus.DRAFT,
+        val content: String = "",
         val items: List<ProductItem> = listOf(),
         val createdAt: OffsetDateTime? = OffsetDateTime.now(),
         val updatedAt: OffsetDateTime? = OffsetDateTime.now(),
