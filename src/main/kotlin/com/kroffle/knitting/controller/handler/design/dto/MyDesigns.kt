@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ListItemPayload
 import java.time.OffsetDateTime
 
-object MyDesign {
+object MyDesigns {
     data class Response(
         val id: Long,
         val name: String,

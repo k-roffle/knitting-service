@@ -93,7 +93,7 @@ class DesignService(
             }
     }
 
-    fun getMyDesign(filter: MyDesignFilter): Flux<Design> =
+    fun getMyDesigns(filter: MyDesignFilter): Flux<Design> =
         with(filter) {
             designRepository.getDesignsByKnitterId(knitterId, paging, sort)
         }

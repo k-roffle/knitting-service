@@ -46,9 +46,9 @@ class DesignHandler(private val service: DesignService) {
         val paging = PaginationHelper.getPagingFromRequest(request)
         val knitterId = AuthHelper.getKnitterId(request)
         return service
-            .getMyDesign(DesignRequestMapper.toMyDesignFilter(paging, knitterId))
+            .getMyDesigns(DesignRequestMapper.toMyDesignFilter(paging, knitterId))
             .doOnError(ExceptionHelper::raiseException)
-            .map(DesignResponseMapper::toMyDesignResponse)
+            .map(DesignResponseMapper::toMyDesignsResponse)
             .collect(toList())
             .flatMap(ResponseHelper::makeJsonResponse)
     }

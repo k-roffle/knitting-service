@@ -1,6 +1,6 @@
 package com.kroffle.knitting.controller.handler.design.mapper
 
-import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.controller.handler.design.dto.MyDesigns
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
 import com.kroffle.knitting.controller.handler.design.dto.UpdateDesign
 import com.kroffle.knitting.domain.design.entity.Design
@@ -16,9 +16,9 @@ object DesignResponseMapper {
             UpdateDesign.Response(id = id!!)
         }
 
-    fun toMyDesignResponse(design: Design): MyDesign.Response =
+    fun toMyDesignsResponse(design: Design): MyDesigns.Response =
         with(design) {
-            MyDesign.Response(
+            MyDesigns.Response(
                 id = id!!,
                 name = name,
                 yarn = yarn,
