@@ -1,9 +1,6 @@
 package com.kroffle.knitting.domain.draftdesign.entity
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.kroffle.knitting.domain.helper.DraftValueReader
 import java.time.OffsetDateTime
 
 data class DraftDesign(
@@ -21,11 +18,13 @@ data class DraftDesign(
         )
 
     val name: String?
-        get() = OBJECT_MAPPER.readValue<Value>(this.value).name
+        get() = DraftValueReader.read(value, ParsedValue::name)
+
+    data class ParsedValue(
+        val name: String? = null,
+    ) : DraftValueReader.TruncatedValue()
 
     companion object {
-        private val OBJECT_MAPPER = ObjectMapper()
-
         fun new(knitterId: Long, designId: Long?, value: String): DraftDesign =
             DraftDesign(
                 id = null,
@@ -36,11 +35,4 @@ data class DraftDesign(
                 updatedAt = OffsetDateTime.now(),
             )
     }
-
-    data class Value(
-        val name: String? = null,
-        @JsonAnySetter
-        @get:JsonAnyGetter
-        val truncated: MutableMap<String, Any> = sortedMapOf(),
-    )
 }
