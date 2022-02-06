@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.handler.design
 
+import com.kroffle.knitting.common.extensions.onUTC
 import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.MyDesigns
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
@@ -42,7 +43,6 @@ import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
 
 @DisplayName("DesignHandler Test")
 class DesignHandlerTest : DescribeSpec() {
@@ -152,7 +152,7 @@ class DesignHandlerTest : DescribeSpec() {
             }
             context("내가 만든 도안이 존재하는 경우") {
                 context("첫 번째 페이지를 요청하면") {
-                    val now = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC)
+                    val now = OffsetDateTime.now().onUTC()
                     val designs = listOf(
                         MockFactory.create(
                             MockData.Design(
