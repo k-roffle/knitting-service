@@ -2,7 +2,7 @@ package com.kroffle.knitting.usecase.helper.pagination.type
 
 import java.lang.IllegalArgumentException
 
-class Paging(
+data class Paging(
     val after: String?,
     val count: Int,
 ) {
