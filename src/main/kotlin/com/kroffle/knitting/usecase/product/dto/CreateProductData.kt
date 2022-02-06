@@ -3,7 +3,7 @@ package com.kroffle.knitting.usecase.product.dto
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
-import java.time.LocalDate
+import java.time.OffsetDateTime
 
 data class CreateProductData(
     val knitterId: Long,
@@ -11,8 +11,8 @@ data class CreateProductData(
     val fullPrice: Money,
     val discountPrice: Money,
     val representativeImageUrl: String,
-    val specifiedSalesStartDate: LocalDate?,
-    val specifiedSalesEndDate: LocalDate?,
+    val specifiedSalesStartedAt: OffsetDateTime?,
+    val specifiedSalesEndedAt: OffsetDateTime?,
     val content: String,
     val tags: List<ProductTag>,
     val items: List<ProductItem>,

@@ -10,8 +10,8 @@ object UpdateProduct {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
     data class Request(
         val discountPrice: Int,
-        val specifiedSalesStartDate: OffsetDateTime?,
-        val specifiedSalesEndDate: OffsetDateTime?,
+        val specifiedSalesStartedAt: OffsetDateTime?,
+        val specifiedSalesEndedAt: OffsetDateTime?,
         val tags: List<String>,
         val content: String,
         val draftId: Long?,

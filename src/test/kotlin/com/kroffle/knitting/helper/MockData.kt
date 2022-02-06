@@ -11,7 +11,6 @@ import com.kroffle.knitting.domain.design.value.Technique
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
-import java.time.LocalDate
 import java.time.OffsetDateTime
 
 object MockData {
@@ -22,8 +21,8 @@ object MockData {
         val fullPrice: Money = Money(10000),
         val discountPrice: Money = Money(100),
         val representativeImageUrl: String = "http://test.knitting.com/image.jpg",
-        val specifiedSalesStartDate: LocalDate? = null,
-        val specifiedSalesEndDate: LocalDate? = null,
+        val specifiedSalesStartedAt: OffsetDateTime? = null,
+        val specifiedSalesEndedAt: OffsetDateTime? = null,
         val tags: List<ProductTag> = listOf(),
         val content: String = "",
         val items: List<ProductItem> = listOf(),

@@ -42,8 +42,8 @@ class ProductService(
                         fullPrice = fullPrice,
                         discountPrice = discountPrice,
                         representativeImageUrl = representativeImageUrl,
-                        specifiedSalesStartDate = specifiedSalesStartDate,
-                        specifiedSalesEndDate = specifiedSalesEndDate,
+                        specifiedSalesStartedAt = specifiedSalesStartedAt,
+                        specifiedSalesEndedAt = specifiedSalesEndedAt,
                         content = content,
                         tags = tags,
                         items = items,
@@ -59,8 +59,8 @@ class ProductService(
                     productRepository.updateProduct(
                         product.update(
                             discountPrice = discountPrice,
-                            specifiedSalesStartDate = specifiedSalesStartDate,
-                            specifiedSalesEndDate = specifiedSalesEndDate,
+                            specifiedSalesStartedAt = specifiedSalesStartedAt,
+                            specifiedSalesEndedAt = specifiedSalesEndedAt,
                             content = content,
                             tags = tags,
                         )

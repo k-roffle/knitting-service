@@ -6,7 +6,6 @@ import com.kroffle.knitting.domain.product.exception.InvalidPeriod
 import com.kroffle.knitting.domain.product.value.ProductItem
 import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
-import java.time.LocalDate
 import java.time.OffsetDateTime
 
 data class Product(
@@ -16,8 +15,8 @@ data class Product(
     val fullPrice: Money,
     val discountPrice: Money,
     val representativeImageUrl: String,
-    val specifiedSalesStartDate: LocalDate?,
-    val specifiedSalesEndDate: LocalDate?,
+    val specifiedSalesStartedAt: OffsetDateTime?,
+    val specifiedSalesEndedAt: OffsetDateTime?,
     val content: String,
     val tags: List<ProductTag>,
     val items: List<ProductItem>,
@@ -26,9 +25,9 @@ data class Product(
 ) {
     init {
         require(
-            specifiedSalesStartDate == null ||
-                specifiedSalesEndDate == null ||
-                specifiedSalesStartDate <= specifiedSalesEndDate
+            specifiedSalesStartedAt == null ||
+                specifiedSalesEndedAt == null ||
+                specifiedSalesStartedAt <= specifiedSalesEndedAt
         ) {
             throw InvalidPeriod()
         }
@@ -47,9 +46,9 @@ data class Product(
 
     private val salesStatus: SalesStatus
         get() {
-            val today = LocalDate.now()
-            val start = specifiedSalesStartDate ?: LocalDate.MIN
-            val end = specifiedSalesEndDate ?: LocalDate.MAX
+            val today = OffsetDateTime.now()
+            val start = specifiedSalesStartedAt ?: OffsetDateTime.MIN
+            val end = specifiedSalesEndedAt ?: OffsetDateTime.MAX
             return if (start > today) {
                 SalesStatus.RESERVED
             } else if (end < today) {
@@ -64,14 +63,14 @@ data class Product(
 
     fun update(
         discountPrice: Money,
-        specifiedSalesStartDate: LocalDate?,
-        specifiedSalesEndDate: LocalDate?,
+        specifiedSalesStartedAt: OffsetDateTime?,
+        specifiedSalesEndedAt: OffsetDateTime?,
         content: String,
         tags: List<ProductTag>,
     ) = this.copy(
         discountPrice = discountPrice,
-        specifiedSalesStartDate = specifiedSalesStartDate,
-        specifiedSalesEndDate = specifiedSalesEndDate,
+        specifiedSalesStartedAt = specifiedSalesStartedAt,
+        specifiedSalesEndedAt = specifiedSalesEndedAt,
         content = content,
         tags = tags,
         updatedAt = OffsetDateTime.now(),
@@ -90,8 +89,8 @@ data class Product(
             fullPrice: Money,
             discountPrice: Money,
             representativeImageUrl: String,
-            specifiedSalesStartDate: LocalDate?,
-            specifiedSalesEndDate: LocalDate?,
+            specifiedSalesStartedAt: OffsetDateTime?,
+            specifiedSalesEndedAt: OffsetDateTime?,
             content: String,
             tags: List<ProductTag>,
             items: List<ProductItem>,
@@ -103,8 +102,8 @@ data class Product(
                 fullPrice = fullPrice,
                 discountPrice = discountPrice,
                 representativeImageUrl = representativeImageUrl,
-                specifiedSalesStartDate = specifiedSalesStartDate,
-                specifiedSalesEndDate = specifiedSalesEndDate,
+                specifiedSalesStartedAt = specifiedSalesStartedAt,
+                specifiedSalesEndedAt = specifiedSalesEndedAt,
                 content = content,
                 tags = tags,
                 items = items,
