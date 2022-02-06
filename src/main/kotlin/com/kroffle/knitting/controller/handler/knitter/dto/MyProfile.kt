@@ -1,12 +1,13 @@
 package com.kroffle.knitting.controller.handler.knitter.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayload
 
 object MyProfile {
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
     data class Response(
         val email: String,
-        @JsonProperty("profile_image_url")
         val profileImageUrl: String?,
         val name: String?,
     ) : ObjectPayload

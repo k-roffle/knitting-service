@@ -1,10 +1,11 @@
 package com.kroffle.knitting.controller.handler.helper.response.type
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 class MetaData(
-    @JsonProperty("last_cursor")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val lastCursor: String? = null,
 )

@@ -1,9 +1,9 @@
 package com.kroffle.knitting.infra.oauth
 
 import com.kroffle.knitting.infra.oauth.dto.ClientInfo
-import com.kroffle.knitting.infra.oauth.dto.GoogleAccessTokenResponse
+import com.kroffle.knitting.infra.oauth.dto.GoogleAccessToken
 import com.kroffle.knitting.infra.oauth.dto.GoogleOAuthConfig
-import com.kroffle.knitting.infra.oauth.dto.GoogleProfileResponse
+import com.kroffle.knitting.infra.oauth.dto.GoogleProfile
 import com.kroffle.knitting.infra.oauth.exception.InvalidGoogleAccessToken
 import com.kroffle.knitting.infra.oauth.exception.InvalidGoogleCode
 import com.kroffle.knitting.infra.oauth.exception.UnavailableGoogle
@@ -53,7 +53,7 @@ class GoogleOAuthHelperImpl(
                     else -> throw UnavailableGoogle()
                 }
             }
-            .bodyToMono<GoogleAccessTokenResponse>()
+            .bodyToMono<GoogleAccessToken.Response>()
             .flatMap {
                 Mono.just(it.accessToken)
             }
@@ -93,15 +93,17 @@ class GoogleOAuthHelperImpl(
                         else -> throw UnavailableGoogle()
                     }
                 }
-                .bodyToMono(GoogleProfileResponse::class.java)
-                .flatMap {
-                    Mono.just(
-                        OAuthProfile(
-                            email = it.email,
-                            name = it.name,
-                            profileImageUrl = it.picture,
+                .bodyToMono(GoogleProfile.Response::class.java)
+                .flatMap { response ->
+                    with(response) {
+                        Mono.just(
+                            OAuthProfile(
+                                email = email,
+                                name = name,
+                                profileImageUrl = picture,
+                            )
                         )
-                    )
+                    }
                 }
         }
     }
