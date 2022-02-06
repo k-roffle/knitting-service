@@ -1,6 +1,8 @@
 package com.kroffle.knitting.controller.handler.design
 
+import com.kroffle.knitting.controller.handler.design.dto.MyDesign
 import com.kroffle.knitting.controller.handler.design.dto.NewDesign
+import com.kroffle.knitting.controller.handler.design.dto.SizeDto
 import com.kroffle.knitting.controller.handler.design.dto.UpdateDesign
 import com.kroffle.knitting.controller.handler.exception.EmptyBodyException
 import com.kroffle.knitting.controller.handler.exception.InvalidBodyException
@@ -11,18 +13,22 @@ import com.kroffle.knitting.domain.design.value.Length
 import com.kroffle.knitting.domain.design.value.Pattern
 import com.kroffle.knitting.domain.design.value.Size
 import com.kroffle.knitting.domain.design.value.Technique
+import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
 import com.kroffle.knitting.domain.value.Money
 import com.kroffle.knitting.helper.MockData
 import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
+import com.kroffle.knitting.infra.persistence.exception.NotFoundEntity
 import com.kroffle.knitting.usecase.design.DesignService
 import com.kroffle.knitting.usecase.design.dto.CreateDesignData
+import com.kroffle.knitting.usecase.design.dto.GetMyDesignData
 import com.kroffle.knitting.usecase.design.dto.UpdateDesignData
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -38,6 +44,95 @@ class DesignHandlerTest : DescribeSpec() {
         val webClient = WebTestClientHelper
             .createWebTestClient(router.designsRouterFunction())
 
+        afterContainer {
+            clearAllMocks()
+        }
+
+        describe("get design test") {
+            val exchangeRequest = fun (designId: Long): WebTestClient.ResponseSpec {
+                return webClient
+                    .get()
+                    .uri("/designs/mine/$designId")
+                    .addDefaultRequestHeader()
+                    .exchange()
+            }
+
+            context("존재하는 도안을 조회하는 경우") {
+                every {
+                    service.getMyDesign(any())
+                } returns Mono.just(MockFactory.create(MockData.Design(id = 1, createdAt = null, updatedAt = null)))
+
+                val response = exchangeRequest(1)
+                    .expectBody<TestResponse<MyDesign.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 조회해와야 함") {
+                    verify(exactly = 1) {
+                        service.getMyDesign(
+                            GetMyDesignData(
+                                1,
+                                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                            )
+                        )
+                    }
+                }
+
+                it("도안 데이터가 반환되어야 함") {
+                    response.status.is2xxSuccessful shouldBe true
+                    response.responseBody?.payload shouldBe MyDesign.Response(
+                        1,
+                        name = "도안 이름",
+                        designType = Design.DesignType.Sweater,
+                        patternType = Design.PatternType.Image,
+                        gauge = Gauge(12.5, 13.0),
+                        size = SizeDto(
+                            sizeUnit = Length.Unit.Cm,
+                            totalLength = 65.0,
+                            sleeveLength = 73.5,
+                            shoulderWidth = 32.0,
+                            bottomWidth = 31.0,
+                            armholeDepth = 28.5,
+                        ),
+                        needle = "5.0mm 대바늘",
+                        yarn = "캐시미어 100g",
+                        extra = null,
+                        price = Money.ZERO,
+                        pattern = Pattern("스웨터 뜨는 법"),
+                        description = "캐시미어 스웨터",
+                        targetLevel = Design.LevelType.EASY,
+                        coverImageUrl = "https://mock.wordway.com/image.png",
+                        techniques = listOf(),
+                        updatedAt = null,
+                        createdAt = null,
+                    )
+                }
+            }
+
+            context("존재하지 않는 도안을 조회하는 경우") {
+                every {
+                    service.getMyDesign(any())
+                } returns Mono.error(NotFoundEntity(DraftDesign::class.java))
+
+                val response = exchangeRequest(1)
+                    .expectBody<TestResponse<MyDesign.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 조회해와야 함") {
+                    verify(exactly = 1) {
+                        service.getMyDesign(
+                            GetMyDesignData(
+                                1,
+                                WebTestClientHelper.AUTHORIZED_KNITTER_ID,
+                            )
+                        )
+                    }
+                }
+
+                it("404 가 반환되어야 함") {
+                    response.rawStatusCode shouldBe 404
+                }
+            }
+        }
         describe("create design test") {
             val exchangeRequest = fun (requestBody: String?): WebTestClient.ResponseSpec {
                 val client = webClient

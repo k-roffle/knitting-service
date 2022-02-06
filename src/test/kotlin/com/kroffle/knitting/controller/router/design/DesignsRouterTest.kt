@@ -1,7 +1,7 @@
 package com.kroffle.knitting.controller.router.design
 
 import com.kroffle.knitting.controller.handler.design.DesignHandler
-import com.kroffle.knitting.controller.handler.design.dto.MyDesign
+import com.kroffle.knitting.controller.handler.design.dto.MyDesigns
 import com.kroffle.knitting.controller.handler.draftdesign.DraftDesignHandler
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.design.value.Gauge
@@ -104,7 +104,7 @@ class DesignsRouterTest {
                 )
             )
 
-        val responseBody: TestResponse<List<MyDesign.Response>> =
+        val responseBody: TestResponse<List<MyDesigns.Response>> =
             webClient
                 .get()
                 .uri("/designs/mine")
@@ -112,14 +112,14 @@ class DesignsRouterTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody<TestResponse<List<MyDesign.Response>>>()
+                .expectBody<TestResponse<List<MyDesigns.Response>>>()
                 .returnResult()
                 .responseBody!!
 
         assertThat(responseBody.payload.size).isEqualTo(1)
         assert(
             responseBody.payload.first().like(
-                MyDesign.Response(
+                MyDesigns.Response(
                     id = 1,
                     name = "캔디리더 효정 니트",
                     yarn = "패션아란 400g 1볼",
@@ -162,7 +162,7 @@ class DesignsRouterTest {
             .exchange()
             .expectStatus()
             .isOk
-            .expectBody<TestResponse<List<MyDesign>>>()
+            .expectBody<TestResponse<List<MyDesigns>>>()
             .returnResult()
             .responseBody!!
 
