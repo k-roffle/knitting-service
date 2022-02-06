@@ -30,10 +30,14 @@ class DraftDesignRepositoryImpl(
             .switchIfEmpty(Mono.error(NotFoundEntity(DraftDesign::class.java)))
             .map { it.toDraftDesign() }
 
-    override fun save(draftDesign: DraftDesign): Mono<DraftDesign> =
+    private fun save(draftDesign: DraftDesign): Mono<DraftDesign> =
         draftDesignRepository
             .save(draftDesign.toDraftDesignEntity())
             .map { it.toDraftDesign() }
+
+    override fun create(draftDesign: DraftDesign): Mono<DraftDesign> = save(draftDesign)
+
+    override fun update(draftDesign: DraftDesign): Mono<DraftDesign> = save(draftDesign)
 
     override fun delete(draftDesign: DraftDesign): Mono<Long> =
         draftDesignRepository

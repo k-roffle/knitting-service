@@ -1,13 +1,13 @@
-package com.kroffle.knitting.controller.handler.draftdesign.dto
+package com.kroffle.knitting.controller.handler.draftproduct.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.kroffle.knitting.controller.handler.helper.response.type.ObjectPayload
 
-object SaveDraftDesign {
+object SaveDraftProduct {
     data class Request(
         val id: Long?,
-        @JsonProperty("design_id")
-        val designId: Long?,
+        @JsonProperty("product_id")
+        val productId: Long?,
         val value: String,
     )
 

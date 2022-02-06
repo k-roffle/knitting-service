@@ -166,7 +166,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 )
                 val saveArgument = slot<DraftDesign>()
                 every {
-                    mockDraftDesignRepository.save(capture(saveArgument))
+                    mockDraftDesignRepository.create(capture(saveArgument))
                 } returns Mono.just(mockDraftDesign)
 
                 val result = service.saveDraft(data).block()
@@ -203,7 +203,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 } returns Mono.just(beforeDraftDesign)
 
                 every {
-                    mockDraftDesignRepository.save(capture(saveArgument))
+                    mockDraftDesignRepository.update(capture(saveArgument))
                 } returns Mono.just(mockDraftDesign)
 
                 val result = service.saveDraft(data).block()
@@ -251,7 +251,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 } returns Mono.just(mockDesign)
 
                 every {
-                    mockDraftDesignRepository.save(capture(saveArgument))
+                    mockDraftDesignRepository.create(capture(saveArgument))
                 } returns Mono.just(mockDraftDesign)
 
                 val result = service.saveDraft(data).block()
@@ -297,7 +297,7 @@ class DraftDesignServiceTest : BehaviorSpec() {
                 } returns Mono.just(beforeDraftDesign)
 
                 every {
-                    mockDraftDesignRepository.save(capture(saveArgument))
+                    mockDraftDesignRepository.update(capture(saveArgument))
                 } returns Mono.just(mockDraftDesign)
 
                 val result = service.saveDraft(data).block()

@@ -1,17 +1,17 @@
-package com.kroffle.knitting.domain.draftdesign.entity
+package com.kroffle.knitting.domain.draftproduct.entity
 
 import com.kroffle.knitting.domain.helper.DraftValueReader
 import java.time.OffsetDateTime
 
-data class DraftDesign(
+data class DraftProduct(
     val id: Long? = null,
     val knitterId: Long,
     val value: String,
-    val designId: Long?,
+    val productId: Long?,
     val createdAt: OffsetDateTime?,
     val updatedAt: OffsetDateTime?,
 ) {
-    fun merge(value: String): DraftDesign =
+    fun merge(value: String): DraftProduct =
         this.copy(
             value = value,
             updatedAt = OffsetDateTime.now(),
@@ -25,11 +25,11 @@ data class DraftDesign(
     ) : DraftValueReader.TruncatedValue()
 
     companion object {
-        fun new(knitterId: Long, designId: Long?, value: String): DraftDesign =
-            DraftDesign(
+        fun new(knitterId: Long, productId: Long?, value: String): DraftProduct =
+            DraftProduct(
                 id = null,
                 knitterId = knitterId,
-                designId = designId,
+                productId = productId,
                 value = value,
                 createdAt = OffsetDateTime.now(),
                 updatedAt = OffsetDateTime.now(),

@@ -19,7 +19,6 @@ class MockFactory {
                     specifiedSalesEndDate = specifiedSalesEndDate,
                     tags = tags,
                     content = content,
-                    inputStatus = inputStatus,
                     items = items,
                     createdAt = createdAt,
                     updatedAt = updatedAt,

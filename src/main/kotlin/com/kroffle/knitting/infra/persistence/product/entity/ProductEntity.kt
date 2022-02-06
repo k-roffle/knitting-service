@@ -19,8 +19,7 @@ class ProductEntity(
     private val representativeImageUrl: String,
     private val specifiedSalesStartDate: LocalDate?,
     private val specifiedSalesEndDate: LocalDate?,
-    private val content: String?,
-    private val inputStatus: Product.InputStatus,
+    private val content: String,
     private val createdAt: OffsetDateTime = OffsetDateTime.now(),
     private val updatedAt: OffsetDateTime = OffsetDateTime.now(),
 ) {
@@ -37,7 +36,6 @@ class ProductEntity(
             specifiedSalesStartDate = specifiedSalesStartDate,
             specifiedSalesEndDate = specifiedSalesEndDate,
             content = content,
-            inputStatus = inputStatus,
             tags = tags,
             items = items,
             createdAt = createdAt,
@@ -56,7 +54,6 @@ fun Product.toProductEntity() =
         specifiedSalesStartDate = specifiedSalesStartDate,
         specifiedSalesEndDate = specifiedSalesEndDate,
         content = content,
-        inputStatus = inputStatus,
         createdAt = this.createdAt ?: OffsetDateTime.now(),
         updatedAt = this.updatedAt ?: OffsetDateTime.now(),
     )
