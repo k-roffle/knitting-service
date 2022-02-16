@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.router.product
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.kroffle.knitting.common.extensions.onUTC
 import com.kroffle.knitting.controller.handler.draftproduct.DraftProductHandler
 import com.kroffle.knitting.controller.handler.product.ProductHandler
 import com.kroffle.knitting.controller.handler.product.dto.GetMyProduct
@@ -11,7 +12,6 @@ import com.kroffle.knitting.helper.MockFactory
 import com.kroffle.knitting.helper.TestResponse
 import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
-import com.kroffle.knitting.helper.extension.like
 import com.kroffle.knitting.infra.jwt.TokenDecoder
 import com.kroffle.knitting.infra.properties.WebApplicationProperties
 import com.kroffle.knitting.usecase.draftproduct.DraftProductService
@@ -19,6 +19,7 @@ import com.kroffle.knitting.usecase.helper.pagination.type.SortDirection
 import com.kroffle.knitting.usecase.product.ProductService
 import com.kroffle.knitting.usecase.repository.DraftProductRepository
 import com.kroffle.knitting.usecase.repository.ProductRepository
+import io.kotest.matchers.shouldBe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -57,7 +58,7 @@ class ProductsRouterTest {
     @MockBean
     private lateinit var webProperties: WebApplicationProperties
 
-    private val today = OffsetDateTime.now()
+    private val today = OffsetDateTime.now().onUTC()
 
     private val tomorrow = today.plusDays(1)
 
@@ -99,21 +100,21 @@ class ProductsRouterTest {
         val payload = response.payload
         assertThat(payload)
             .satisfies {
-                it.like(
+                it.shouldBe(
                     GetMyProduct.Response(
                         id = mockData.id,
                         name = mockData.name,
                         fullPrice = mockData.fullPrice.value,
                         discountPrice = mockData.discountPrice.value,
                         representativeImageUrl = mockData.representativeImageUrl,
-                        specifiedSalesStartDate = mockData.specifiedSalesStartDate,
-                        specifiedSalesEndDate = mockData.specifiedSalesEndDate,
+                        specifiedSalesStartedAt = mockData.specifiedSalesStartedAt,
+                        specifiedSalesEndedAt = mockData.specifiedSalesEndedAt,
                         tags = mockData.tags.map { tag -> tag.name },
                         content = mockData.content,
-                        inputStatus = "",
+                        inputStatus = "inputStatus",
                         itemIds = mockData.items.map { item -> item.itemId },
-                        createdAt = mockData.createdAt,
-                        updatedAt = mockData.updatedAt,
+                        createdAt = mockData.createdAt?.onUTC(),
+                        updatedAt = mockData.updatedAt?.onUTC(),
                     )
                 )
             }
@@ -153,16 +154,16 @@ class ProductsRouterTest {
         assertThat(
             payload
                 .first()
-                .like(
+                .shouldBe(
                     GetMyProducts.Response(
                         id = firstMockData.id,
                         name = firstMockData.name,
                         fullPrice = firstMockData.fullPrice.value,
                         discountPrice = firstMockData.discountPrice.value,
                         representativeImageUrl = firstMockData.representativeImageUrl,
-                        specifiedSalesStartDate = firstMockData.specifiedSalesStartDate,
-                        specifiedSalesEndDate = firstMockData.specifiedSalesEndDate,
-                        inputStatus = "",
+                        specifiedSalesStartedAt = firstMockData.specifiedSalesStartedAt,
+                        specifiedSalesEndedAt = firstMockData.specifiedSalesEndedAt,
+                        inputStatus = "inputStatus",
                         updatedAt = firstMockData.updatedAt,
                         tags = firstMockData.tags.map { tag -> tag.name }
                     )

@@ -6,7 +6,6 @@ import com.kroffle.knitting.domain.product.value.ProductTag
 import com.kroffle.knitting.domain.value.Money
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import java.time.LocalDate
 import java.time.OffsetDateTime
 
 @Table("product")
@@ -17,8 +16,8 @@ class ProductEntity(
     private val fullPrice: Int,
     private val discountPrice: Int,
     private val representativeImageUrl: String,
-    private val specifiedSalesStartDate: LocalDate?,
-    private val specifiedSalesEndDate: LocalDate?,
+    private val specifiedSalesStartedAt: OffsetDateTime?,
+    private val specifiedSalesEndedAt: OffsetDateTime?,
     private val content: String,
     private val createdAt: OffsetDateTime = OffsetDateTime.now(),
     private val updatedAt: OffsetDateTime = OffsetDateTime.now(),
@@ -33,8 +32,8 @@ class ProductEntity(
             fullPrice = Money(fullPrice),
             discountPrice = Money(discountPrice),
             representativeImageUrl = representativeImageUrl,
-            specifiedSalesStartDate = specifiedSalesStartDate,
-            specifiedSalesEndDate = specifiedSalesEndDate,
+            specifiedSalesStartedAt = specifiedSalesStartedAt,
+            specifiedSalesEndedAt = specifiedSalesEndedAt,
             content = content,
             tags = tags,
             items = items,
@@ -51,8 +50,8 @@ fun Product.toProductEntity() =
         fullPrice = fullPrice.value,
         discountPrice = discountPrice.value,
         representativeImageUrl = representativeImageUrl,
-        specifiedSalesStartDate = specifiedSalesStartDate,
-        specifiedSalesEndDate = specifiedSalesEndDate,
+        specifiedSalesStartedAt = specifiedSalesStartedAt,
+        specifiedSalesEndedAt = specifiedSalesEndedAt,
         content = content,
         createdAt = this.createdAt ?: OffsetDateTime.now(),
         updatedAt = this.updatedAt ?: OffsetDateTime.now(),

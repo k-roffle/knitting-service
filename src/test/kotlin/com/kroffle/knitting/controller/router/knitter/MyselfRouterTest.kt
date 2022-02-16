@@ -106,7 +106,7 @@ class MyselfRouterTest {
 
     @Test
     fun `나의 판매 요약 정보가 잘 반환되어야 함`() {
-        val yesterday = OffsetDateTime.now().minusDays(1).toLocalDate()
+        val yesterday = OffsetDateTime.now().minusDays(1)
         val products = Flux.just(
             MockFactory.create(
                 MockData.Product(
@@ -118,7 +118,7 @@ class MyselfRouterTest {
                 MockData.Product(
                     id = 2,
                     content = "이 상품은요",
-                    specifiedSalesStartDate = yesterday,
+                    specifiedSalesStartedAt = yesterday,
                 )
             ),
         )

@@ -1,5 +1,6 @@
 package com.kroffle.knitting.controller.handler.draftdesign
 
+import com.kroffle.knitting.common.extensions.onUTC
 import com.kroffle.knitting.controller.handler.draftdesign.dto.DeleteDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesign
 import com.kroffle.knitting.controller.handler.draftdesign.dto.GetMyDraftDesignToUpdate
@@ -29,7 +30,6 @@ import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
 
 @DisplayName("DraftDesignHandler Test")
 class DraftDesignHandlerTest : DescribeSpec() {
@@ -117,7 +117,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .exchange()
 
             context("작성 중인 도안이 있는 경우") {
-                val updatedAt = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC)
+                val updatedAt = OffsetDateTime.now().onUTC()
                 val draftDesigns = listOf(
                     MockFactory.create(
                         MockData.DraftDesign(
@@ -194,7 +194,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .exchange()
 
             context("작성 중인 도안이 있는 경우") {
-                val updatedAt = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC)
+                val updatedAt = OffsetDateTime.now().onUTC()
                 val draftDesign = MockFactory.create(
                     MockData.DraftDesign(
                         id = 1,
@@ -257,7 +257,7 @@ class DraftDesignHandlerTest : DescribeSpec() {
                     .exchange()
 
             context("작성 중인 도안이 있는 경우") {
-                val updatedAt = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC)
+                val updatedAt = OffsetDateTime.now().onUTC()
                 val draftDesign = MockFactory.create(
                     MockData.DraftDesign(
                         id = 1,
