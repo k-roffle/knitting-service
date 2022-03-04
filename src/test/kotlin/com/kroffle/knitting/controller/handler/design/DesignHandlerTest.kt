@@ -192,6 +192,7 @@ class DesignHandlerTest : DescribeSpec() {
                             yarn = "캐시미어 100g",
                             coverImageUrl = "https://mock.wordway.com/image.png",
                             tags = listOf("니트", "이미지도안"),
+                            price = 0,
                             createdAt = now,
                         )
                     }

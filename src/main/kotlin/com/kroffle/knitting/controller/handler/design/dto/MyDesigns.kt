@@ -13,6 +13,7 @@ object MyDesigns {
         val yarn: String,
         val coverImageUrl: String,
         val tags: List<String>,
+        val price: Int,
         val createdAt: OffsetDateTime,
     ) : ListItemPayload {
         override fun getCursor(): String = id.toString()

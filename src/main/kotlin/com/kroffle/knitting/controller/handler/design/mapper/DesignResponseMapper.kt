@@ -27,6 +27,7 @@ object DesignResponseMapper {
                 yarn = yarn,
                 coverImageUrl = coverImageUrl,
                 tags = listOf(designType.tag, patternType.tag),
+                price = price.value,
                 createdAt = createdAt!!,
             )
         }
