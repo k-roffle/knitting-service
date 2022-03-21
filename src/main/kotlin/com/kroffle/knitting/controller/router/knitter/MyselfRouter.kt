@@ -15,6 +15,7 @@ class MyselfRouter(private val handler: MyselfHandler) {
         router {
             listOf(
                 GET(GET_MY_PROFILE_PATH, handler::getMyProfile),
+                GET(GET_MY_PROFILE_SUMMARY_PATH, handler::getMyProfileSummary),
                 GET(GET_MY_SALES_SUMMARY_PATH, handler::getMySalesSummary),
             )
         }
@@ -23,6 +24,7 @@ class MyselfRouter(private val handler: MyselfHandler) {
     companion object {
         private const val ROOT_PATH = "/me"
         private const val GET_MY_PROFILE_PATH = "/profile"
+        private const val GET_MY_PROFILE_SUMMARY_PATH = "/profile/summary"
         private const val GET_MY_SALES_SUMMARY_PATH = "/sales-summary"
         val PUBLIC_PATHS: List<String> = listOf()
     }

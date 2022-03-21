@@ -6,6 +6,7 @@ import com.kroffle.knitting.controller.handler.helper.response.ResponseHelper
 import com.kroffle.knitting.controller.handler.knitter.mapper.MyselfResponseMapper
 import com.kroffle.knitting.usecase.knitter.KnitterService
 import com.kroffle.knitting.usecase.summary.ProductSummaryService
+import com.kroffle.knitting.usecase.summary.ProfileSummaryService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono
 class MyselfHandler(
     private val knitterService: KnitterService,
     private val productSummaryService: ProductSummaryService,
+    private val profileSummaryService: ProfileSummaryService,
 ) {
     fun getMyProfile(request: ServerRequest): Mono<ServerResponse> {
         val knitterId = AuthHelper.getKnitterId(request)
@@ -31,6 +33,14 @@ class MyselfHandler(
             .countProductOnList(knitterId)
             .doOnError(ExceptionHelper::raiseException)
             .map(MyselfResponseMapper::toSalesSummaryResponse)
+            .flatMap(ResponseHelper::makeJsonResponse)
+    }
+
+    fun getMyProfileSummary(request: ServerRequest): Mono<ServerResponse> {
+        val knitterId = AuthHelper.getKnitterId(request)
+        return profileSummaryService
+            .getProfileSummary(knitterId)
+            .map(MyselfResponseMapper::toMyProfileSummaryResponse)
             .flatMap(ResponseHelper::makeJsonResponse)
     }
 }
