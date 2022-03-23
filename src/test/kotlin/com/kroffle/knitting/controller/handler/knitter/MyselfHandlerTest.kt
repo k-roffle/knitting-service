@@ -1,6 +1,7 @@
 package com.kroffle.knitting.controller.handler.knitter
 
 import com.kroffle.knitting.controller.handler.knitter.dto.MyProfile
+import com.kroffle.knitting.controller.handler.knitter.dto.MyProfileSummary
 import com.kroffle.knitting.controller.router.knitter.MyselfRouter
 import com.kroffle.knitting.helper.MockData
 import com.kroffle.knitting.helper.MockFactory
@@ -9,6 +10,7 @@ import com.kroffle.knitting.helper.WebTestClientHelper
 import com.kroffle.knitting.helper.extension.addDefaultRequestHeader
 import com.kroffle.knitting.usecase.knitter.KnitterService
 import com.kroffle.knitting.usecase.summary.ProfileSummaryService
+import com.kroffle.knitting.usecase.summary.dto.ProfileSummary
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -80,6 +82,69 @@ class MyselfHandlerTest : DescribeSpec() {
                     }
                 }
                 it("404 에러가 반환되어야 함") {
+                    response.rawStatusCode shouldBe 400
+                }
+            }
+        }
+
+        describe("getMyProfileSummary") {
+            val knitterId = WebTestClientHelper.AUTHORIZED_KNITTER_ID
+            context("로그인 후 프로필 summary를 요청한 경우") {
+                every {
+                    profileSummaryService.getProfileSummary(any())
+                } returns Mono.just(
+                    ProfileSummary(
+                        myDesignsCount = 1,
+                        myProductsCount = 1,
+                        purchasedProductsCount = 0,
+                    )
+                )
+                val response = myselfWebClient
+                    .get()
+                    .uri("/me/profile/summary")
+                    .addDefaultRequestHeader()
+                    .exchange()
+                    .expectBody<TestResponse<MyProfileSummary.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 조회 요청해야 함") {
+                    verify(exactly = 1) {
+                        profileSummaryService.getProfileSummary(knitterId)
+                    }
+                }
+                it("summary 정보가 반환되어야 함") {
+                    response.status.is2xxSuccessful shouldBe true
+                    response.responseBody?.payload shouldBe MyProfileSummary.Response(
+                        myDesignsCount = 1,
+                        myProductsCount = 1,
+                        purchasedProductsCount = 0,
+                    )
+                }
+            }
+            context("로그인 하지 않고 프로필 summary를 요청한 경우") {
+                every {
+                    profileSummaryService.getProfileSummary(any())
+                } returns Mono.just(
+                    ProfileSummary(
+                        myDesignsCount = 1,
+                        myProductsCount = 1,
+                        purchasedProductsCount = 0,
+                    )
+                )
+                val response = myselfWebClient
+                    .get()
+                    .uri("/me/profile/summary")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .exchange()
+                    .expectBody<TestResponse<MyProfileSummary.Response>>()
+                    .returnResult()
+
+                it("service 를 통해 조회 요청해야 함") {
+                    verify(inverse = true) {
+                        profileSummaryService.getProfileSummary(any())
+                    }
+                }
+                it("summary 정보가 반환되어야 함") {
                     response.rawStatusCode shouldBe 400
                 }
             }
