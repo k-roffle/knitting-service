@@ -138,6 +138,14 @@ class ProductRepositoryImpl(
         return getProductAggregates(products)
     }
 
+    override fun countMyProducts(knitterId: Long): Mono<Int> =
+        productRepository.countByKnitterId(knitterId)
+
+    override fun countPurchasedProducts(knitterId: Long): Mono<Int> {
+        // TODO("Not yet implemented")
+        return Mono.just(0)
+    }
+
     override fun getProduct(id: Long, knitterId: Long): Mono<Product> {
         return findById(id)
             .filter { it.knitterId == knitterId }

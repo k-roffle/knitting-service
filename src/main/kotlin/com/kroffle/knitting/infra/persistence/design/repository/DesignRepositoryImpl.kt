@@ -139,4 +139,6 @@ class DesignRepositoryImpl(
         }
         return getDesignAggregates(designs)
     }
+
+    override fun countMyDesigns(knitterId: Long): Mono<Int> = designRepository.countByKnitterId(knitterId)
 }
