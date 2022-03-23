@@ -69,4 +69,12 @@ object MockData {
         val createdAt: OffsetDateTime? = OffsetDateTime.now(),
         val updatedAt: OffsetDateTime? = OffsetDateTime.now(),
     )
+
+    data class Knitter(
+        val id: Long,
+        val email: String = "kroffle.team@gmail.com",
+        val name: String? = null,
+        val profileImageUrl: String? = null,
+        val createdAt: OffsetDateTime? = OffsetDateTime.now(),
+    )
 }

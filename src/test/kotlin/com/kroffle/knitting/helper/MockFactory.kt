@@ -2,10 +2,22 @@ package com.kroffle.knitting.helper
 
 import com.kroffle.knitting.domain.design.entity.Design
 import com.kroffle.knitting.domain.draftdesign.entity.DraftDesign
+import com.kroffle.knitting.domain.knitter.entity.Knitter
 import com.kroffle.knitting.domain.product.entity.Product
 
 class MockFactory {
     companion object {
+        fun create(data: MockData.Knitter): Knitter =
+            with(data) {
+                Knitter(
+                    id = id,
+                    email = email,
+                    name = name,
+                    profileImageUrl = profileImageUrl,
+                    createdAt = createdAt,
+                )
+            }
+
         fun create(data: MockData.Product): Product =
             with(data) {
                 Product(
