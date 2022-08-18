@@ -79,7 +79,7 @@ jobs:
             docker login -u dragonyool -p ${{ secrets.DOCKERHUB_PASSWORD }}
             docker pull dragonyool/knitting-service:latest
             docker stop knitting-service
-            docker run -d -p 443:8080 --rm --name knitting-service -v /home/docker:/home dragonyool/knitting-service:latest --restart=always
+            docker run -d -p 80:8080 --rm --name knitting-service -v /home/docker:/home dragonyool/knitting-service:latest --restart=always
             docker logout
 
       - name: notify slack
