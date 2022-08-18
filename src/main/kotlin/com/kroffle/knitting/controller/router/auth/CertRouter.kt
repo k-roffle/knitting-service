@@ -21,7 +21,7 @@ class CertRouter(private val handler: CertHandler) {
 
     companion object {
         private const val ROOT_PATH = "/"
-        private const val APPLY_HTTPS_PATH = ".well-known/acme-challenge/Fk4ql_Mo4IDQ9i6AwKS3p2WtrLu5456uHLmP1XKt-ts"
+        private const val APPLY_HTTPS_PATH = ".well-known/acme-challenge/mVZ6sEgnW6lS5uANbZ6ZAwB06KgFTsPr3x3MaLudY0M"
         val PUBLIC_PATHS = listOf(
             "$ROOT_PATH$APPLY_HTTPS_PATH",
         )
